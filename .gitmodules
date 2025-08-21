@@ -1,0 +1,3 @@
+[submodule "electron-vocarush-teamproject"]
+	path = electron-vocarush-teamproject
+	url = https://github.com/uzichoi/electron-vocarush-teamproject.git
