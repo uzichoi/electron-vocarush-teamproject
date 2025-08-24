@@ -1,5 +1,4 @@
 // React는 src/renderer/App.jsx부터 시작됨
-
 import React from "react";    // default export
 import { createRoot } from "react-dom/client";    // named export
 // React 18부터는 react-dom에서 render을 직접 쓰지 않고 createRoot를 써야 한다. 현재 버전 react@19.1.1

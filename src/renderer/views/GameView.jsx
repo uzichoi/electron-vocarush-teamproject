@@ -72,7 +72,10 @@ export default function GameView() {
                         {state.grid.map((row, i) => (
                             <div key={i} className="grid-row">
                                 {row.map((cell, j) => (
-                                    <div key={j} className={`grid-cell ${cell !== "*" ? "letter" : "empty"}`}>
+                                    <div
+                                        key={j}
+                                        className={`grid-cell ${cell !== "*" ? "letter" : "empty"} ${state.highlight && state.highlight[i] && state.highlight[i][j] ? "highlight" : ""}`}
+                                    >
                                         {cell}
                                     </div>
                                 ))}

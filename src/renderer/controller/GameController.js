@@ -1,5 +1,5 @@
 import { GameBoard } from "../models/GameBoard";
-import { Direction } from "../models/Direction";
+import { Direction, Order } from "../models/Direction";
 import { Word } from "../models/Word";
 
 class Emitter {
@@ -17,8 +17,8 @@ export class GameController {
     this.emitter = new Emitter();
     this.timerId = null;
     this.state = {
-      currentWord: "about",
-      foundLetters: ["a","b","o","u","t"],
+      //currentWord: "about",
+      //foundLetters: ["a","b","o","u","t"],
       player1: { name: "Player 1", score: 0, combo: 0, maxCombo: 0, hp: 3 },
       player2: { name: "Player 2", score: 0, combo: 0, maxCombo: 0, hp: 3 },
       inputValue: "",
@@ -38,58 +38,39 @@ export class GameController {
 
   subscribe(listener) { listener(this.state); return this.emitter.on(listener); }
 
+  //상태에 반영 (깊은 복사) ***************************************** 보드가 바뀔때 마다 상태를 반영해야 안전함
+  updateGridState() {
+    const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
+    const deep = snap.map(row => [...row]);
+    this.setState({ ...this.state, grid: deep });
+ }
+
   // ★ 새 게임: 보드 초기화 + 단어 랜덤 배치 + 빈칸 채우기 + 상태 반영
   newGame(opts = { rows:10, cols: 10, words: ["about","korea","apple","storm","logic"] }) {
     const { rows, cols, words } = opts;
 
     // 1) 보드 리셋
-    this.board.setSize(rows, cols);
-    this.board.clear();
+    this.board.resetBoard(rows, cols);
     this.words = [];
 
     // 2) 단어 랜덤 배치
     const directions = Object.values(Direction); // Direction은 {HORIZONTAL:..., VERTICAL:..., ...} 형태라고 가정
-    for (const text of words) {
-      let placed = false;
-      for (let tries = 0; tries < 200 && !placed; tries++) {
-        const x = Math.floor(Math.random() * cols);
-        const y = Math.floor(Math.random() * rows);
-        const dir = pick(directions);
-        const w = new Word(text.toLowerCase());
-        w.setPosition(x, y, dir);
-        if (this.board.canPlaceWord(w)) {
-          this.board.placeWord(text.toLowerCase(), x, y, dir);
-          this.words.push(w);
-          placed = true;
-        }
-      }
-    }
+    const orders = Object.values(Order);
+    this.words = this.board.placeWordsRandomly(words,directions,orders, 200)
 
     // 3) 빈칸 랜덤 문자로 채우기
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        if (!this.board.grid[r][c] || this.board.grid[r][c] === "*") {
-          this.board.grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
-        }
-      }
-    }
-
-    // 4) 상태에 반영 (깊은 복사)
-    const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
-    const deep = snap.map(row => [...row]);
-    this.setState({ ...this.state, grid: deep });
+    this.board.fillEmptyWithRandomLetters();
+    this.updateGridState();
   }
 
   // board APIs
   setBoardSize(row, col) {
-    this.board.setSize(row, col);
-    this.board.clear();
-    const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
-    const deep = snap.map(row => [...row]);
-    this.setState({ ...this.state, grid: deep });
+    this.board.setBoardSize(row, col);
+     this.updateGridState();
   }
-
+  
+  /*
+  // 단어 수동배치??
   placeWordOnBoard(text, x, y, direction = Direction.HORIZONTAL) {
     const w = new Word(text.toLowerCase());
     w.setPosition(x, y, direction);
@@ -97,11 +78,11 @@ export class GameController {
     this.board.placeWord(text.toLowerCase(), x, y, direction);
     this.words.push(w);
 
-    const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
-    const deep = snap.map(row => [...row]);
-    this.setState({ ...this.state, grid: deep });
+     this.updateGridState();
     return true;
   }
+    */
+    
 
   submitInput(wordRaw) {
     const guess = (wordRaw || "").trim().toLowerCase();
@@ -111,6 +92,7 @@ export class GameController {
     if (match) {
       match.markFoundWord();
       this.board.highlightWord(match);
+      this.updateGridState();
 
       const p1 = { ...this.state.player1 };
       p1.combo += 1;
