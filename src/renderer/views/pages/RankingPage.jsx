@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function RankingView() {
+export default function RankingPage() {
     const navigate = useNavigate();
 
     // 임시 랭킹 데이터 (추후 모델에서 가져올 예정)

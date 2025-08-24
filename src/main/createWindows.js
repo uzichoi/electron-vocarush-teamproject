@@ -1,3 +1,6 @@
+// src/main//createWindows.js
+// 실제로 창을 띄우는 함수. 브라우저 창처럼 생긴 electron 윈도우를 하나 생성
+
 import { BrowserWindow } from "electron";
 import path from "path";
 

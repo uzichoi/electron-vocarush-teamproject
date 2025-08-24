@@ -1,78 +1,190 @@
-import { DX, DY } from "./Direction";
+// models/GameBoard.js
+
+import { Direction } from "./Direction.js";
 
 export class GameBoard {
   constructor() {
-    this.row = 10;
-    this.col = 10;
+    this.rows = 10;
+    this.cols = 10;
     this.grid = [];
-    this.highlight = [];
-    this.setSize(10, 10);
+    this.highlighted = [];
+    this.#initializeBoard();
   }
 
-  setSize(row, col) {
-    if (row < 5 || row > 10) row = 10;
-    if (col < 5 || col > 10) col = 10;
-    this.row = row;
-    this.col = col;
-    this.grid = Array.from({ length: row }, () => Array(col).fill("*"));
-    this.highlight = Array.from({ length: row }, () => Array(col).fill(false));
+  // 보드 초기화 (private method)
+  #initializeBoard() {
+    this.grid = Array.from({ length: this.rows }, () =>
+      Array(this.cols).fill("*")
+    );
+    this.highlighted = Array.from({ length: this.rows }, () =>
+      Array(this.cols).fill(false)
+    );
   }
 
-  getRow() { return this.row; }
-  getCol() { return this.col; }
-  getCharAt(y, x) { return this.grid[y][x]; }
-  isHighlighted(y, x) { return this.highlight[y][x]; }
+  // 보드 크기 설정
+  setSize(rows, cols) {
+    // 입력값 검증 및 기본값 설정
+    this.rows = (rows >= 5 && rows <= 10) ? rows : 10;
+    this.cols = (cols >= 5 && cols <= 10) ? cols : 10;
+    
+    this.#initializeBoard();
+  }
 
+  // 보드 초기화
   clear() {
-    if (!this.grid.length || !this.highlight.length) return;
-    for (let y = 0; y < this.row; y++) {
-      for (let x = 0; x < this.col; x++) {
-        this.grid[y][x] = "*";
-        this.highlight[y][x] = false;
+    for (let row = 0; row < this.rows; row++) {
+      for (let col = 0; col < this.cols; col++) {
+        this.grid[row][col] = "*";
+        this.highlighted[row][col] = false;
       }
     }
   }
 
-  canPlaceWord(word) {
-    const dir = word.getDirection();
-    const x = word.getX();
-    const y = word.getY();
-    const text = word.getText();
+  // 좌표가 보드 범위 내인지 확인
+  _isValidPosition(row, col) {
+    return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
+  }
 
-    for (let i = 0; i < text.length; i++) {
-      const wordX = x + DX[dir] * i;
-      const wordY = y + DY[dir] * i;
-      if (wordY < 0 || wordY >= this.row || wordX < 0 || wordX >= this.col) return false;
-      const current = this.grid[wordY][wordX];
-      const needed = text[i];
-      if (current !== "*" && current !== needed) return false;
+  // 단어를 배치할 수 있는지 확인
+  canPlaceWord(word) {
+    if (!word) return false;
+    
+    const directionName = word.getDirection();
+    const direction = Direction[directionName];
+    
+    if (!direction) {
+      console.warn(`Unknown direction: ${directionName}`);
+      return false;
     }
+
+    const { dx, dy } = direction;
+    const text = word.getText().toLowerCase();
+    const startRow = word.getY(); // Word의 Y는 실제로 행(row)
+    const startCol = word.getX(); // Word의 X는 실제로 열(col)
+
+    // 각 글자 위치 검사
+    for (let i = 0; i < text.length; i++) {
+      const currentRow = startRow + dy * i;
+      const currentCol = startCol + dx * i;
+
+      // 경계 검사
+      if (!this._isValidPosition(currentRow, currentCol)) {
+        return false;
+      }
+
+      // 기존 글자와의 충돌 검사
+      const existingChar = this.grid[currentRow][currentCol];
+      const requiredChar = text[i];
+      
+      if (existingChar !== "*" && existingChar !== requiredChar) {
+        return false;
+      }
+    }
+
     return true;
   }
 
-  placeWord(text, x, y, direction) {
-    if (/^[A-Z]/.test(text[0])) text = text[0].toLowerCase() + text.slice(1);
-    for (let i = 0; i < text.length; i++) {
-      const wordX = x + DX[direction] * i;
-      const wordY = y + DY[direction] * i;
-      this.grid[wordY][wordX] = text[i];
+  // 단어를 보드에 배치
+  placeWord(text, startCol, startRow, directionName) {
+    if (!text) return false;
+    
+    const direction = Direction[directionName];
+    if (!direction) {
+      console.warn(`Unknown direction: ${directionName}`);
+      return false;
     }
+
+    const { dx, dy } = direction;
+    const lowerText = text.toLowerCase();
+
+    // 배치 가능한지 먼저 확인
+    for (let i = 0; i < lowerText.length; i++) {
+      const currentRow = startRow + dy * i;
+      const currentCol = startCol + dx * i;
+      
+      if (!this._isValidPosition(currentRow, currentCol)) {
+        console.warn(`Cannot place word: position out of bounds`);
+        return false;
+      }
+    }
+
+    // 실제 배치
+    for (let i = 0; i < lowerText.length; i++) {
+      const currentRow = startRow + dy * i;
+      const currentCol = startCol + dx * i;
+      this.grid[currentRow][currentCol] = lowerText[i];
+    }
+
+    return true;
   }
 
+  // 찾은 단어를 하이라이트
   highlightWord(word) {
-    const text = word.getText();
-    const dir = word.getDirection();
-    const x = word.getX();
-    const y = word.getY();
-    for (let i = 0; i < text.length; i++) {
-      const wordX = x + DX[dir] * i;
-      const wordY = y + DY[dir] * i;
-      this.grid[wordY][wordX] = text[i].toUpperCase();
-      this.highlight[wordY][wordX] = true;
+    if (!word) return false;
+    
+    const directionName = word.getDirection();
+    const direction = Direction[directionName];
+    
+    if (!direction) {
+      console.warn(`Unknown direction: ${directionName}`);
+      return false;
     }
+
+    const { dx, dy } = direction;
+    const text = word.getText();
+    const startRow = word.getY();
+    const startCol = word.getX();
+
+    // 하이라이트 적용
+    for (let i = 0; i < text.length; i++) {
+      const currentRow = startRow + dy * i;
+      const currentCol = startCol + dx * i;
+      
+      if (this._isValidPosition(currentRow, currentCol)) {
+        this.grid[currentRow][currentCol] = text[i].toUpperCase();
+        this.highlighted[currentRow][currentCol] = true;
+      }
+    }
+
+    return true;
   }
 
-  getGridSnapshot() {
-    return this.grid.map(row => row.slice());
+  // 특정 위치가 하이라이트되어 있는지 확인
+  isHighlighted(row, col) {
+    if (!this._isValidPosition(row, col)) {
+      return false;
+    }
+    return this.highlighted[row][col];
+  }
+
+  // 특정 위치의 문자 반환
+  getCharAt(row, col) {
+    if (!this._isValidPosition(row, col)) {
+      return null;
+    }
+    return this.grid[row][col];
+  }
+
+  // 보드 크기 정보 반환
+  getSize() {
+    return { rows: this.rows, cols: this.cols };
+  }
+
+  // 전체 그리드 복사본 반환 (외부에서 직접 수정 방지)
+  getGrid() {
+    return this.grid.map(row => [...row]);
+  }
+
+  // 전체 하이라이트 상태 복사본 반환
+  getHighlighted() {
+    return this.highlighted.map(row => [...row]);
+  }
+
+  // 보드 상태 출력 (디버깅용)
+  printBoard() {
+    console.log("Current board state:");
+    this.grid.forEach((row, i) => {
+      console.log(`${i}: ${row.join(" ")}`);
+    });
   }
 }

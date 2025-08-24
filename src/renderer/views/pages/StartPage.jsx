@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 
-export default function StartView() {
+export default function StartPage() {
   const navigate = useNavigate();
 
   return (
