@@ -2,6 +2,7 @@ import { GameBoard } from "../models/GameBoard";
 import { Direction, Order } from "../models/Direction";
 import { Word } from "../models/Word";
 
+
 class Emitter {
   constructor() { this.listeners = new Set(); }
   on(fn) { this.listeners.add(fn); return () => this.listeners.delete(fn); }
@@ -46,7 +47,7 @@ export class GameController {
  }
 
   // ★ 새 게임: 보드 초기화 + 단어 랜덤 배치 + 빈칸 채우기 + 상태 반영
-  newGame(opts = { rows:10, cols: 10, words: ["about","korea","apple","storm","logic"] }) {
+  async newGame(opts = { rows:10, cols: 10, words: ["about","korea","apple","storm","logic"] }) {
     const { rows, cols, words } = opts;
 
     // 1) 보드 리셋
@@ -61,6 +62,14 @@ export class GameController {
     // 3) 빈칸 랜덤 문자로 채우기
     this.board.fillEmptyWithRandomLetters();
     this.updateGridState();
+
+    await this.board.fileRead();
+    // 4) 의도로 배치하지 않은 단어 제거 (더이상 변경된 단어가 없을 때까지 반복)
+  let changed = true;
+  while (changed) {
+  changed = this.board.unintendedWordDelete();
+    }
+    this.updateGridState();
   }
 
   // board APIs
@@ -69,19 +78,7 @@ export class GameController {
      this.updateGridState();
   }
   
-  /*
-  // 단어 수동배치??
-  placeWordOnBoard(text, x, y, direction = Direction.HORIZONTAL) {
-    const w = new Word(text.toLowerCase());
-    w.setPosition(x, y, direction);
-    if (!this.board.canPlaceWord(w)) return false;
-    this.board.placeWord(text.toLowerCase(), x, y, direction);
-    this.words.push(w);
-
-     this.updateGridState();
-    return true;
-  }
-    */
+  
     
 
   submitInput(wordRaw) {
