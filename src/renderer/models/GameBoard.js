@@ -3,8 +3,8 @@ import { DX, DY, Order } from "./Direction";
 
 export class GameBoard {
   constructor() {
-    this.row = 10;
-    this.col = 10;
+    this.row = 5;
+    this.col = 5;
     this.grid = []; // 단어보드
     this.placedWordCheck = []; // 배치된 단어들 체크용
     this.highlight = []; // 정답단어 체크용 
@@ -12,8 +12,8 @@ export class GameBoard {
   }
 
   setSize(row, col) {
-    if (row < 5 || row > 10) row = 10;
-    if (col < 5 || col > 10) col = 10;
+    if (row < 5 || row > 10) row = 5;
+    if (col < 5 || col > 10) col = 5;
     this.row = row;
     this.col = col;
     this.grid = Array.from({ length: row }, () => Array(col).fill("*"));
