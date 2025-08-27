@@ -2,16 +2,14 @@ import { DX, DY } from "./Direction";
 
 export class GameBoard {
   constructor() {
-    this.row = 10;
-    this.col = 10;
+    this.row = 0;
+    this.col = 0;
     this.grid = [];
     this.highlight = [];
-    this.setSize(10, 10);
+    //this.setSize(6, 6);
   }
 
   setSize(row, col) {
-    if (row < 5 || row > 10) row = 10;
-    if (col < 5 || col > 10) col = 10;
     this.row = row;
     this.col = col;
     this.grid = Array.from({ length: row }, () => Array(col).fill("*"));
