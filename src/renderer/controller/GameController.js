@@ -16,6 +16,15 @@ export class GameController {
     this.words = [];
     this.emitter = new Emitter();
     this.timerId = null;
+
+    this.initialSize = 5;
+    this.currentSize = 6;
+    this.maxSize = 7;
+
+    this.startInitialGame = this.startInitialGame.bind(this);
+    this.restartGame = this.restartGame.bind(this);
+    this.hardResetToFirst = this.hardResetToFirst.bind(this);
+
     this.state = {
       //currentWord: "about",
       //foundLetters: ["a","b","o","u","t"],
@@ -23,7 +32,7 @@ export class GameController {
       player2: { name: "Player 2", score: 0, combo: 0, maxCombo: 0, hp: 3 },
       inputValue: "",
       timeIncreased: 0,
-      grid: [], // newGame에서 채움
+      grid: [],//Array.from({ length: 6 }, () => Array(6).fill("*")), // newGame에서 채움
     };
   }
 
@@ -38,6 +47,7 @@ export class GameController {
 
   subscribe(listener) { listener(this.state); return this.emitter.on(listener); }
 
+<<<<<<< HEAD
   //상태에 반영 (깊은 복사) ***************************************** 보드가 바뀔때 마다 상태를 반영해야 안전함
   updateGridState() {
     const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
@@ -45,8 +55,46 @@ export class GameController {
     this.setState({ ...this.state, grid: deep });
  }
 
+=======
+ startInitialGame = () => {
+  this.currentSize = this.initialSize || 6;
+  this._resetRoundStats();
+  this.newGame({
+    rows: this.currentSize,
+    cols: this.currentSize,
+    words: this._pickWordsForSize(this.currentSize)
+  });
+};
+
+
+  restartGame() {
+    if (this.currentSize < this.maxSize) this.currentSize += 1;
+    this._resetRoundStats();
+    this.newGame({ rows: this.currentSize, cols: this.currentSize, words: this._pickWordsForSize(this.currentSize) });
+  }
+
+  // (선택) 완전 새로 시작 버튼이 있다면 이것만 호출
+  hardResetToFirst() {
+    this.startInitialGame();
+  }
+
+  _resetRoundStats() {
+    // 라운드마다 리셋할 것들 (원하면 점수 유지/리셋 정책 조정)
+    const p1 = { ...this.state.player1, combo: 0, maxCombo: 0, hp: 3 /*, score: 0*/ };
+    const p2 = { ...this.state.player2, combo: 0, maxCombo: 0, hp: 3 /*, score: 0*/ };
+    this.setState({ ...this.state, player1: p1, player2: p2, timeIncreased: 0, inputValue: "" });
+  }
+
+  _pickWordsForSize(size) {
+    // 보드 크기에 따라 단어 난이도/개수를 조정하고 싶으면 여기서 결정
+    // 지금은 예시로 동일하게 사용
+    return ["about","korea","apple","storm","logic"];
+  }
+
+  
+>>>>>>> soyeon/soyeon
   // ★ 새 게임: 보드 초기화 + 단어 랜덤 배치 + 빈칸 채우기 + 상태 반영
-  newGame(opts = { rows:10, cols: 10, words: ["about","korea","apple","storm","logic"] }) {
+  newGame(opts = { rows:this.currentSize, cols: this.currentSize, words: this._pickWordsForSize(this.currentSize) }) {
     const { rows, cols, words } = opts;
 
     // 1) 보드 리셋

@@ -4,9 +4,11 @@
   "description": "",
   "main": ".tmp/main/index.js",
   "scripts": {
+    "clean": "rmdir /s /q .tmp dist build || echo clean done",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx babel src -d .tmp",
-    "start": "npx electron ."
+
+    "build": "npm run clean && npx babel src -d .tmp",
+    "start": "npm run build && npx electron ."
   },
   "keywords": [],
   "author": "jiyu",
@@ -17,7 +19,8 @@
     "@babel/core": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
-    "electron": "^37.2.6"
+    "electron": "^37.2.6",
+    "concurrently": "^8.2.0"
   },
   "dependencies": {
     "react": "18.3.1",

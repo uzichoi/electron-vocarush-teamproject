@@ -5,21 +5,28 @@ export class GameBoard {
   constructor() {
     this.row = 5;
     this.col = 5;
-    this.grid = []; // 단어보드
-    this.placedWordCheck = []; // 배치된 단어들 체크용
-    this.highlight = []; // 정답단어 체크용 
-    this.setSize(10, 10);
+    this.grid = [];              // 단어보드
+    this.placedWordCheck = [];   // 배치된 단어들 체크용
+    this.highlight = [];         // 정답 단어 체크용
+    this.setSize(5, 5);          // 시작은 5x5
   }
 
   setSize(row, col) {
-    if (row < 5 || row > 10) row = 5;
-    if (col < 5 || col > 10) col = 5;
+    // 최소 5, 최대 7 보장
+    if (row < 5) row = 5;
+    if (row > 7) row = 7;
+    if (col < 5) col = 5;
+    if (col > 7) col = 7;
+
     this.row = row;
     this.col = col;
+
     this.grid = Array.from({ length: row }, () => Array(col).fill("*"));
     this.placedWordCheck = Array.from({ length: row }, () => Array(col).fill(false));
     this.highlight = Array.from({ length: row }, () => Array(col).fill(false));
   }
+
+
 
   getRow() { return this.row; }
   getCol() { return this.col; }
