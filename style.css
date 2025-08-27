@@ -1359,3 +1359,142 @@ body {
         padding: 15px;
     }
 }
+
+/* === UI Scale Vars (배율 기반) === */
+:root {
+  /* 전체 글꼴 스케일 */
+  --font-scale: 1.7;
+
+  /* 보드 셀: (기준 px) × (배율) */
+  --cell-base: 48;                 /* 기준 48px */
+  --cell-scale: 1.7;               /* 1.7배 → 48*1.7 ≈ 81.6px */
+  --cell-size: calc(var(--cell-base) * var(--cell-scale) * 1px);
+
+  --grid-gap: 8px;
+
+  /* 개별 영역 배율(지금 기준 대비) */
+  --board-scale: 1em;             /* 보드판 85% */
+  --panel-scale: 1em;              
+  --input-scale: 1em;            
+
+  /* 헤더 글자 크기 */
+  --timer-size: 42px;
+  --title-size: 34px;
+  --button-font: 18px;
+
+  /* 입력/버튼 공통 사이즈(기준×배율) */
+  --input-base-height: 44px;
+  --input-base-font: 16px;
+  --btn-min-width-base: 110px;
+
+  --input-height: calc(var(--input-base-height) * var(--input-scale));
+  --input-font: calc(var(--input-base-font) * var(--input-scale));
+  --btn-min-width: calc(var(--btn-min-width-base) * var(--input-scale));
+}
+
+/* 기본 폰트 배율 적용 */
+body, .game-view {
+  font-size: calc(16px * var(--font-scale));
+}
+
+/* 헤더 타이틀/타이머 */
+.game-header .game-title {
+  font-size: var(--title-size);
+  font-weight: 800;
+}
+.game-header .game-timer {
+  font-size: var(--timer-size);
+  font-weight: 700;
+}
+
+/* 버튼(quit 등) 기본 폰트 */
+.btn, .btn-small, .submit-btn {
+  font-size: var(--button-font);
+  padding: 0.6em 1.0em;
+  border-radius: 10px;
+}
+
+/* ===== 보드 영역 ===== */
+.game-board {
+  transform: scale(var(--board-scale));     /* ← 보드 전체 축소 */
+  transform-origin: top center;
+}
+.game-board .word-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-gap);
+}
+.game-board .grid-row {
+  display: flex;
+  gap: var(--grid-gap);
+}
+.game-board .grid-cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid #444;
+  font-size: calc(var(--cell-size) * 0.55); /* 셀 크기에 비례 */
+  font-weight: 800;
+  line-height: 1;
+}
+.grid-cell.letter { background: #111; color: #fff; }
+.grid-cell.empty  { background: #1b1b1b; color: #555; }
+
+/* ===== 플레이어 패널 ===== */
+.player-info {
+  transform: scale(var(--panel-scale));     /* ← 패널 축소 */
+  transform-origin: top center;
+}
+.player-card h3 {
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
+.player-card .stat {
+  font-size: 1.0em;
+  line-height: 1.5;
+}
+.hp-heart { font-size: 1.4em; }
+
+/* ===== 입력 & SUBMIT 버튼: 동일 높이/크기 ===== */
+.game-input .input-form .input-container{
+  display: flex;
+  align-items: stretch;      /* 인풋/버튼 높이 통일 */
+  gap: 12px;
+  flex-wrap: nowrap;           /* 좁으면 줄바꿈 */
+  width: 100%;
+  max-width:1000px;
+  margin: 0 auto;
+}
+.game-input .input-label{
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: var(--input-font);
+  line-height: var(--input-height);
+}
+
+.game-input .word-input{
+  flex: 1 1 auto;           /* ⬅ 핵심: 가로로 쭉 확장 */
+  min-width: 0;             /* ⬅ flex 아이템 줄바꿈/오버플로 방지 */
+  height: var(--input-height);
+  font-size: var(--input-font);
+  padding: 0 1em;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.btn.submit-btn,
+.btn.btn-primary.submit-btn,
+.submit-btn{
+  height: var(--input-height);
+  min-width: var(--btn-min-width);
+  font-size: var(--input-font);
+  padding: 0 1.25em;         /* 세로패딩 0으로 높이 정확히 맞춤 */
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  box-sizing: border-box;
+}

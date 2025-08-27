@@ -16,8 +16,8 @@ export class GameBoard {
   }
 
   setSize(row, col) {
-    if (row < 5 || row > 10) row = 10;
-    if (col < 5 || col > 10) col = 10;
+    if (row < 5 || row > 10) row = 5;
+    if (col < 5 || col > 10) col = 5;
     this.row = row;
     this.col = col;
     this.grid = Array.from({ length: row }, () => Array(col).fill("*"));
