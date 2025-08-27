@@ -17,8 +17,8 @@ export class GameController {
     this.emitter = new Emitter();
     this.timerId = null;
 
-    this.initialSize = 5;
-    this.currentSize = 6;
+    this.initialRowSize = 5;
+    this.initialColSize = 6;
     this.maxSize = 7;
 
     this.startInitialGame = this.startInitialGame.bind(this);
@@ -38,61 +38,76 @@ export class GameController {
 
   // lifecycle
   mount() {
-    this.timerId = setInterval(() => {
-      const next = Math.min(300, this.state.timeIncreased + 1);
-      this.setState({ ...this.state, timeIncreased: next });
-    }, 1000);
-  }
-  unmount() { if (this.timerId) clearInterval(this.timerId); }
+  this.timerId = setInterval(() => {
+    const next = Math.min(300, this.state.timeIncreased + 1);
+    this.setState({ ...this.state, timeIncreased: next });
+  }, 1000);
+}
 
-  subscribe(listener) { listener(this.state); return this.emitter.on(listener); }
+unmount() { 
+  if (this.timerId) clearInterval(this.timerId); 
+}
 
-<<<<<<< HEAD
-  //상태에 반영 (깊은 복사) ***************************************** 보드가 바뀔때 마다 상태를 반영해야 안전함
-  updateGridState() {
-    const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
-    const deep = snap.map(row => [...row]);
-    this.setState({ ...this.state, grid: deep });
- }
+subscribe(listener) { 
+  listener(this.state); 
+  return this.emitter.on(listener); 
+}
 
-=======
- startInitialGame = () => {
-  this.currentSize = this.initialSize || 6;
+// 상태에 반영 (깊은 복사) *****************************************
+// 보드가 바뀔 때마다 상태를 반영해야 안전함
+updateGridState() {
+  const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
+  const deep = snap.map(row => [...row]);
+  this.setState({ ...this.state, grid: deep });
+}
+
+// 초기 게임 시작
+startInitialGame = () => {
+  this.currentRowSize = this.initialRowSize || 5; // 최소 5 보장
+  this.currentColSize = this.initialColSize || 5;
   this._resetRoundStats();
   this.newGame({
-    rows: this.currentSize,
-    cols: this.currentSize,
+    rows: this.currentRowSize,
+    cols: this.currentColSize,
     words: this._pickWordsForSize(this.currentSize)
   });
 };
 
+// 라운드 재시작 (최대 7까지만 커짐)
+restartGame() {
+  if (this.currentSize < 7) this.currentSize += 1;   // maxSize 대신 7로 한정
+  this._resetRoundStats();
+  this.newGame({ 
+    rows: this.currentSize, 
+    cols: this.currentSize, 
+    minSize: Math.min(this.currentRowSize, this.currentColSize),
+    words: this._pickWordsForSize(minSize) 
+  });
+}
 
-  restartGame() {
-    if (this.currentSize < this.maxSize) this.currentSize += 1;
-    this._resetRoundStats();
-    this.newGame({ rows: this.currentSize, cols: this.currentSize, words: this._pickWordsForSize(this.currentSize) });
-  }
+// 완전 초기화
+hardResetToFirst() {
+  this.startInitialGame();
+}
 
-  // (선택) 완전 새로 시작 버튼이 있다면 이것만 호출
-  hardResetToFirst() {
-    this.startInitialGame();
-  }
+// 라운드 스탯 리셋
+_resetRoundStats() {
+  const p1 = { ...this.state.player1, combo: 0, maxCombo: 0, hp: 3 };
+  const p2 = { ...this.state.player2, combo: 0, maxCombo: 0, hp: 3 };
+  this.setState({ 
+    ...this.state, 
+    player1: p1, 
+    player2: p2, 
+    timeIncreased: 0, 
+    inputValue: "" 
+  });
+}
 
-  _resetRoundStats() {
-    // 라운드마다 리셋할 것들 (원하면 점수 유지/리셋 정책 조정)
-    const p1 = { ...this.state.player1, combo: 0, maxCombo: 0, hp: 3 /*, score: 0*/ };
-    const p2 = { ...this.state.player2, combo: 0, maxCombo: 0, hp: 3 /*, score: 0*/ };
-    this.setState({ ...this.state, player1: p1, player2: p2, timeIncreased: 0, inputValue: "" });
-  }
+// 보드 크기에 따라 단어 선택 (지금은 동일)
+_pickWordsForSize(size) {
+  return ["about","korea","apple","storm","logic"];
+}
 
-  _pickWordsForSize(size) {
-    // 보드 크기에 따라 단어 난이도/개수를 조정하고 싶으면 여기서 결정
-    // 지금은 예시로 동일하게 사용
-    return ["about","korea","apple","storm","logic"];
-  }
-
-  
->>>>>>> soyeon/soyeon
   // ★ 새 게임: 보드 초기화 + 단어 랜덤 배치 + 빈칸 채우기 + 상태 반영
   newGame(opts = { rows:this.currentSize, cols: this.currentSize, words: this._pickWordsForSize(this.currentSize) }) {
     const { rows, cols, words } = opts;

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
 export default function GameView() {
-    console.log("🟢 GameView 함수 실행됨");   // ← 최상단에서 찍기
+    //console.log("🟢 GameView 함수 실행됨");   // ← 최상단에서 찍기
 
     const navigate = useNavigate();
     const { controller, state } = useGameController();
@@ -21,9 +21,6 @@ export default function GameView() {
     
     return (
         <div className="game-view">
-            {console.log("🟢 GameView return 안쪽 실행됨")}
-            {state.grid?.length > 0 && console.log("GRID SIZE:", state.grid.length, state.grid[0].length)}
-
             <header className="game-header">
                 <div className="header-left">
                     <div className="game-title">VOCARUSH</div>
