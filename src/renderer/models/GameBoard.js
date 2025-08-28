@@ -3,12 +3,12 @@ import { DX, DY, Order } from "./Direction";
 
 export class GameBoard {
   constructor() {
-    this.row = 5;
-    this.col = 5;
+    //this.row = 5;
+    //this.col = 5;
     this.grid = [];              // 단어보드
     this.placedWordCheck = [];   // 배치된 단어들 체크용
     this.highlight = [];         // 정답 단어 체크용
-    this.setSize(5, 5);          // 시작은 5x5
+    //this.setSize(5, 5);          // 시작은 5x5
   }
 
   setSize(row, col) {

@@ -1,4 +1,3 @@
-// src/renderer/hooks/useGameController.js
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GameController } from "../controller/GameController";
 
@@ -13,12 +12,14 @@ export function useGameController() {
 
     if (!didInit.current) {
       didInit.current = true;
-      controller.startInitialGame(); // 
+      controller.startInitialGame(); // ★ 보드 초기화
     }
 
-    return () => { controller.unmount(); unsub(); };
+    return () => {
+      controller.unmount();
+      unsub();
+    };
   }, [controller]);
 
   return { controller, state };
 }
-

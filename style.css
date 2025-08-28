@@ -1501,3 +1501,130 @@ body, .game-view {
   border-radius: 8px;
   box-sizing: border-box;
 }
+
+
+.turn-button {
+  padding: 8px 12px;
+  margin: 5px;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  background: rgba(255,255,255,0.1);
+}
+.turn-button.active {
+  background: rgba(255,255,255,0.7);
+  color: black;
+  font-weight: bold;
+  box-shadow: 0 0 10px white;
+}
+
+.turn-timer {
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.7);
+  transition: width 0.1s linear;
+  border-radius: 4px;
+  margin: 4px 0;
+}
+
+.turn-btn.active {
+  background: #ffeb3b;
+  color: #000;
+  font-weight: bold;
+  box-shadow: 0 0 10px yellow;
+}
+
+.turn-timer {
+  height: 8px;
+  width: 100%;
+  background: transparent;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+.turn-timer-fill {
+  height: 100%;
+  background: rgba(255,255,255,0.7); /* 70% 투명 흰색 */
+  border-radius: 4px;
+  transition: width 0.2s linear;
+}
+
+.turn-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #444;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.turn-btn:hover {
+  background: #666;
+  transform: scale(1.05);
+}
+
+.turn-btn.active {
+  background: #ffcc00;
+  color: black;
+  box-shadow: 0 0 10px #ffcc00, 0 0 20px #ffaa00;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 5px #ffcc00; }
+  50% { box-shadow: 0 0 20px #ffaa00; }
+  100% { box-shadow: 0 0 5px #ffcc00; }
+}
+
+.turn-btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #444;
+  border: 2px solid #888;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.turn-btn:hover {
+  background: #666;
+}
+.turn-btn.active {
+  background: #4caf50;
+  border-color: #2e7d32;
+  box-shadow: 0 0 10px #4caf50;
+}
+
+.turn-timer {
+  position: relative;
+  height: 8px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 4px;
+  margin: 4px 0;
+  overflow: hidden;
+}
+.turn-timer-fill {
+  height: 100%;
+  background: rgba(255,255,255,0.7);
+  transition: width 1s linear;
+}
+
+.turn-btn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #444;
+  border: 2px solid #888;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.turn-btn:hover { background: #666; }
+.turn-btn.active {
+  background: #4caf50;
+  border-color: #2e7d32;
+  box-shadow: 0 0 10px #4caf50;
+}
+

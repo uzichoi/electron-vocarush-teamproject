@@ -10,6 +10,7 @@
     "build": "npm run clean && npx babel src -d .tmp",
     "start": "npm run build && npx electron ."
   },
+  
   "keywords": [],
   "author": "jiyu",
   "license": "ISC",
