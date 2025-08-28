@@ -1,1 +1,1 @@
-todo - wordPlacing
+나중에 소정언니 코드랑 병합 예정
