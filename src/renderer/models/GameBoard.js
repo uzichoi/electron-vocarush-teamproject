@@ -1,5 +1,6 @@
 import { Word } from "./Word";
 import { DX, DY, Order } from "./Direction";
+import { Difficulty } from "./GameConfig";
 import fs from "fs/promises";
 import path from "path";
 
@@ -106,6 +107,7 @@ placeWordsRandomly(words, directions,orders, maxTries) {
         if (this.canPlaceWord(w)) {
           this.placeWord(text.toLowerCase(), x, y, dir, ord);
           placedWords.push(w);
+          console.log(w.getText());
           placed = true;
         }
       }

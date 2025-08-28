@@ -2,6 +2,8 @@ import { GameBoard } from "../models/GameBoard";
 import { Direction, Order } from "../models/Direction";
 import { Difficulty, BoardSize, PlaceWordLength } from "../models/GameConfig.js";
 import { Word } from "../models/Word";
+import path from "path";
+import fs from "fs/promises";
 
 
 class Emitter {
@@ -55,20 +57,23 @@ export class GameController {
 
   subscribe(listener) { listener(this.state); return this.emitter.on(listener); }
 
-startInitialGame(){
+async startInitialGame(){
     this.currentSize = this.initialSize;
     this._resetRoundStats();
-    this.newGame({ rows: this.currentSize, cols:this.currentSize, words:this._pickWordsForSize(this.currentSize) });
+
+    const words = await this._pickWordsForSize(this.currentWordLength); // 반드시 await 필요
+    await this.newGame({ rows: this.currentSize, cols:this.currentSize, words});
   }
 
-  restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드크기, 글자크기 변경)
+async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드크기, 글자크기 변경)
     this.currentGameDifficulty = Math.min(this.currentGameDifficulty + 1, Difficulty.VERYHARD); // 현재 난이도 값에 +1을 해서 한 단계 올림, min으로 최대 값(VERYHARD=4)을 넘지 않게 제한
     
     this.currentSize = BoardSize[this.currentGameDifficulty];
     this.currentWordLength = PlaceWordLength[this.currentGameDifficulty];
 
     this._resetRoundStats();
-    this.newGame({ rows: this.currentSize, cols: this.currentSize, words: this._pickWordsForSize(this.currentSize) });
+    const words = await this._pickWordsForSize(this.currentWordLength); // 반드시 await 필요
+    await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
   }
 
   //상태에 반영 (깊은 복사) ***************************************** 보드가 바뀔때 마다 상태를 반영해야 안전함
@@ -85,10 +90,41 @@ startInitialGame(){
     this.setState({ ...this.state, player1: p1, player2: p2, timeIncreased: 0, inputValue: "" });
   }
 
-  _pickWordsForSize(size) {
+  async _pickWordsForSize(size) {
     // 보드 크기에 따라 단어 난이도/개수를 조정하고 싶으면 여기서 결정
     // 지금은 예시로 동일하게 사용
-    return ["about","korea","apple","storm","logic"];
+ let words = [];
+
+    // 난이도별 파일명 매핑
+    let fileName;
+    switch (this.currentGameDifficulty) {
+        case Difficulty.VERYEASY:
+        case Difficulty.EASY:
+            fileName = "easy.txt";
+            break;
+        case Difficulty.NORMAL:
+            fileName = "normal.txt";
+            break;
+        case Difficulty.HARD:
+        case Difficulty.VERYHARD:
+            fileName = "hard.txt";
+            break;
+        default:
+            fileName = "easy.txt";
+    }
+
+        try {
+          const filePath = path.join(process.cwd(), fileName); // 프로젝트 루트 기준
+          const data = await fs.readFile(filePath, "utf-8");
+          const lines = data.split(/\r?\n/).filter(line => line.trim() !== "");
+
+        // lines에서 랜덤으로 5개 선택
+        const shuffled = lines.sort(() => 0.5 - Math.random()); // 단어배열 셔플
+        words = shuffled.slice(0, 5).map(line => line.trim());
+        } catch (err) {
+          console.error("file open fail", err);
+        }
+    return words;
   }
 
  
@@ -127,30 +163,34 @@ startInitialGame(){
   
     
 
-  submitInput(wordRaw) {
+  submitInput(wordRaw, playerTurn = 0) {
     const guess = (wordRaw || "").trim().toLowerCase();
     if (!guess) return;
 
     const match = this.words.find(w => !w.isFound() && w.getText() === guess);
+    
+     const playerKey = playerIndex === 0 ? "player1" : "player2";
+    const player = { ...this.state[playerKey] };
+    
     if (match) {
       match.markFoundWord();
       this.board.highlightWord(match);
       this.updateGridState();
 
-      const p1 = { ...this.state.player1 };
-      p1.combo += 1;
-      p1.maxCombo = Math.max(p1.maxCombo, p1.combo);
-      p1.score += 100;
+      //const p1 = { ...this.state.player1 };
+      player.combo += 1;
+      player.maxCombo = Math.max(player.maxCombo, player.combo);
+      player.score += 100;
 
       const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
       const deep = snap.map(row => [...row]);
 
-      this.setState({ ...this.state, player1: p1, inputValue: "", grid: deep });
+      this.setState({ ...this.state, [playerKey]: player, inputValue: "", grid: deep });
     } else {
-      const p1 = { ...this.state.player1 };
-      p1.combo = 0;
-      p1.hp = Math.max(0, p1.hp - 1);
-      this.setState({ ...this.state, player1: p1, inputValue: "" });
+      //const p1 = { ...this.state.player1 };
+      player.combo = 0;
+      player.hp = Math.max(0, p1.hp - 1);
+      this.setState({ ...this.state, [playerKey]: player, inputValue: "" });
     }
   }
 
