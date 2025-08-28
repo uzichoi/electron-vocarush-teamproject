@@ -57,13 +57,20 @@ export class GameController {
 
   subscribe(listener) { listener(this.state); return this.emitter.on(listener); }
 
-async startInitialGame(){
+async startInitialGame() {
     this.currentSize = this.initialSize;
     this._resetRoundStats();
 
-    const words = await this._pickWordsForSize(this.currentSize); // 반드시 await 필요
-    await this.newGame({ rows: this.currentSize, cols:this.currentSize, words});
-  }
+    // 1) 보드 크기 명시적 초기화
+    this.board.resetBoard(this.currentSize, this.currentSize);
+
+    // 2) 단어 선택 (5개)
+    const words = await this._pickWordsForSize(5); 
+
+    // 3) 새 게임 시작
+    await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
+}
+
 
 async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드크기, 글자크기 변경)
     this.currentGameDifficulty = Math.min(this.currentGameDifficulty + 1, Difficulty.VERYHARD); // 현재 난이도 값에 +1을 해서 한 단계 올림, min으로 최대 값(VERYHARD=4)을 넘지 않게 제한
@@ -135,6 +142,8 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
     // 1) 보드 리셋
     this.board.resetBoard(rows, cols);
     this.words = [];
+    
+    console.log("New Game with size:", rows, cols, "and words:", words);
 
     // 2) 단어 랜덤 배치
     const directions = Object.values(Direction); // Direction은 {HORIZONTAL:..., VERTICAL:..., ...} 형태라고 가정
