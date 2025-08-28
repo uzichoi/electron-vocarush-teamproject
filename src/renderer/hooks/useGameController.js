@@ -1,4 +1,4 @@
-// src/renderer/hooks/useGameController.js
+console.log// src/renderer/hooks/useGameController.js
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GameController } from "../controller/GameController";
 

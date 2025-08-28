@@ -12,11 +12,20 @@ export default function GameView() {
         return `${mins}:${secs.toString().padStart(2, "0")}`;
     };
 
-        useEffect(() => {
-        async function startNewRound() {
-            await controller.restartGame();
+  useEffect(() => {
+        // 마운트 시 초기 게임만 실행 (restartGame X)
+        let mounted = true;
+
+        async function startInitial() {
+             if (!mounted) return;
+            await controller.startInitialGame();
         }
-        startNewRound();
+        startInitial();
+
+        return () => {
+            mounted = false;
+        };
+        
     }, [controller]);
 
     const handleSubmit = (e) => {

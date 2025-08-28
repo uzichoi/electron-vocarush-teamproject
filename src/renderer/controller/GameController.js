@@ -44,6 +44,7 @@ export class GameController {
       timeIncreased: 0,
       grid: [], // newGame에서 채움
     };
+       this.gameStarted = false; // <- 추가
   }
 
   // lifecycle
@@ -58,6 +59,10 @@ export class GameController {
   subscribe(listener) { listener(this.state); return this.emitter.on(listener); }
 
 async startInitialGame() {
+    if (this.gameStarted) return;   // 이미 시작했으면 무시
+    this.gameStarted = true;
+
+
     this.currentSize = this.initialSize;
     this._resetRoundStats();
 
@@ -65,7 +70,7 @@ async startInitialGame() {
     this.board.resetBoard(this.currentSize, this.currentSize);
 
     // 2) 단어 선택 (5개)
-    const words = await this._pickWordsForSize(5); 
+    const words = await this._pickWordsForSize(this.currentSize); 
 
     // 3) 새 게임 시작
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
