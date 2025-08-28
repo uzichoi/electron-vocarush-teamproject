@@ -78,6 +78,8 @@ async startInitialGame() {
 
 
 async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드크기, 글자크기 변경)
+
+    console.log("Difficulty:", this.currentGameDifficulty, "Size:", this.currentSize);
     this.currentGameDifficulty = Math.min(this.currentGameDifficulty + 1, Difficulty.VERYHARD); // 현재 난이도 값에 +1을 해서 한 단계 올림, min으로 최대 값(VERYHARD=4)을 넘지 않게 제한
     
     this.currentSize = BoardSize[this.currentGameDifficulty];
@@ -86,6 +88,18 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
     this._resetRoundStats();
     const words = await this._pickWordsForSize(this.currentSize); // 반드시 await 필요
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
+
+   this.setState({
+        ...this.state,
+        currentGameDifficulty: this.currentGameDifficulty,
+        currentSize: this.currentSize,
+        currentWordLength: this.currentWordLength,
+        grid: snap,       // ✅ grid 반드시 포함
+        inputValue: "",
+        player1: { ...this.state.player1, combo: 0, maxCombo: 0, hp: 3 },
+        player2: { ...this.state.player2, combo: 0, maxCombo: 0, hp: 3 },
+        timeIncreased: 0
+    });
   }
 
   //상태에 반영 (깊은 복사) ***************************************** 보드가 바뀔때 마다 상태를 반영해야 안전함
@@ -144,6 +158,14 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
   async newGame(opts = { rows:10, cols: 10, words: ["about","korea","apple","storm","logic"] }) {
     const { rows, cols, words } = opts;
 
+    this.setState({ 
+    ...this.state, 
+    currentGameDifficulty: this.currentGameDifficulty,
+    currentSize: this.currentSize,
+    currentWordLength: this.currentWordLength,
+    grid: this.board.getGridSnapshot()
+});
+
     // 1) 보드 리셋
     this.board.resetBoard(rows, cols);
     this.words = [];
@@ -174,7 +196,9 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
      this.updateGridState();
   }
   
-  
+  nextRound = async () => {
+        await controller.restartGame(); // 난이도 + 보드 재설정
+    };
     
 
   submitInput(wordRaw, playerTurn = 0) {
