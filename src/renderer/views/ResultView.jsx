@@ -153,7 +153,7 @@ export default function ResultView() {
                 <section className="result-actions">
                     <button className="btn-secondary" onClick={() => navigate('/ranking')}>View Ranking</button>
                     <button className="btn-secondary" onClick={() => navigate('/start')}>Restart</button>
-                    <button className="btn-secondary" onClick={() => navigate('/start')}>Next Round</button>
+                    <button className="btn-secondary" onClick={() => navigate('/game')}>Next Round</button>
                 </section>
             </main>
         </div>

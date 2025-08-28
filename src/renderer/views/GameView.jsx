@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
@@ -11,6 +11,13 @@ export default function GameView() {
         const secs = seconds % 60;
         return `${mins}:${secs.toString().padStart(2, "0")}`;
     };
+
+        useEffect(() => {
+        async function startNewRound() {
+            await controller.restartGame();
+        }
+        startNewRound();
+    }, [controller]);
 
     const handleSubmit = (e) => {
         e.preventDefault();

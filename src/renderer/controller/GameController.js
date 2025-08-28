@@ -61,7 +61,7 @@ async startInitialGame(){
     this.currentSize = this.initialSize;
     this._resetRoundStats();
 
-    const words = await this._pickWordsForSize(this.currentWordLength); // 반드시 await 필요
+    const words = await this._pickWordsForSize(this.currentSize); // 반드시 await 필요
     await this.newGame({ rows: this.currentSize, cols:this.currentSize, words});
   }
 
@@ -72,7 +72,7 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
     this.currentWordLength = PlaceWordLength[this.currentGameDifficulty];
 
     this._resetRoundStats();
-    const words = await this._pickWordsForSize(this.currentWordLength); // 반드시 await 필요
+    const words = await this._pickWordsForSize(this.currentSize); // 반드시 await 필요
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
   }
 
@@ -139,7 +139,7 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
     // 2) 단어 랜덤 배치
     const directions = Object.values(Direction); // Direction은 {HORIZONTAL:..., VERTICAL:..., ...} 형태라고 가정
     const orders = Object.values(Order);
-    this.words = this.board.placeWordsRandomly(words,directions,orders, 200)
+    this.words = this.board.placeWordsRandomly(words,directions,orders, 1000)
 
     // 3) 빈칸 랜덤 문자로 채우기
     this.board.fillEmptyWithRandomLetters();
