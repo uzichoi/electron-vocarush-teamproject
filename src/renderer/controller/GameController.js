@@ -1,6 +1,6 @@
 import { GameBoard } from "../models/GameBoard";
 import { Direction, Order } from "../models/Direction";
-import { Difficulty, BoardSize, PlaceWordLength } from "./GameConfig";
+import { Difficulty, BoardSize, PlaceWordLength } from "../models/GameConfig.js";
 import { Word } from "../models/Word";
 
 
@@ -22,17 +22,17 @@ export class GameController {
     const difficulty = Object.values(Difficulty);
 
     // 난이도
-    this.initionalGameDifficulty = Difficulty.EASY; // 초기 난이도
-    this.currentGameDifficulty = Difficulty.EASY; // 현재 난이도
+    this.initialGameDifficulty = Difficulty.VERYEASY; // 초기 난이도
+    this.currentGameDifficulty = Difficulty.VERYEASY; // 현재 난이도
 
     // 보드크기
-    this.initialSize = BoardSize[initionalGameDifficulty]; // 초기 보드 크기
-    this.currentSize = BoardSize[currentGameDifficulty]; // 현재 보드 크기
+    this.initialSize = BoardSize[this.initialGameDifficulty]; // 초기 보드 크기
+    this.currentSize = BoardSize[this.currentGameDifficulty]; // 현재 보드 크기
     this.maxSize = 7; // 최대 보드 크기
     
     // 단어 길이
-    this.initialwordLength  = PlaceWordLength[initionalGameDifficulty]; // 초기 단어 길이
-    this.currentWordLength = PlaceWordLength[currentGameDifficulty]; // 현재 단어 길이
+    this.initialwordLength  = PlaceWordLength[this.initialGameDifficulty]; // 초기 단어 길이
+    this.currentWordLength = PlaceWordLength[this.currentGameDifficulty]; // 현재 단어 길이
     this.state = {
       //currentWord: "about",
       //foundLetters: ["a","b","o","u","t"],
