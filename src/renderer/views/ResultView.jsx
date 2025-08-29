@@ -1,3 +1,5 @@
+// views/ResultView.jsx
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -153,7 +155,7 @@ export default function ResultView() {
                 <section className="result-actions">
                     <button className="btn-secondary" onClick={() => navigate('/ranking')}>View Ranking</button>
                     <button className="btn-secondary" onClick={() => navigate('/start')}>Restart</button>
-                    <button className="btn-secondary" onClick={() => navigate('/game')}>Next Round</button>
+                    <button className="btn-secondary" onClick={() => {navigate('/game', { state: { nextRound: true } }); }}>Next Round</button>
                 </section>
             </main>
         </div>

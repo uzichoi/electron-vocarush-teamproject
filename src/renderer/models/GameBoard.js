@@ -1,6 +1,6 @@
 import { Word } from "./Word";
 import { DX, DY, Order } from "./Direction";
-import { Difficulty } from "./GameConfig";
+import { Difficulty } from "./GameConfigurartion";
 import fs from "fs/promises";
 import path from "path";
 

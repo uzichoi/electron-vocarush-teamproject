@@ -1,7 +1,7 @@
 export const Difficulty = { // 게임 난이도
-    VERYEASY: 0, // ��
-    EASY: 1,   // ��
-    NORMAL: 2,    // ��
+    VERYEASY: 0, 
+    EASY: 1,   
+    NORMAL: 2, 
     HARD: 3,
     VERYHARD: 4
 };

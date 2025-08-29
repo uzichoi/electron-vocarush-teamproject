@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
 export default function GameView() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { controller, state } = useGameController();
 
     const formatTime = (seconds) => {
@@ -16,17 +18,22 @@ export default function GameView() {
         // 마운트 시 초기 게임만 실행 (restartGame X)
         let mounted = true;
 
-        async function startInitial() {
-             if (!mounted) return;
-            await controller.startInitialGame();
+        async function startGame() {
+            if (!mounted) 
+                return;
+            if (location.state?.nextRound)  // ResultView에서 넘어올 때 nextRound: true면 라운드 재시작
+                await controller.restartGame();
+            else 
+                await controller.startInitialGame();   // 그 외(첫 진입)는 초기 게임 시작
         }
-        startInitial();
+     
+        startGame();
 
         return () => {
             mounted = false;
         };
         
-    }, [controller]);
+    }, [controller, location.state]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
