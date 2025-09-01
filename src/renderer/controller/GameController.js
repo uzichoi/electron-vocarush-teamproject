@@ -110,11 +110,21 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
 
   // 보드 상태 반영 (깊은 복사)
   // 보드가 바뀔 때마다 상태를 반영해야 안전함
-  updateGridState() {
-    const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid; // GameBoard 내부의 현재 보드(grid)를 → state.grid에 반영
-    const deep = snap.map(row => [...row]);   // 외부 배열 복사 -> 스프레드 연산자로 내부 배열 복사 (각 row를 새로운 배열로 복사)
-    this.setState({ ...this.state, grid: deep }); // 얕은 복사로 새로운 state 객체 생성
- }
+ updateGridState() {
+  // grid 깊은 복사
+  const snapGrid = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
+  const deepGrid = snapGrid.map(row => [...row]);
+
+  // highlight 깊은 복사
+  const deepHighlight = this.board.highlight.map(row => [...row]);
+
+  // state에 grid와 highlight 동시에 반영
+  this.setState({
+    ...this.state,
+    grid: deepGrid,
+    highlight: deepHighlight
+  });
+}
 
    // 라운드 상태 초기화
   _resetRoundStates() {
@@ -221,10 +231,10 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
     
      const playerKey = playerIndex === 0 ? "player1" : "player2";
     const player = { ...this.state[playerKey] };
-    
+    let playerIndex = 0; // 임시 (하이라이트 확인용)
     if (match) {
       match.markFoundWord();
-      this.board.highlightWord(match);
+      this.board.highlightWord(match, playerIndex); // 플레이어 인덱스 전달 (0 또는 1) 정답 단어 플레이어별 구분
       this.updateGridState();
 
       //const p1 = { ...this.state.player1 };

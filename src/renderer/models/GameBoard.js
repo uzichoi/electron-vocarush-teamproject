@@ -36,7 +36,7 @@ export class GameBoard {
     for (let y = 0; y < this.row; y++) {
       for (let x = 0; x < this.col; x++) {
         this.grid[y][x] = "*";
-        this.highlight[y][x] = false;
+        this.highlight[y][x] = -1; // -1은 하이라이트 없음
         this.placedWordCheck[y][x] = false;
       }
     }
@@ -71,7 +71,7 @@ export class GameBoard {
     }
   }
 
-  highlightWord(word) {
+  highlightWord(word, playerIndex) {
     const text = word.getText();
     const dir = word.getDirection();
     const x = word.getX();
@@ -80,7 +80,7 @@ export class GameBoard {
       const wordX = x + DX[dir] * i;
       const wordY = y + DY[dir] * i;
       this.grid[wordY][wordX] = text[i].toUpperCase();
-      this.highlight[wordY][wordX] = true;
+      this.highlight[wordY][wordX] = playerIndex;
     }
   }
 

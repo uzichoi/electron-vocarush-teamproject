@@ -999,11 +999,13 @@ body {
 
 /* 보드 섹션 */
 .result-board-section {
-    flex: 0 0 auto;
+    
+     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 0;
+    min-height: 0; 
+
 }
 
 .board-title {
@@ -1021,8 +1023,10 @@ body {
     align-items: center;
     margin-bottom: 15px;
 }
+ 
 
 .result-grid {
+   
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     gap: 4px;
@@ -1031,11 +1035,23 @@ body {
     border-radius: 12px;
     border: 2px solid var(--muted-b2);
     backdrop-filter: blur(10px);
+
+     
+       /* display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid var(--muted-b2); */
+  
+    
 }
 
 .grid-row {
     display: contents;
 }
+
 
 .grid-cell {
     width: 35px;
@@ -1048,7 +1064,7 @@ body {
     font-size: 14px;
     border-radius: 4px;
     transition: all 0.3s ease;
-    position: relative;
+    position: relative; 
 }
 
 .grid-cell.empty {
@@ -1064,7 +1080,7 @@ body {
 
 /* 플레이어별 찾은 단어 색상 */
 .grid-cell.found-by-player1 {
-    background: linear-gradient(135deg, var(--accent), #ff6b6b);
+    background: linear-gradient(135deg, var(--accent), #ff6b6b) !important; /* 우선순위 높힘 */ 
     color: white;
     border: 2px solid var(--accent);
     box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
@@ -1072,7 +1088,7 @@ body {
 }
 
 .grid-cell.found-by-player2 {
-    background: linear-gradient(135deg, #ffd93d, #ff6b35);
+    background: linear-gradient(135deg, #ffd93d, #2ca321) !important; /* 우선순위 높힘 */ 
     color: white;
     border: 2px solid #ffd93d;
     box-shadow: 0 0 10px rgba(255, 217, 61, 0.3);
@@ -1083,6 +1099,20 @@ body {
     background: rgba(107, 114, 128, 0.3);
     color: #9ca3af;
     border: 1px dashed #6b7280;
+}
+
+/* 못 찾은 단어 (게임 끝난 후 보여줄 때) */
+.grid-cell.unfound-by-players {
+  background: #285aff; /* 어두운 배경 */
+  color: #ffffff;   /* 빨간 글씨 */
+  border: 2px dashed #4d5fff;
+  box-shadow: 0 0 8px rgba(77, 124, 255, 0.6);
+  animation: unfoundBlink 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes unfoundBlink {
+  from { box-shadow: 0 0 4px rgba(77, 80, 255, 0.3); }
+  to   { box-shadow: 0 0 12px rgba(77, 219, 255, 0.9); }
 }
 
 @keyframes foundGlow {

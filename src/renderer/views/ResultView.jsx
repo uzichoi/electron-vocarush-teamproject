@@ -2,9 +2,11 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useGameController } from "../hooks/useGameController";
 
 export default function ResultView() {
     const navigate = useNavigate();
+    const { state } = useGameController(); // state 정의
 
     const gameResult = {
         gameTime: "4:32",
@@ -94,27 +96,37 @@ export default function ResultView() {
                             )}
                         </div>
                     </section>
-
+                          
                     {/* 게임 보드 섹션 */}
                     <section className="result-board-section">
                         <div className="board-title">Found Words</div>
                         <div className="enhanced-game-board">
                             <div className="result-grid">
-                                {resultGrid.map((row, i) => (
-                                    <div key={i} className="grid-row">
-                                        {row.map((cell, j) => (
-                                            <div 
-                                                key={j} 
-                                                className={`grid-cell ${cell.letter !== '*' ? 'letter' : 'empty'} ${cell.foundBy !== 'none' ? `found-by-${cell.foundBy}` : 'unfound'}`}
-                                            >
-                                                {cell.letter !== '*' ? cell.letter : ''}
-                                            </div>
-                                        ))}
-                                    </div>
+                                {state.grid.map((row, i) => (
+                                <div key={i} className="grid-row">
+                                    {row.map((cell, j) => {
+                                    let cellClass = "grid-cell";
+
+                                    // 글자가 있는지 여부
+                                    cellClass += cell !== "*" ? " letter" : " empty";
+
+                                    // 플레이어별 하이라이트
+                                    const player = state.highlight?.[i]?.[j];
+                                    if (player === 0) cellClass += " found-by-player1";
+                                    else if (player === 1) cellClass += " found-by-player2";
+
+                                    return (
+                                        <div key={j} className={cellClass}>
+                                        {cell}
+                                        </div>
+                                    );
+                                    })}
+                                </div>
                                 ))}
                             </div>
                         </div>
-
+                         
+                     
                     {/* 게임 통계를 게임 보드 하단에 배치 */}
                     {/*
                         <div className="match-stats">

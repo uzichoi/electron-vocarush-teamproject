@@ -93,16 +93,25 @@ export default function GameView() {
                 <div className="game-board">
                     <div className="word-grid">
                         {state.grid.map((row, i) => (
-                            <div key={i} className="grid-row">
-                                {row.map((cell, j) => (
-                                    <div
-                                        key={j}
-                                        className={`grid-cell ${cell !== "*" ? "letter" : "empty"} ${state.highlight && state.highlight[i] && state.highlight[i][j] ? "highlight" : ""}`}
-                                    >
-                                        {cell}
-                                    </div>
-                                ))}
-                            </div>
+                        <div key={i} className="grid-row">
+                            {row.map((cell, j) => {
+                            let cellClass = "grid-cell";
+
+                            // 글자가 있는지 여부
+                            cellClass += cell !== "*" ? " letter" : " empty";
+
+                            // 플레이어별 하이라이트
+                            const player = state.highlight?.[i]?.[j];
+                            if (player === 0) cellClass += " found-by-player1";
+                            else if (player === 1) cellClass += " found-by-player2";
+
+                            return (
+                                <div key={j} className={cellClass}>
+                                {cell}
+                                </div>
+                            );
+                            })}
+                        </div>
                         ))}
                     </div>
                 </div>
