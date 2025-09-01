@@ -40,6 +40,16 @@ export default function GameView() {
         controller.submitInput(state.inputValue);
     };
 
+    const handleQuit = () => { // 진행된 보드 상태를 ResultView로 전달
+    navigate("/result", {
+    state: {
+        grid: state.grid,                    // 진행된 보드
+        highlight: controller.board.highlight,          // 정답 하이라이트
+        placedWordCheck: controller.board.placedWordCheck, // 배치된 단어들
+    },
+  });
+};
+
     return (
         <div className="game-view">
             <header className="game-header">
@@ -50,8 +60,8 @@ export default function GameView() {
                     <div className="game-timer">{formatTime(state.timeIncreased)}</div>
                 </div>
                 <div className="header-right">
-                    <button className="btn-small" onClick={() => navigate("/result")}>
-                        Quit
+                    <button className="btn-small" onClick={handleQuit}>
+                    Quit
                     </button>
                 </div>
             </header>

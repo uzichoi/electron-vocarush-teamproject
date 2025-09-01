@@ -2,11 +2,16 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
 export default function ResultView() {
     const navigate = useNavigate();
     const { state } = useGameController(); // state 정의
+      const location = useLocation();
+  const { grid, highlight, placedWordCheck } = location.state;
+
+
 
     const gameResult = {
         gameTime: "4:32",
@@ -30,33 +35,33 @@ export default function ResultView() {
         }
     };
 
-    // const generateResultGrid = () => {
-    //     const grid = [];
-    //     for (let i = 0; i < 10; i++) {
-    //         const row = [];
-    //         for (let j = 0; j < 10; j++) {
-    //             if (i === 2 && j >= 1 && j <= 5) {
-    //                 row.push({ letter: "HELLO"[j-1], foundBy: "player1" });
-    //             } else if (i === 5 && j >= 3 && j <= 7) {
-    //                 row.push({ letter: "WORLD"[j-3], foundBy: "player2" });
-    //             } else if (i === 7 && j >= 2 && j <= 6) {
-    //                 row.push({ letter: "REACT"[j-2], foundBy: "none" });
-    //             } else if (Math.random() < 0.2) {
-    //                 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    //                 row.push({ 
-    //                     letter: letters[Math.floor(Math.random() * letters.length)], 
-    //                     foundBy: "none" 
-    //                 });
-    //             } else {
-    //                 row.push({ letter: '*', foundBy: "none" });
-    //             }
-    //         }
-    //         grid.push(row);
-    //     }
-    //     return grid;
-    // };
+    const generateResultGrid = () => {
+        const grid = [];
+        for (let i = 0; i < 10; i++) {
+            const row = [];
+            for (let j = 0; j < 10; j++) {
+                if (i === 2 && j >= 1 && j <= 5) {
+                    row.push({ letter: "HELLO"[j-1], foundBy: "player1" });
+                } else if (i === 5 && j >= 3 && j <= 7) {
+                    row.push({ letter: "WORLD"[j-3], foundBy: "player2" });
+                } else if (i === 7 && j >= 2 && j <= 6) {
+                    row.push({ letter: "REACT"[j-2], foundBy: "none" });
+                } else if (Math.random() < 0.2) {
+                    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    row.push({ 
+                        letter: letters[Math.floor(Math.random() * letters.length)], 
+                        foundBy: "none" 
+                    });
+                } else {
+                    row.push({ letter: '*', foundBy: "none" });
+                }
+            }
+            grid.push(row);
+        }
+        return grid;
+    };
 
-    // const resultGrid = generateResultGrid();
+    const resultGrid = generateResultGrid();
 
     return (
         <div className="result-view">
@@ -100,9 +105,9 @@ export default function ResultView() {
                     {/* 게임 보드 섹션 */}
                     <section className="result-board-section">
                         <div className="board-title">Found Words</div>
-                        <div className="enhanced-game-board">
+                        <div className="result-board">
                             <div className="result-grid">
-                                {state.grid.map((row, i) => (
+                                {grid.map((row, i) => (
                                 <div key={i} className="grid-row">
                                     {row.map((cell, j) => {
                                     let cellClass = "grid-cell";
@@ -111,10 +116,10 @@ export default function ResultView() {
                                     cellClass += cell !== "*" ? " letter" : " empty";
 
                                     // 플레이어별 하이라이트
-                                    const player = state.highlight?.[i]?.[j];
+                                    const player = highlight?.[i]?.[j];
                                     if (player === 0) cellClass += " found-by-player1";
                                     else if (player === 1) cellClass += " found-by-player2";
-
+                                    else if (player === -1 && placedWordCheck[i][j])cellClass += " unfound-by-players";
                                     return (
                                         <div key={j} className={cellClass}>
                                         {cell}

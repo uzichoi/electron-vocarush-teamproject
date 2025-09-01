@@ -1008,6 +1008,41 @@ body {
 
 }
 
+/* ===== 보드 영역 (결과보드) ===== */
+.result-board {
+  transform: scale(var(--board-scale, 0.6)); /* 전체 보드 축소 가능, 기본 0.8 */
+  transform-origin: top center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.result-board .result-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-gap, 4px);
+}
+
+.result-board .grid-row {
+  display: flex;
+  gap: var(--grid-gap, 4px);
+}
+
+.result-board .grid-cell {
+  width: var(--cell-size, 35px);
+  height: var(--cell-size, 35px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid #444;
+  font-size: calc(var(--cell-size, 28px) * 0.55);
+  font-weight: 800;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
 .board-title {
     font-size: 20px;
     font-weight: 600;
@@ -1016,19 +1051,13 @@ body {
     margin-bottom: 20px;
     letter-spacing: 1px;
 }
-
-.enhanced-game-board {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-}
  
 
 .result-grid {
    
     display: grid;
     grid-template-columns: repeat(10, 1fr);
+    width: 100%; /* 추가 */
     gap: 4px;
     background: rgba(255, 255, 255, 0.03);
     padding: 20px;
@@ -1036,16 +1065,6 @@ body {
     border: 2px solid var(--muted-b2);
     backdrop-filter: blur(10px);
 
-     
-       /* display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 4px;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    border-radius: 12px;
-    border: 2px solid var(--muted-b2); */
-  
-    
 }
 
 .grid-row {
@@ -1054,8 +1073,8 @@ body {
 
 
 .grid-cell {
-    width: 35px;
-    height: 35px;
+    /* width: 35px;
+    height: 35px; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1064,8 +1083,8 @@ body {
     font-size: 14px;
     border-radius: 4px;
     transition: all 0.3s ease;
-    position: relative; 
-}
+    /* position: relative;  */
+} */
 
 .grid-cell.empty {
     background: rgba(255, 255, 255, 0.05);
