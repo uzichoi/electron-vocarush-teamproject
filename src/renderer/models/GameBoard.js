@@ -5,15 +5,15 @@ import fs from "fs/promises";
 import path from "path";
 
 export class GameBoard {
-  constructor() {
-    this.row = 10;
-    this.col = 10;
+  constructor(size, placeWordLength ) {
+    this.row = size;
+    this.col = size;
     this.grid = []; // 단어보드
     this.placedWordCheck = []; // 배치된 단어들 체크용
     this.highlight = []; // 정답단어 체크용 
-    this.placeWordLength = 5; // 현재 난이도 배치 단어 길이
+    this.placeWordLength = placeWordLength; // 현재 난이도 배치 단어 길이
     this.words = new Set(); // 사전 단어들 (의도하지않은 단어 제거용)
-    this.setSize(10, 10);
+    this.setSize(this.row, this.col);
   }
 
   setSize(row, col) {

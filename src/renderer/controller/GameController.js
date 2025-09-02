@@ -18,7 +18,7 @@ function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }  // �
 
 export class GameController {   // 게임 상태와 진행을 총괄화는 클래스
   constructor() { // 객체 생성 시 실행. 생성자
-    this.board = new GameBoard();
+    this.board = new GameBoard(5,4); // 초기 보드 (5x5, 단어길이 4), 이후에 난이도에 따라 변경
     this.words = [];
     this.emitter = new Emitter();
     this.timerId = null;
@@ -72,7 +72,7 @@ async startInitialGame() {  // 비동기 함수로 선언. 해당 함수는 무�
     this.board.resetBoard(this.currentSize, this.currentSize);
 
     // 2) 단어 선택 (5개)
-    const words = await this._pickWordsForSize(this.currentSize);  
+    const words = await this._pickWordsForSize(this.currentWordLength);  
 
     // 3) 새 게임 시작
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });    
@@ -89,7 +89,7 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
     this.currentWordLength = PlaceWordLength[this.currentGameDifficulty];
 
     this._resetRoundStates();   // 라운드별 상태 리셋
-    const words = await this._pickWordsForSize(this.currentSize);   // 새 단어 5개 뽑을 때까지 기다린 후,
+    const words = await this._pickWordsForSize(this.currentWordLength);   // 새 단어 5개 뽑을 때까지 기다린 후,
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });  // newGame() 실행
 
     // grid 스냅샷(현재 보드의 고정된 상태 복사본) 저장 후 state 업데이트 (플레이어 상태도 초기화)
@@ -135,14 +135,14 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
   }
 
   // 단어 추출
-  async _pickWordsForSize(size) {
+  async _pickWordsForSize(PlaceWordLength) {
     // 보드 크기에 따라 단어 난이도/개수를 조정하고 싶으면 여기서 결정
     // 지금은 예시로 동일하게 사용
  let words = [];
 
     // 난이도별 파일명 매핑
     let fileName;
-    switch (this.currentGameDifficulty) {
+    switch (PlaceWordLength) {
         case Difficulty.VERYEASY:
         case Difficulty.EASY:
             fileName = "easy.txt";
@@ -179,16 +179,10 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
   async newGame(opts = { rows:10, cols: 10, words: ["about","korea","apple","storm","logic"] }) { // 디폴트 매개 변수
     const { rows, cols, words } = opts;
 
-    this.setState({ 
-    ...this.state, 
-    currentGameDifficulty: this.currentGameDifficulty,
-    currentSize: this.currentSize,
-    currentWordLength: this.currentWordLength,
-    grid: this.board.getGridSnapshot()
-});
-
     // 1) 보드 리셋
-    this.board.resetBoard(rows, cols);
+    //this.board.resetBoard(rows, cols);
+     this.board = new GameBoard(rows, cols);
+
     this.words = [];
     
     console.log("New Game with size:", rows, cols, "and words:", words);
@@ -200,16 +194,36 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
 
     // 3) 빈칸 랜덤 문자로 채우기
     this.board.fillEmptyWithRandomLetters();
-    this.updateGridState();
+    //this.updateGridState();
 
-    await this.board.fileRead();
+    
 
     // 4) 의도로 배치하지 않은 단어 제거 (더이상 변경된 단어가 없을 때까지 반복)
+    await this.board.fileRead();
   let changed = true;
   while (changed) {
   changed = this.board.unintendedWordDelete();
     }
     this.updateGridState();
+
+//     this.setState({ 
+//     //...this.state, 
+//     currentGameDifficulty: this.currentGameDifficulty,
+//     currentSize: this.currentSize,
+//     currentWordLength: this.currentWordLength,
+//     grid: this.board.getGridSnapshot()
+// });
+
+this.setState({
+  currentGameDifficulty: this.currentGameDifficulty,
+  currentSize: this.currentSize,
+  currentWordLength: this.currentWordLength,
+  grid: this.board.getGridSnapshot(),
+  inputValue: "",
+  player1: { ...this.state.player1, combo: 0, maxCombo: 0, hp: 3 },
+  player2: { ...this.state.player2, combo: 0, maxCombo: 0, hp: 3 },
+  timeIncreased: 0
+});
   }
 
   // board APIs

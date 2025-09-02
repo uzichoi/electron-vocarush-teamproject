@@ -1126,7 +1126,7 @@ body {
   color: #ffffff;   /* 빨간 글씨 */
   border: 2px dashed #4d5fff;
   box-shadow: 0 0 8px rgba(77, 124, 255, 0.6);
-  animation: unfoundBlink 1.2s ease-in-out infinite alternate;
+  animation: unfoundBlink 1.2s ease-in-out infinite alternate !important;
 }
 
 @keyframes unfoundBlink {
