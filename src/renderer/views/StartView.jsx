@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 export default function StartView() {
   const navigate = useNavigate();
 
+  
+
   return (
     <div className="start-view">
       <div style={{ textAlign: "center" }}>

@@ -18,7 +18,7 @@ function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }  // �
 
 export class GameController {   // 게임 상태와 진행을 총괄화는 클래스
   constructor() { // 객체 생성 시 실행. 생성자
-    this.board = new GameBoard();
+   this.board = new GameBoard();
     this.words = [];
     this.emitter = new Emitter();
     this.timerId = null;
@@ -64,7 +64,7 @@ export class GameController {   // 게임 상태와 진행을 총괄화는 클�
 async startInitialGame() {  // 비동기 함수로 선언. 해당 함수는 무조건 Promise를 반환한다.
     if (this.gameStarted) return;   // 이미 시작했으면 무시
     this.gameStarted = true;
-
+  console.log("Difficulty:", this.currentGameDifficulty, "Size:", this.currentSize);
     this.currentSize = this.initialSize;
     this._resetRoundStates();
 
@@ -81,7 +81,7 @@ async startInitialGame() {  // 비동기 함수로 선언. 해당 함수는 무�
 // 게임 재시작
 async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드크기, 글자크기 변경)
 
-    console.log("Difficulty:", this.currentGameDifficulty, "Size:", this.currentSize);
+    //console.log("Difficulty:", this.currentGameDifficulty, "Size:", this.currentSize);
     this.currentGameDifficulty = Math.min(this.currentGameDifficulty + 1, Difficulty.VERYHARD); // 현재 난이도 값에 +1을 해서 한 단계 올림, min으로 최대 값(VERYHARD=4)을 넘지 않게 제한
     if (this.currentGameDifficulty == Difficulty.VERYHARD) this.currentGameDifficulty = Difficulty.VERYHARD;   // 최대 난이도를 VERYHARD로 제한
 
@@ -95,6 +95,7 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
     // grid 스냅샷(현재 보드의 고정된 상태 복사본) 저장 후 state 업데이트 (플레이어 상태도 초기화)
     const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;  // 그리드 스냅샷이 존재하면 그대로 사용, 없으면 보드 그리드 사용
    
+    console.log("Difficulty:", this.currentGameDifficulty, "Size:", this.currentSize);
    this.setState({  // 보드 상태 반영
         ...this.state,
         currentGameDifficulty: this.currentGameDifficulty,
@@ -179,14 +180,7 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
   async newGame(opts = { rows:10, cols: 10, words: ["about","korea","apple","storm","logic"] }) { // 디폴트 매개 변수
     const { rows, cols, words } = opts;
 
-    this.setState({ 
-    ...this.state, 
-    currentGameDifficulty: this.currentGameDifficulty,
-    currentSize: this.currentSize,
-    currentWordLength: this.currentWordLength,
-    grid: this.board.getGridSnapshot()
-});
-
+    this.board = new GameBoard();  // 새로운 보드 객체 생성
     // 1) 보드 리셋
     this.board.resetBoard(rows, cols);
     this.words = [];
@@ -219,7 +213,7 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
   }
   
   nextRound = async () => {
-        await controller.restartGame(); // 난이도 + 보드 재설정
+        await this.restartGame(); // 난이도 + 보드 재설정
     };
     
 

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { GameController } from "../controller/GameController";
 
 export function useGameController() {
+  
   // 1) 컨트롤러를 한 번만 생성
   const controllerRef = useRef(null);   // null로 초기화된 Ref 객체 생성
   if (!controllerRef.current) {    // 이미 있으면 재사용, 아직 없으면 새로 생성
@@ -24,21 +25,11 @@ export function useGameController() {
     const unsub = controller.subscribe(setState);   // controller가 상태 변화를 감지하면 setState() 호출
     controller.mount();   // 컨트롤러 시작 준비. 게임 루프/타이머 on
 
-    if (!didInit.current) {   // 최초 1회만 초기화 실행 (didInit == false일 때만)
-      didInit.current = true; 
-      controller.startInitialGame(); // 초기 게임 시작 (5x5)
-    }
-
     return () => {    // cleanup. 컴포넌트 사라질 때 실행됨
       controller.unmount();   // 이벤트 정리
       unsub();    // 구독 해제
     };
   }, [controller]);   // controller 변경될 때마다 실행
-
-  // 4) nextRound 함수: 난이도 증가 + 새 보드
-  const nextRound = async () => {
-    await controller.restartGame(); // GameController 내부에서 난이도 증가, 보드 크기/단어 길이 자동 적용
-  };
 
   // 5) submitInput & setInputValue 래핑
   const submitInput = (input, playerIndex = 0) => {   
@@ -49,5 +40,5 @@ export function useGameController() {
     controller.setInputValue(value);  // 해당 플레이어 인덱스를 controller에 전달
   };
 
-  return { controller, state, nextRound, submitInput, setInputValue };
+  return { controller, state, submitInput, setInputValue };
 }

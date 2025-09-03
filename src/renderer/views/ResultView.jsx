@@ -12,6 +12,14 @@ export default function ResultView() {
   const { grid, highlight, placedWordCheck } = location.state;
 
 
+  // Next Round 클릭 시 호출할 함수
+const handleNextRound = () => {
+    // 임시 경로를 거쳐서 강제로 GameView 재마운트
+    navigate("/start"); 
+    setTimeout(() => {
+        navigate("/game", { state: { nextRound: true } });
+    }, 0);
+};
 
     const gameResult = {
         gameTime: "4:32",
@@ -172,7 +180,7 @@ export default function ResultView() {
                 <section className="result-actions">
                     <button className="btn-secondary" onClick={() => navigate('/ranking')}>View Ranking</button>
                     <button className="btn-secondary" onClick={() => navigate('/start')}>Restart</button>
-                    <button className="btn-secondary" onClick={() => {navigate('/game', { state: { nextRound: true } }); }}>Next Round</button>
+                    <button className="btn-secondary" onClick={handleNextRound}>Next Round</button>
                 </section>
             </main>
         </div>

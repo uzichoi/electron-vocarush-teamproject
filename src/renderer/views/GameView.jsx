@@ -7,33 +7,33 @@ export default function GameView() {
     const navigate = useNavigate();
     const location = useLocation();
     const { controller, state } = useGameController();
-
+    
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins}:${secs.toString().padStart(2, "0")}`;
     };
 
-  useEffect(() => {
-        // 마운트 시 초기 게임만 실행 (restartGame X)
-        let mounted = true;
+        useEffect(() => {
+            let mounted = true;
 
-        async function startGame() {
-            if (!mounted) 
-                return;
-            if (location.state?.nextRound)  // ResultView에서 넘어올 때 nextRound: true면 라운드 재시작
-                await controller.restartGame();
-            else 
-                await controller.startInitialGame();   // 그 외(첫 진입)는 초기 게임 시작
-        }
-     
-        startGame();
+            async function startGame() {
+                if (!mounted) return;
 
-        return () => {
-            mounted = false;
-        };
-        
-    }, [controller, location.state]);
+                if (location.state?.nextRound) {
+                    console.log("Next Round!"); // 확인용
+                    await controller.restartGame();
+                } else {
+                    console.log("Initial Game");
+                    await controller.startInitialGame();
+                }
+            }
+
+            startGame();
+
+            return () => { mounted = false; };
+        }, [controller, location.key]); // location.key가 바뀌면 useEffect 재실행
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
