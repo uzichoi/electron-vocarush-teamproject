@@ -1099,11 +1099,48 @@ body {
 
 /* 보드 섹션 */
 .result-board-section {
-    flex: 0 0 auto;
+    
+     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 0;
+    min-height: 0; 
+
+}
+
+/* ===== 보드 영역 (결과보드) ===== */
+.result-board {
+  transform: scale(var(--board-scale, 0.6)); /* 전체 보드 축소 가능, 기본 0.8 */
+  transform-origin: top center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.result-board .result-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-gap, 4px);
+}
+
+.result-board .grid-row {
+  display: flex;
+  gap: var(--grid-gap, 4px);
+}
+
+.result-board .grid-cell {
+  width: var(--cell-size, 35px);
+  height: var(--cell-size, 35px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid #444;
+  font-size: calc(var(--cell-size, 28px) * 0.55);
+  font-weight: 800;
+  line-height: 1;
+  transition: all 0.2s ease;
 }
 
 .board-title {
@@ -1114,32 +1151,30 @@ body {
     margin-bottom: 20px;
     letter-spacing: 1px;
 }
-
-.enhanced-game-board {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-}
+ 
 
 .result-grid {
+   
     display: grid;
     grid-template-columns: repeat(10, 1fr);
+    width: 100%; /* 추가 */
     gap: 4px;
     background: rgba(255, 255, 255, 0.03);
     padding: 20px;
     border-radius: 12px;
     border: 2px solid var(--muted-b2);
     backdrop-filter: blur(10px);
+
 }
 
 .grid-row {
     display: contents;
 }
 
+
 .grid-cell {
-    width: 35px;
-    height: 35px;
+    /* width: 35px;
+    height: 35px; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1148,8 +1183,8 @@ body {
     font-size: 14px;
     border-radius: 4px;
     transition: all 0.3s ease;
-    position: relative;
-}
+    /* position: relative;  */
+} */
 
 .grid-cell.empty {
     background: rgba(255, 255, 255, 0.05);
@@ -1164,7 +1199,7 @@ body {
 
 /* 플레이어별 찾은 단어 색상 */
 .grid-cell.found-by-player1 {
-    background: linear-gradient(135deg, var(--accent), #ff6b6b);
+    background: linear-gradient(135deg, var(--accent), #ff6b6b) !important; /* 우선순위 높힘 */ 
     color: white;
     border: 2px solid var(--accent);
     box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
@@ -1172,7 +1207,7 @@ body {
 }
 
 .grid-cell.found-by-player2 {
-    background: linear-gradient(135deg, #ffd93d, #ff6b35);
+    background: linear-gradient(135deg, #ffd93d, #2ca321) !important; /* 우선순위 높힘 */ 
     color: white;
     border: 2px solid #ffd93d;
     box-shadow: 0 0 10px rgba(255, 217, 61, 0.3);
@@ -1183,6 +1218,20 @@ body {
     background: rgba(107, 114, 128, 0.3);
     color: #9ca3af;
     border: 1px dashed #6b7280;
+}
+
+/* 못 찾은 단어 (게임 끝난 후 보여줄 때) */
+.grid-cell.unfound-by-players {
+  background: #285aff; /* 어두운 배경 */
+  color: #ffffff;   /* 빨간 글씨 */
+  border: 2px dashed #4d5fff;
+  box-shadow: 0 0 8px rgba(77, 124, 255, 0.6);
+  animation: unfoundBlink 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes unfoundBlink {
+  from { box-shadow: 0 0 4px rgba(77, 80, 255, 0.3); }
+  to   { box-shadow: 0 0 12px rgba(77, 219, 255, 0.9); }
 }
 
 @keyframes foundGlow {
@@ -1463,10 +1512,7 @@ body {
     }
 }
 
-
-
 /* === UI Scale Vars (배율 기반) === */
-
 :root {
   /* 전체 글꼴 스케일 */
   --font-scale: 1.7;
@@ -1604,6 +1650,7 @@ body, .game-view {
   border-radius: 8px;
   box-sizing: border-box;
 }
+
 
 
 .turn-button {
@@ -1753,3 +1800,4 @@ body, .game-view {
   height: 100vh;             /* 화면 꽉 차게 */
   padding: 0;
 }
+
