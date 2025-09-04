@@ -22,7 +22,7 @@ export default function GameView() {
 
                 if (location.state?.nextRound) {
                     console.log("Next Round!"); // 확인용
-                    await controller.restartGame();
+                    await controller.restartGame({difficulty: (location.state.difficulty ?? 0) + 1, });
                 } else {
                     console.log("Initial Game");
                     await controller.startInitialGame();
@@ -46,6 +46,7 @@ export default function GameView() {
         grid: state.grid,                    // 진행된 보드
         highlight: controller.board.highlight,          // 정답 하이라이트
         placedWordCheck: controller.board.placedWordCheck, // 배치된 단어들
+        difficulty: controller.currentGameDifficulty // 현재 난이도 같이 전달
     },
   });
 };

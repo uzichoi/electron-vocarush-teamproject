@@ -17,7 +17,10 @@ const handleNextRound = () => {
     // 임시 경로를 거쳐서 강제로 GameView 재마운트
     navigate("/start"); 
     setTimeout(() => {
-        navigate("/game", { state: { nextRound: true } });
+        navigate("/game", { 
+            state: { nextRound: true,
+                    difficulty: location.state?.difficulty, // 현재 난이도 같이 전달
+             } });
     }, 0);
 };
 

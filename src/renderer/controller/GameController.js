@@ -64,6 +64,7 @@ export class GameController {   // 게임 상태와 진행을 총괄화는 클�
 async startInitialGame() {  // 비동기 함수로 선언. 해당 함수는 무조건 Promise를 반환한다.
     if (this.gameStarted) return;   // 이미 시작했으면 무시
     this.gameStarted = true;
+
   console.log("Difficulty:", this.currentGameDifficulty, "Size:", this.currentSize);
     this.currentSize = this.initialSize;
     this._resetRoundStates();
@@ -79,10 +80,10 @@ async startInitialGame() {  // 비동기 함수로 선언. 해당 함수는 무�
 }
 
 // 게임 재시작
-async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드크기, 글자크기 변경)
+async restartGame({ difficulty }) { // 게임 난이도가 올라갈 때마다 호출 (보드크기, 글자크기 변경)
 
     //console.log("Difficulty:", this.currentGameDifficulty, "Size:", this.currentSize);
-    this.currentGameDifficulty = Math.min(this.currentGameDifficulty + 1, Difficulty.VERYHARD); // 현재 난이도 값에 +1을 해서 한 단계 올림, min으로 최대 값(VERYHARD=4)을 넘지 않게 제한
+    this.currentGameDifficulty = difficulty; // 현재 난이도 값에 +1을 해서 한 단계 올림, min으로 최대 값(VERYHARD=4)을 넘지 않게 제한
     if (this.currentGameDifficulty == Difficulty.VERYHARD) this.currentGameDifficulty = Difficulty.VERYHARD;   // 최대 난이도를 VERYHARD로 제한
 
     this.currentSize = BoardSize[this.currentGameDifficulty];
@@ -149,9 +150,9 @@ async restartGame() { // 게임 난이도가 올라갈 때마다 호출 (보드�
             fileName = "easy.txt";
             break;
         case Difficulty.NORMAL:
+        case Difficulty.HARD:
             fileName = "normal.txt";
             break;
-        case Difficulty.HARD:
         case Difficulty.VERYHARD:
             fileName = "hard.txt";
             break;
