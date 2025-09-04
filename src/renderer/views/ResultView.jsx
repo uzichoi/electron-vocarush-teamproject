@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { gameController } from "../controller/GameController"; // ✅ 인스턴스 import
+import { gameController } from "../controller/GameController"; 
 
 export default function ResultView() {
   const navigate = useNavigate();
-  const [gameResult, setGameResult] = useState(null); // ✅ 오타 수정
+  const [gameResult, setGameResult] = useState(null); //
 
   useEffect(() => {
     const unsub = gameController.subscribe((state) => {
@@ -37,7 +37,7 @@ export default function ResultView() {
     return <div>결과를 불러오는 중...</div>;
   }
 
-  // ✅ mm:ss 포맷 함수
+  // mm:ss 포맷 함수
   const formatTime = (seconds) => {
     const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
     const ss = String(seconds % 60).padStart(2, "0");
@@ -77,7 +77,7 @@ export default function ResultView() {
       <header className="result-header">
         <div className="header-center">
           <h1 className="result-title">GAME RESULT</h1>
-          {/* ✅ 게임 시간 표시 */}
+          {/*게임 시간 표시 */}
           <div className="final-time">⏱ {formatTime(gameResult.gameTime)}</div>
         </div>
       </header>

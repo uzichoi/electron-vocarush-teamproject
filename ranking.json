@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Player 1",
+    "score": 1500,
+    "date": "2025-09-04"
+  },
+  {
+    "name": "Player 2",
+    "score": 0,
+    "date": "2025-09-04"
+  },
+  {
+    "name": "Player 1",
+    "score": 1500,
+    "date": "2025-09-04"
+  },
+  {
+    "name": "Player 2",
+    "score": 0,
+    "date": "2025-09-04"
+  },
+  {
+    "name": "Player 1",
+    "score": 1000,
+    "date": "2025-09-04"
+  },
+  {
+    "name": "Player 2",
+    "score": 100,
+    "date": "2025-09-04"
+  },
+  {
+    "name": "Player 1",
+    "score": 1500,
+    "date": "2025-09-04"
+  },
+  {
+    "name": "Player 2",
+    "score": 0,
+    "date": "2025-09-04"
+  }
+]

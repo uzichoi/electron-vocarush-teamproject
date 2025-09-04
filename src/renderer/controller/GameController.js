@@ -2,6 +2,7 @@ import { GameBoard } from "../models/GameBoard";
 import { Direction, Order } from "../models/Direction";
 import { Word } from "../models/Word";
 import Player from "../models/Player";
+import Ranking from "../models/Ranking";
 
 class Emitter {
   constructor() { this.listeners = new Set(); }
@@ -190,19 +191,36 @@ export class GameController {
     nextState.turnTime = 0;
     if (this.turnTimer) clearInterval(this.turnTimer);
 
+    // =====================
     // 게임 종료 조건
+    // =====================
     const allWordsFound = this.words.every((w) => w.isFound && w.isFound());
     if (nextState.player1.hp <= 0 && nextState.player2.hp <= 0) {
-      setTimeout(() => {
-        this.setState({ ...nextState, gameOver: true });
-      }, 2000);  // 2초 후 종료
-    } else if (allWordsFound) {
-      setTimeout(() => {
-        this.setState({ ...nextState, gameOver: true });
-      }, 2000);
-    } else {
-      this.setState(nextState);
-    }
+    Ranking.load();
+    Ranking.add(nextState.player1.getName(), nextState.player1.getScore());
+    Ranking.add(nextState.player2.getName(), nextState.player2.getScore());
+    Ranking.save();
+
+    localStorage.setItem("lastWinners", JSON.stringifty([
+      nextState.player1.getName(),
+      nextState.player2.getName()
+    ]));
+
+    setTimeout(() => {
+      this.setState({ ...nextState, gameOver: true });
+    }, 2000);
+  } else if (allWordsFound) {
+    Ranking.load();
+    Ranking.add(nextState.player1.getName(), nextState.player1.getScore());
+    Ranking.add(nextState.player2.getName(), nextState.player2.getScore());
+    Ranking.save();
+
+    setTimeout(() => {
+      this.setState({ ...nextState, gameOver: true });
+    }, 2000);
+  } else {
+    this.setState(nextState);
+  }
   }
 
   // =====================
