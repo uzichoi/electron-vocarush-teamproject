@@ -639,6 +639,94 @@ body {
     }
 }
 
+/* 모달 배경 */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+/* 모달 박스 */
+.confirm-box {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid var(--muted-b2);
+  border-radius: 14px;
+  padding: 28px 40px;
+  text-align: center;
+  color: var(--text);
+  backdrop-filter: blur(10px);
+  animation: confirmPopIn 0.25s ease forwards;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.5);
+  min-width: 280px;
+  max-width: 400px;
+}
+
+.confirm-box.hide {
+  animation: confirmPopOut 0.25s ease forwards;
+}
+
+.confirm-message {
+  font-size: 1.2rem;
+  margin-bottom: 22px;
+  font-weight: 600;
+}
+
+.btn-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* 확인/취소 버튼을 기존 btn 스타일과 어울리게 */
+.btn-confirm {
+  min-width: 120px;       /* 가로폭 고정 */
+  height: 44px;           /* 세로 높이 고정 */
+  padding: 0;             /* 패딩 초기화 */
+  line-height: 44px;      /* 세로 가운데 정렬 */
+  border-radius: 8px;
+
+  font-size: 16px;
+  font-weight: 600;       /* 두께 동일 */
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+/* 색상만 다르게 */
+.btn-confirm.ok {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-confirm.ok:hover {
+  background: #fff;
+  color: var(--accent);
+}
+
+.btn-confirm.cancel {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--muted-b2);
+}
+.btn-confirm.cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 팝업 애니메이션 */
+@keyframes confirmPopIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+@keyframes confirmPopOut {
+  from { transform: scale(1); opacity: 1; }
+  to   { transform: scale(0.85); opacity: 0; }
+}
+
 /* Ranking View Styles */
 
 .ranking-view {
@@ -939,46 +1027,50 @@ body {
 }/* Result View */
 
 .result-view {
-    height: 100vh;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    flex-direction: column;
+  height: 100vh;
+  overflow: hidden;  /* 스크롤 없앰 */
+  display: flex;
+  flex-direction: column;
 }
 
-/* 헤더 */
 .result-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;  
-    border-bottom: 1px solid var(--muted-b2);
-    align-items: center;
-    padding: 20px 40px;
-    position: relative;
-    flex-shrink: 0;
+  display: flex;
+  flex-direction: column;   /* 세로 정렬 */
+  align-items: center;      /* 가로 중앙 */
+  justify-content: center;  /* 세로 중앙 */
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--muted-b2);
 }
 
 .result-title {
-    margin: 0;
-    font-size: 36px;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: 2px;
-    text-align: center;
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.result-timer {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--accent);
 }
 
 /* 메인 콘텐츠 */
 .result-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-    width: 100%;
-    min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* 세로 가운데 */
+  align-items: center;      /* 가로 가운데 */
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .result-content {
@@ -988,6 +1080,14 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 0;
+
+    font-size: 1.5em !important;
+}
+
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
 }
 
 /* 플레이어 섹션 */
@@ -1230,6 +1330,7 @@ body {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 0 0 12px 12px;
     flex-shrink: 0;
+    z-index:10;
 }
 
 .btn-secondary {
@@ -1315,9 +1416,11 @@ body {
     }
     
     .result-actions {
+        width: 100%;
         flex-direction: column;
         gap: 10px;
         align-items: center;
+        overflow: visible;
     }
     
     .btn-secondary {
@@ -1615,11 +1718,12 @@ body, .game-view {
   margin-top: 10px;
   padding: 6px 12px;
   background: #444;
-  border: 2px solid #888;
+  border: 2px solid #dfc2c2;
   border-radius: 5px;
   color: white;
   cursor: pointer;
   transition: all 0.2s;
+  
 }
 .turn-btn:hover { background: #666; }
 .turn-btn.active {
@@ -1628,3 +1732,24 @@ body, .game-view {
   box-shadow: 0 0 10px #4caf50;
 }
 
+/* === ResultView 확장 & 화면 맞춤 === */
+.result-view .result-content {
+  transform: scale(1.5);
+  transform-origin: center center;  /* 중앙 기준 확대 */
+  
+  gap: 40px;
+  margin-top: 0; /* 불필요한 여백 제거 */
+  
+  max-width: 100%;
+  max-height: 100%;
+  /*overflow: hidden;*/
+}
+
+/* 부모 컨테이너에 중앙 정렬 보정 */
+.result-main {
+  display: flex;
+  justify-content: center;   /* 가로 중앙 */
+  align-items: center;       /* 세로 중앙 */
+  height: 100vh;             /* 화면 꽉 차게 */
+  padding: 0;
+}

@@ -1,11 +1,26 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
-
 
 export default function GameView() {
   const navigate = useNavigate();
   const { controller, state } = useGameController();
+  const inputRef = useRef(null);
+
+  const [showConfirm, setShowConfirm] = useState(false); // 확인창 상태
+  const [isClosing, setIsClosing] = useState(false);     // 애니메이션 상태
+
+  useEffect(() => {
+    if (state.gameOver) {
+      navigate("/result");
+    }
+  }, [state.gameOver, navigate]);
+
+  useEffect(() => {
+    if (state.turnActive && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [state.turnActive]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -18,13 +33,26 @@ export default function GameView() {
     controller.submitInput(state.inputValue);
   };
 
+  const handleQuit = () => {
+    controller.unmount(); // 게임 타이머, 이벤트 정리
+    navigate("/start", { replace: true }); // 첫 화면으로 이동
+  };
+
   return (
     <div className="game-view">
       <header className="game-header">
-        <div className="header-left"><div className="game-title">VOCARUSH</div></div>
-        <div className="header-center"><div className="game-timer">{formatTime(state.timeIncreased)}</div></div>
+        <div className="header-left">
+          <div className="game-title">VOCARUSH</div>
+        </div>
+
+        <div className="header-center">
+          <div className="game-timer">{formatTime(state.timeIncreased)}</div>
+        </div>
+
         <div className="header-right">
-          <button className="btn-small" onClick={() => navigate("/result")}>Quit</button>
+          <button className="btn-small" onClick={() => setShowConfirm(true)}>
+            Quit
+          </button>
         </div>
       </header>
 
@@ -46,6 +74,7 @@ export default function GameView() {
             <button
               className={`turn-btn ${state.currentTurn === "player1" && state.turnActive ? "active" : ""}`}
               onClick={() => controller.startTurn("player1")}
+              disabled={state.turnActive || state.player1.hp <= 0}
             >
               My Turn
             </button>
@@ -85,6 +114,7 @@ export default function GameView() {
             <button
               className={`turn-btn ${state.currentTurn === "player2" && state.turnActive ? "active" : ""}`}
               onClick={() => controller.startTurn("player2")}
+              disabled={state.turnActive || state.player2.hp <= 0}
             >
               My Turn
             </button>
@@ -103,6 +133,7 @@ export default function GameView() {
           <div className="input-container">
             <span className="input-label">Input &gt;&gt;</span>
             <input
+              ref={inputRef}
               type="text"
               value={state.inputValue}
               onChange={(e) => controller.setInputValue(e.target.value)}
@@ -114,6 +145,19 @@ export default function GameView() {
           </div>
         </form>
       </footer>
+
+      {/* Quit 확인 모달 */}
+        {showConfirm && (
+        <div className="confirm-overlay">
+            <div className={`confirm-box ${isClosing ? "hide" : ""}`}>
+            <p className="confirm-message">정말 종료하시겠습니까?</p>
+            <div className="btn-row">
+            <button className="btn-confirm ok" onClick={handleQuit}>확인</button>
+            <button className="btn-confirm cancel" onClick={() => setShowConfirm(false)}>취소</button>
+            </div>
+            </div>
+        </div>
+        )}
     </div>
   );
 }

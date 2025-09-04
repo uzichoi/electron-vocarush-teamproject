@@ -1,25 +1,24 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { GameController } from "../controller/GameController";
+import { useEffect, useRef, useState } from "react";
+import { gameController } from "../controller/GameController";
 
 export function useGameController() {
-  const controller = useMemo(() => new GameController(), []);
-  const [state, setState] = useState(controller.state);
+  const [state, setState] = useState(gameController.state);
   const didInit = useRef(false);
 
   useEffect(() => {
-    const unsub = controller.subscribe(setState);
-    controller.mount();
+    const unsub = gameController.subscribe(setState);
+    gameController.mount();
 
     if (!didInit.current) {
       didInit.current = true;
-      controller.startInitialGame(); // ★ 보드 초기화
+      gameController.startInitialGame(); // 보드 초기화
     }
 
     return () => {
-      controller.unmount();
+      gameController.unmount();
       unsub();
     };
-  }, [controller]);
+  }, []);
 
-  return { controller, state };
+  return { controller: gameController, state };
 }

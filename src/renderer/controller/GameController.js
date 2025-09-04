@@ -1,6 +1,7 @@
 import { GameBoard } from "../models/GameBoard";
 import { Direction, Order } from "../models/Direction";
 import { Word } from "../models/Word";
+import Player from "../models/Player";
 
 class Emitter {
   constructor() { this.listeners = new Set(); }
@@ -14,42 +15,46 @@ export class GameController {
     this.words = [];
     this.emitter = new Emitter();
 
-    // 타이머
-    this.timerId = null;     // 전체 게임 타이머
+    this.timerId = null;     // 전체 타이머
     this.turnTimer = null;   // 턴 타이머
 
     // 보드 크기
-    this.initialRowSize = 6;
-    this.initialColSize = 5;
+    this.initialRowSize = 7;
+    this.initialColSize = 7;
     this.maxSize = 7;
     this.currentRowSize = this.initialRowSize;
     this.currentColSize = this.initialColSize;
 
     this.state = {
-      // 타이머 관련
       timeIncreased: 0,
       turnActive: false,
       currentTurn: null,
       turnTime: 0,
-
-      // 입력
       inputValue: "",
-
-      // 플레이어 상태
-      player1: { name: "Player 1", score: 0, combo: 0, maxCombo: 0, hp: 5 },
-      player2: { name: "Player 2", score: 0, combo: 0, maxCombo: 0, hp: 5 },
-
-      // 보드
-      grid: []
+      player1: new Player("player1"),
+      player2: new Player("player2"),
+      grid: [],
+      gameOver: false //게임 종료 상태
     };
+
+    this.state.player1.setName("Player 1");
+    this.state.player2.setName("Player 2");
+    this.state.player1.setHP(5);
+    this.state.player2.setHP(5);
+
   }
+
+  
+
 
   // =====================
   // 전체 게임 타이머
   // =====================
   mount() {
     this.timerId = setInterval(() => {
-      this.setState({ ...this.state, timeIncreased: this.state.timeIncreased + 1 });
+      if (!this.state.gameOver) { //게임 끝나면 멈춤
+        this.setState({ ...this.state, timeIncreased: this.state.timeIncreased + 1 });
+      }
     }, 1000);
   }
   unmount() {
@@ -65,7 +70,7 @@ export class GameController {
   // =====================
   // 보드 관련
   // =====================
-  updateGridState() {
+  updateGridState = () => {
     const snap = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
     const deep = snap.map(row => [...row]);
     this.setState({ ...this.state, grid: deep });
@@ -97,20 +102,12 @@ export class GameController {
 
   newGame(opts) {
     const { rows, cols, words } = opts;
-
-    // 1) 보드 초기화
     this.board.resetBoard(rows, cols);
     this.words = [];
-
-    // 2) 단어 랜덤 배치
     const directions = Object.values(Direction);
     const orders = Object.values(Order);
     this.words = this.board.placeWordsRandomly(words, directions, orders, 200);
-
-    // 3) 빈칸 채우기
     this.board.fillEmptyWithRandomLetters();
-
-    // 4) 상태 업데이트
     this.updateGridState();
   }
 
@@ -118,6 +115,10 @@ export class GameController {
   // 턴 관리
   // =====================
   startTurn(player) {
+    if (this.state.turnActive) return;
+    if ((player === "player1" && this.state.player1.hp <= 0) ||
+        (player === "player2" && this.state.player2.hp <= 0)) return;
+
     if (this.turnTimer) clearInterval(this.turnTimer);
 
     this.setState({
@@ -147,51 +148,98 @@ export class GameController {
 
   submitInput(wordRaw) {
     const guess = (wordRaw || "").trim().toLowerCase();
-    if (!guess) return;
+    if (!guess || !this.state.turnActive) return;
 
     let nextState = { ...this.state };
+    const isCorrect = this._checkWord(guess);
+
+    // 콤보 배율
+    const comboMultiplier = (combo) => {
+      if(combo >= 3) return 3;
+      if(combo === 2) return 2;
+      return 1;
+    };
 
     if (this.state.currentTurn === "player1") {
-      if (this._checkWord(guess)) {
-        nextState.player1.score += 100;
-        nextState.player1.combo += 1;
-        nextState.player1.maxCombo = Math.max(nextState.player1.maxCombo, nextState.player1.combo);
-        nextState.player2.hp = Math.max(0, nextState.player2.hp - 1);
+      this.state.player1.addWord(isCorrect);//통계반영
+      if (isCorrect) {
+        this.state.player1.addCombo();
+        this.state.player1.addScore(100);
+        this.state.player2.subHP();
+        this.state.player2.setCombo(0);
       } else {
-        nextState.player1.combo = 0;
-        nextState.player1.hp = Math.max(0, nextState.player1.hp - 1);
-      }
+        this.state.player1.setCombo(0);
+        this.state.player1.subHP();
+        }
     } else if (this.state.currentTurn === "player2") {
-      if (this._checkWord(guess)) {
-        nextState.player2.score += 100;
-        nextState.player2.combo += 1;
-        nextState.player2.maxCombo = Math.max(nextState.player2.maxCombo, nextState.player2.combo);
-        nextState.player1.hp = Math.max(0, nextState.player1.hp - 1);
+      this.state.player2.addWord(isCorrect);//통계반영
+      if (isCorrect) {
+        this.state.player2.addCombo();
+        this.state.player2.addScore(100);
+        this.state.player1.subHP();
+        this.state.player1.setCombo(0);
       } else {
-        nextState.player2.combo = 0;
-        nextState.player2.hp = Math.max(0, nextState.player2.hp - 1);
-      }
+        this.state.player2.setCombo(0);
+        this.state.player2.subHP();
+        }
     }
 
     // 턴 종료
     nextState.inputValue = "";
     nextState.turnActive = false;
     nextState.turnTime = 0;
-    this.setState(nextState);
-
     if (this.turnTimer) clearInterval(this.turnTimer);
+
+    // 게임 종료 조건
+    const allWordsFound = this.words.every((w) => w.isFound && w.isFound());
+    if (nextState.player1.hp <= 0 && nextState.player2.hp <= 0) {
+      setTimeout(() => {
+        this.setState({ ...nextState, gameOver: true });
+      }, 2000);  // 2초 후 종료
+    } else if (allWordsFound) {
+      setTimeout(() => {
+        this.setState({ ...nextState, gameOver: true });
+      }, 2000);
+    } else {
+      this.setState(nextState);
+    }
   }
 
-  // 단어 체크 로직
+  // =====================
+  // 단어 체크 + 보드 대문자 변환
+  // =====================
   _checkWord(word) {
-    return this.words.some(w => w.getText && w.getText() === word);
+  const match = this.words.find(
+    (w) => !w.isFound?.() && w.getText?.() === word
+  );
+  if (match) {
+    match.markFoundWord?.();
+    const coords = match.getCoords?.();
+
+    if (coords) {
+      const updatedGrid = this.state.grid.map((row, i) =>
+        row.map((cell, j) =>
+          coords.some(([x, y]) => x === i && y === j)
+            ? cell.toUpperCase()
+            : cell
+        )
+      );
+      this.setState({ ...this.state, grid: updatedGrid });
+    }
+    return true;
   }
+  return false;
+
+}
 
   // =====================
-  // 상태 업데이트
+  // setState (화살표 함수로 수정!)
   // =====================
-  setState(next) {
+  setState = (next) => {
     this.state = next;
     this.emitter.emit(this.state);
   }
 }
+
+
+export const gameController = new GameController();
