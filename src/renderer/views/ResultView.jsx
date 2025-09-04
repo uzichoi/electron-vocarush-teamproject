@@ -10,16 +10,24 @@
 // // views/ResultView.jsx
 
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import { gameController } from "../controller/GameController"; // ✅ 인스턴스 import
+import { useNavigate, useLocation } from "react-router-dom";
+//import { gameController } from "../controller/GameController"; // ✅ 인스턴스 import
 import { useGameController } from "../hooks/useGameController";
 
 export default function ResultView() {
     const navigate = useNavigate();
     const { state } = useGameController(); // state 정의
     const location = useLocation();
-    const [gameResult, setGameResult] = useState(null); // ✅ 오타 수정
+    const locState = location.state; // 여기서 locState 정의
+    const [gameResult, setGameResult] = useState(() => {
+  return location.state
+    ? {
+        player1: locState.player1,
+        player2: locState.player2,
+        gameTime: locState.gameTime ?? 0,
+      }
+    : null;
+}); // ✅ 오타 수정
   const { grid, highlight, placedWordCheck } = location.state;
 
 
@@ -37,7 +45,7 @@ const handleNextRound = () => {
 
 
   useEffect(() => {
-    const unsub = gameController.subscribe((state) => {
+    //const unsub = gameController.subscribe((state) => {
       if (state.gameOver) {
         setGameResult({
           gameTime: state.timeIncreased,
@@ -59,9 +67,8 @@ const handleNextRound = () => {
           },
         });
       }
-    });
-    return () => unsub();
-  }, []);
+    }, [state]);
+
 
   if (!gameResult) {
     return <div>결과를 불러오는 중...</div>;

@@ -304,7 +304,7 @@ async restartGame({ difficulty }) { // 게임 난이도가 올라갈 때마다 �
     };
     
 
-
+/*
   submitInput(wordRaw, playerTurn = 0) {
     const guess = (wordRaw || "").trim().toLowerCase();
     if (!guess || !this.state.turnActive) return;
@@ -365,7 +365,44 @@ async restartGame({ difficulty }) { // 게임 난이도가 올라갈 때마다 �
         this.state.player2.subHP();
         }
     }
+*/
 
+submitInput(wordRaw) {
+  const guess = (wordRaw || "").trim().toLowerCase();
+  if (!guess || !this.state.turnActive) return;
+
+  const nextState = { ...this.state };
+  const match = this.words.find(
+    (w) => !w.isFound() && w.getText().toLowerCase() === guess
+  );
+
+  if (!match) {
+    // 틀린 단어 처리
+    if (this.state.currentTurn === "player1") {
+      this.state.player1.setCombo(0);
+      this.state.player1.subHP();
+    } else {
+      this.state.player2.setCombo(0);
+      this.state.player2.subHP();
+    }
+  } else {
+    // 맞춘 단어 처리
+    match.markFoundWord();
+    const player = this.state.currentTurn === "player1" ? this.state.player1 : this.state.player2;
+    const opponent = this.state.currentTurn === "player1" ? this.state.player2 : this.state.player1;
+
+    player.addWord(true);
+    player.addCombo();
+    player.addScore(100);
+
+    opponent.subHP();
+    opponent.setCombo(0);
+
+    // 보드 하이라이트
+    const playerIndex = this.state.currentTurn === "player1" ? 0 : 1;
+    this.board.highlightWord(match, playerIndex);
+    this.updateGridState();
+  }
 
     // 턴 종료
     nextState.inputValue = "";
@@ -430,9 +467,7 @@ async restartGame({ difficulty }) { // 게임 난이도가 올라갈 때마다 �
   //generateInitialGrid() { return []; }
 
   // 상태 업데이트
-  setState(next) { this.state = next; this.emitter.emit(this.state); }
-
-}
+  //setState(next) { this.state = next; this.emitter.emit(this.state); }
 
   // =====================
   // setState (화살표 함수로 수정!)
@@ -442,6 +477,10 @@ async restartGame({ difficulty }) { // 게임 난이도가 올라갈 때마다 �
     this.emitter.emit(this.state);
   }
 
+}
 
 
-export const gameController = new GameController();
+
+
+
+//export const gameController = new GameController();

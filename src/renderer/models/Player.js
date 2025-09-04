@@ -11,6 +11,16 @@ export default class Player {
     this.totalAttempts = 0;
 }
 
+  getData() {
+    return {
+      name: this.getName(),
+      score: this.getScore(),
+      maxCombo: this.getMaxCombo(),
+      wordsFound: this.getWordsFound(),
+      accuracy: this.getAccuracy(),
+    };
+  }
+
   // Getter
   getName() {
     return this.name;

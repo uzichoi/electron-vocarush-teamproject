@@ -81,19 +81,21 @@ export default function GameView() {
     const handleQuitToResult = () => { // 진행된 보드 상태를 ResultView로 전달
     navigate("/result", {
     state: {
+        player1: state.player1,
+        player2: state.player2,
+        gameTime: state.timeIncreased,
         grid: state.grid,                    // 진행된 보드
         highlight: controller.board.highlight,          // 정답 하이라이트
         placedWordCheck: controller.board.placedWordCheck, // 배치된 단어들
         difficulty: controller.currentGameDifficulty // 현재 난이도 같이 전달
     },
   });
-
+};
+  
     const handleQuit = () => {
     controller.unmount(); // 게임 타이머, 이벤트 정리
     navigate("/start", { replace: true }); // 첫 화면으로 이동
   };
-
-};
 
 
     return (

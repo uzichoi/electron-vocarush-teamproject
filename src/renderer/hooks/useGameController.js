@@ -65,6 +65,6 @@ export function useGameController() {
     controller.setInputValue(value);  // 해당 플레이어 인덱스를 controller에 전달
   };
 
-  return { controller, state, submitInput, setInputValue };
+  return { controller, state };
 
 }
