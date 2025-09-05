@@ -81,40 +81,12 @@ const handleNextRound = () => {
     return `${mm}:${ss}`;
   };
 
-//   const generateResultGrid = () => {
-//     const grid = [];
-//     for (let i = 0; i < 10; i++) {
-//       const row = [];
-//       for (let j = 0; j < 10; j++) {
-//         if (i === 2 && j >= 1 && j <= 5) {
-//           row.push({ letter: "HELLO"[j - 1], foundBy: "player1" });
-//         } else if (i === 5 && j >= 3 && j <= 7) {
-//           row.push({ letter: "WORLD"[j - 3], foundBy: "player2" });
-//         } else if (i === 7 && j >= 2 && j <= 6) {
-//           row.push({ letter: "REACT"[j - 2], foundBy: "none" });
-//         } else if (Math.random() < 0.2) {
-//           const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-//           row.push({
-//             letter: letters[Math.floor(Math.random() * letters.length)],
-//             foundBy: "none",
-//           });
-//         } else {
-//           row.push({ letter: "*", foundBy: "none" });
-//         }
-//       }
-//       grid.push(row);
-//     }
-//     return grid;
-//   };
-
-//   const resultGrid = generateResultGrid();
-
     return (
         <div className="result-view">
             <header className="result-header">
-                <div className="header-left">
+                {/* <div className="header-left">
                     <button className="btn-small" onClick={() => {navigate('/game')}}>← BACK</button>
-                </div>
+                </div> */}
                 <div className="header-center">
                     <h1 className="result-title">GAME RESULT</h1>
                     {/* ✅ 게임 시간 표시 */}
