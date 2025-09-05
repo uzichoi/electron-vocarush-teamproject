@@ -43,30 +43,28 @@ export class GameController {   // 게임 상태와 진행을 총괄화는 클�
     this.initialwordLength  = PlaceWordLength[this.initialGameDifficulty]; // 초기 단어 길이
     this.currentWordLength = PlaceWordLength[this.currentGameDifficulty]; // 현재 단어 길이
 
+     // ✅ Player 인스턴스를 state 밖으로 분리
+    this.player1 = new Player("player1"),
+    this.player2 = new Player("player2"),
+    this.player1.setName("Player 1");
+    this.player2.setName("Player 2");
+    this.player1.setHP(5);
+    this.player2.setHP(5);
+
+      // React와 연결되는 순수 데이터만 state에 저장
     this.state = {
       timeIncreased: 0,
       turnActive: false,
       currentTurn: null,
       turnTime: 0,
       inputValue: "",
-      player1: new Player("player1"),
-      player2: new Player("player2"),
+      player1: this.player1.getData(), // plain object 형태
+      player2: this.player2.getData(),
       grid: [],
       gameOver: false //게임 종료 상태
     };
-
-    this.state.player1.setName("Player 1");
-    this.state.player2.setName("Player 2");
-    this.state.player1.setHP(5);
-    this.state.player2.setHP(5);
-
-
        this.gameStarted = false; // <- 추가
-
   }
-
-  
-
 
   // =====================
   // 전체 게임 타이머
@@ -127,11 +125,15 @@ async startInitialGame() {  // 비동기 함수로 선언. 해당 함수는 무�
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });    
 }
 
+
+
 // 게임 재시작
-async restartGame({ difficulty }) { // 게임 난이도가 올라갈 때마다 호출 (보드크기, 글자크기 변경)
+async restartGame({ difficulty } = {}) { // 게임 난이도가 올라갈 때마다 호출 (보드크기, 글자크기 변경)
 
     //console.log("Difficulty:", this.currentGameDifficulty, "Size:", this.currentSize);
-    this.currentGameDifficulty = difficulty; // 현재 난이도 값에 +1을 해서 한 단계 올림, min으로 최대 값(VERYHARD=4)을 넘지 않게 제한
+    if (difficulty !== undefined) { // 🔧 undefined 체크
+    this.currentGameDifficulty = difficulty; 
+    }
     if (this.currentGameDifficulty == Difficulty.VERYHARD) this.currentGameDifficulty = Difficulty.VERYHARD;   // 최대 난이도를 VERYHARD로 제한
 
     this.currentSize = BoardSize[this.currentGameDifficulty];
@@ -152,12 +154,14 @@ async restartGame({ difficulty }) { // 게임 난이도가 올라갈 때마다 �
         currentWordLength: this.currentWordLength,
         grid: snap,   // 보드 상태를 UI에 반영 -> 화면 갱신  
         inputValue: "",
-        player1: { ...this.state.player1, combo: 0, maxCombo: 0, hp: 3 },
-        player2: { ...this.state.player2, combo: 0, maxCombo: 0, hp: 3 },
+        player1: { ...this.player1.getData(), combo: 0, maxCombo: 0, hp: 5 },
+        player2: { ...this.player2.getData(), combo: 0, maxCombo: 0, hp: 5 },
         timeIncreased: 0
     });
   }
 
+
+  
   // 보드 상태 반영 (깊은 복사)
   // 보드가 바뀔 때마다 상태를 반영해야 안전함
  updateGridState() {
@@ -179,8 +183,8 @@ async restartGame({ difficulty }) { // 게임 난이도가 올라갈 때마다 �
    // 라운드 상태 초기화
   _resetRoundStates() {
     // 새로운 라운드가 시작될 때, 점수는 유지하면스ㅓ 콤보/체력/입력값 초기화. 추후 변동 가능성
-    const p1 = { ...this.state.player1, combo: 0, maxCombo: 0, hp: 3 /*, score: 0*/ };
-    const p2 = { ...this.state.player2, combo: 0, maxCombo: 0, hp: 3 /*, score: 0*/ };
+    const p1 = { ...this.player1.getData(), combo: 0, maxCombo: 0, hp: 5 /*, score: 0*/ };
+    const p2 = { ...this.player2.getData(), combo: 0, maxCombo: 0, hp: 5 /*, score: 0*/ };
     this.setState({ ...this.state, player1: p1, player2: p2, timeIncreased: 0, inputValue: "" }); 
   }
 
@@ -289,9 +293,9 @@ async restartGame({ difficulty }) { // 게임 난이도가 올라갈 때마다 �
   // =====================
   // 입력 처리
   // =====================
-  setInputValue(v) {
-    this.setState({ ...this.state, inputValue: v });
-  }
+  // setInputValue(v) {
+  //   this.setState({ ...this.state, inputValue: v });
+  // }
 
   // board APIs
   setBoardSize(row, col) {
@@ -372,24 +376,35 @@ submitInput(wordRaw) {
   if (!guess || !this.state.turnActive) return;
 
   const nextState = { ...this.state };
-  const match = this.words.find(
-    (w) => !w.isFound() && w.getText().toLowerCase() === guess
-  );
+  // const match = this.words.find(
+  //   (w) => !w.isFound() && w.getText().toLowerCase() === guess
+  // );
+  const match = this.words.find(w => !w.isFound?.() && w.getText?.().toLowerCase() === guess); // 🔧 isFound() 함수 체크
+  
+  const player = this.state.currentTurn === "player1" ? this.player1 : this.player2;
+  const opponent = this.state.currentTurn === "player1" ? this.player2 : this.player1;
 
   if (!match) {
     // 틀린 단어 처리
-    if (this.state.currentTurn === "player1") {
-      this.state.player1.setCombo(0);
-      this.state.player1.subHP();
-    } else {
-      this.state.player2.setCombo(0);
-      this.state.player2.subHP();
-    }
+    //if (this.state.currentTurn === "player1") {
+    console.log("Wrong word:", guess);
+      player.setCombo(0);
+      player.subHP();
+
+      this.setState({
+        ...nextState,
+        player1: this.player1.getData(),
+        player2: this.player2.getData()
+      });
+    //} 
+    //else {
+      // this.state.player2.setCombo(0);
+      // this.state.player2.subHP();
+    //}
   } else {
     // 맞춘 단어 처리
+    console.log("Correct word:", guess);
     match.markFoundWord();
-    const player = this.state.currentTurn === "player1" ? this.state.player1 : this.state.player2;
-    const opponent = this.state.currentTurn === "player1" ? this.state.player2 : this.state.player1;
 
     player.addWord(true);
     player.addCombo();
@@ -402,6 +417,12 @@ submitInput(wordRaw) {
     const playerIndex = this.state.currentTurn === "player1" ? 0 : 1;
     this.board.highlightWord(match, playerIndex);
     this.updateGridState();
+
+    this.setState({
+      ...nextState,
+      player1: this.player1.getData(),
+      player2: this.player2.getData()
+    });
   }
 
     // 턴 종료
@@ -411,13 +432,19 @@ submitInput(wordRaw) {
     if (this.turnTimer) clearInterval(this.turnTimer);
 
     // 게임 종료 조건
-    const allWordsFound = this.words.every((w) => w.isFound && w.isFound());
-    if (nextState.player1.hp <= 0 && nextState.player2.hp <= 0) {
+    //const allWordsFound = this.words.every((w) => w.isFound && w.isFound());
+    const allWordsFound = this.words.every((w) => w.isFound?.()); // 🔧 isFound() 호출    
+    if (this.player1.getHP() <= 0 && this.player2.getHP() <= 0) {
       setTimeout(() => {
-        this.setState({ ...nextState, gameOver: true });
-      }, 2000);  // 2초 후 종료
+      this.setState({
+        ...nextState,
+        player1: this.state.player1,  // ✅ Player 인스턴스 유지
+        player2: this.state.player2,
+        gameOver: true,
+      });
+    }, 2000);  // 2초 후 종료
     } else if (allWordsFound) {
-      setTimeout(() => {
+     setTimeout(() => {
         this.setState({ ...nextState, gameOver: true });
       }, 2000);
     } else {
