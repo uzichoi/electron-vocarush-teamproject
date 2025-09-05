@@ -192,7 +192,7 @@ export class GameController {
     if (this.turnTimer) clearInterval(this.turnTimer);
 
     // =====================
-    // 게임 종료 조건
+    // 게임 종료 조건(랭킹변경)
     // =====================
     const allWordsFound = this.words.every((w) => w.isFound && w.isFound());
     if (nextState.player1.hp <= 0 && nextState.player2.hp <= 0) {

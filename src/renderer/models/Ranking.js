@@ -42,7 +42,7 @@ class Ranking {
     }
   }
 
-  getTopEntries(count = 10) {
+  getTopEntries(count = 20) {
     const allEntries = [...this.rankings];
 
     allEntries.sort((a, b) => b.score - a.score);

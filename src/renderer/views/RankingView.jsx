@@ -8,19 +8,30 @@ export default function RankingView() {
 
   useEffect(() => {
     Ranking.load(); // 파일에서 불러오기
-    const top = Ranking.getTopEntries(20).map((entry, idx) => ({
-      rank: idx + 1,
-      ...entry,
-    }));
-    setRankingData(top);
+    const entries = Ranking.getTopEntries(20);
 
-    const stored= localStorage.getItem("lastWinners");
-    if(stored){
-        setHighLightPlayers(JSON.parse(stored));
+    let lastScore = null;
+    let lastRank = 0;
 
-        localStorage.removeItem("lastWinners");
-    }
+    const ranked = entries.map((entry,idx) => {
+
+      if(entry.score === lastScore) {
+        return{...entry, rank: lastRank};
+      }else{
+        lastScore = entry.score;
+        lastRank = idx+1;
+        return{...entry, rank:lastRank};
+      }
+    });
+    setRankingData(ranked);
   }, []);
+
+
+  const formatDate = (dateString) => {
+    if(!dateString) return "";
+    const [year, month, day] = dateString.split("-");
+    return `${year.slice(2)}-${month}-${day}`;
+  };
 
   return (
     <div className="ranking-view">
@@ -46,7 +57,9 @@ export default function RankingView() {
             {rankingData.map((player) => (
               <div key={player.rank} className="ranking-item">
                 <div className="rank-number">#{player.rank}</div>
-                <div className="player-name">{player.name}</div>
+                <div className="player-name">{player.name}
+                  <span className="player-date">{formatDate(player.date)}</span>
+                </div>
                 <div className="player-score">
                   {player.score.toLocaleString()}
                 </div>
