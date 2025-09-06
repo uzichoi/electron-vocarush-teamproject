@@ -16,6 +16,7 @@ export default class Player {
       name: this.getName(),
       score: this.getScore(),
       maxCombo: this.getMaxCombo(),
+      combo: this.getCombo(),
       wordsFound: this.getWordsFound(),
       accuracy: this.getAccuracy(),
       hp: this.getHP(),    // 추가

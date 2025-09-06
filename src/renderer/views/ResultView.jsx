@@ -19,16 +19,29 @@ export default function ResultView() {
     const { state } = useGameController(); // state 정의
     const location = useLocation();
     const locState = location.state; // 여기서 locState 정의
-    const [gameResult, setGameResult] = useState(() => {
-  return location.state
-    ? {
-        player1: locState.player1,
-        player2: locState.player2,
-        gameTime: locState.gameTime ?? 0,
-      }
-    : null;
-}); // ✅ 오타 수정
-  const { grid, highlight, placedWordCheck } = location.state;
+  // 게임 결과 초기화
+  const [gameResult] = useState(() => {
+    const player1 = { ...locState.player1 };
+    const player2 = { ...locState.player2 };
+
+    const player1Score = player1.score ?? 0;
+    const player2Score = player2.score ?? 0;
+
+    player1.isWinner = player1Score > player2Score;
+    player2.isWinner = player2Score > player1Score;
+
+    return {
+      player1,
+      player2,
+      gameTime: locState.gameTime ?? 0,
+      grid: locState.grid,
+      highlight: locState.highlight,
+      placedWordCheck: locState.placedWordCheck,
+      difficulty: locState.difficulty ?? 0,
+    };
+  });
+
+  const { grid, highlight, placedWordCheck } = gameResult;
 
 
   // Next Round 클릭 시 호출할 함수

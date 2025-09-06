@@ -232,6 +232,7 @@ export class GameController {
       player.addScore(100);
       opponent.subHP();
       opponent.setCombo(0);
+      player.addWord(match);
       const playerIndex = currentPlayerKey === "player1" ? 0 : 1;
       this.board.highlightWord(match, playerIndex);
       this.updateGridState();
@@ -239,6 +240,7 @@ export class GameController {
     } else {
       player.setCombo(0);
       player.subHP();
+      player.addWord(match);
       console.log("Wrong word:", guess);
     }
 
