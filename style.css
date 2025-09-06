@@ -448,9 +448,11 @@ body {
     }
     
     .game-main {
-        grid-template-columns: 1fr;
-        gap: 30px;
-        padding: 0 20px;
+    display: flex;
+    justify-content: center;   /* 가로 중앙 */
+    align-items: center;       /* 세로 중앙 */
+    height: 100vh;             /* 화면 꽉 차게 */
+    padding: 0;
     }
     
     .player-info {
@@ -1568,7 +1570,7 @@ body, .game-view {
 
 /* ===== 보드 영역 ===== */
 .game-board {
-  transform: scale(var(--board-scale));     /* ← 보드 전체 축소 */
+  transform: scale(1.2);     /* ← 보드 전체 축소 */
   transform-origin: top center;
 }
 .game-board .word-grid {
@@ -1781,7 +1783,7 @@ body, .game-view {
 
 /* === ResultView 확장 & 화면 맞춤 === */
 .result-view .result-content {
-  transform: scale(1.5);
+  transform: scale(1.2);
   transform-origin: center center;  /* 중앙 기준 확대 */
   
   gap: 40px;
@@ -1800,4 +1802,6 @@ body, .game-view {
   height: 100vh;             /* 화면 꽉 차게 */
   padding: 0;
 }
+
+
 

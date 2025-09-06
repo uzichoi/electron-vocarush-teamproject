@@ -202,7 +202,20 @@ export class GameController {
         this.setState({ ...this.state, turnTime: this.state.turnTime - 1 });
       } else {
         clearInterval(this.turnTimer);
-        this.setState({ ...this.state, turnActive: false, turnTime: 0 });
+            // 현재 턴 플레이어 가져오기
+      const currentPlayerKey = this.state.currentTurn;
+      if (currentPlayerKey) {
+        const player = this[currentPlayerKey];
+        player.subHP();      // HP 감소
+        player.setCombo(0);  // 콤보 초기화
+      }
+    this.setState({
+      ...this.state,
+      turnActive: false,
+      turnTime: 0,
+      player1: this.player1.getData(),
+      player2: this.player2.getData()
+    }); 
       }
     }, 1000);
   }
