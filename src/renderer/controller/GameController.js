@@ -6,6 +6,8 @@ import { Word } from "../models/Word";
 import Player from "../models/Player";
 import path from "path";
 import fs from "fs/promises";
+import Ranking from "../models/Ranking";
+
 
 // =====================
 // 이벤트 emitter
@@ -280,6 +282,10 @@ export class GameController {
 
     if (allWordsFound || playersDead) {
       console.log("Game Over!");
+      Ranking.load();
+      Ranking.add(this.player1.getName(), this.player1.getScore());
+      Ranking.add(this.player2.getName(), this.player2.getScore());
+      Ranking.save();
       setTimeout(() => {
         this.setState({ ...this.state, gameOver: true });
       }, 2000);
@@ -294,6 +300,38 @@ export class GameController {
       turnTime: 0,
       currentTurn: null
     });
+// =======
+//     // =====================
+//     // 게임 종료 조건(랭킹변경)
+//     // =====================
+//     const allWordsFound = this.words.every((w) => w.isFound && w.isFound());
+//     if (nextState.player1.hp <= 0 && nextState.player2.hp <= 0) {
+//     Ranking.load();
+//     Ranking.add(nextState.player1.getName(), nextState.player1.getScore());
+//     Ranking.add(nextState.player2.getName(), nextState.player2.getScore());
+//     Ranking.save();
+
+//     localStorage.setItem("lastWinners", JSON.stringifty([
+//       nextState.player1.getName(),
+//       nextState.player2.getName()
+//     ]));
+
+//     setTimeout(() => {
+//       this.setState({ ...nextState, gameOver: true });
+//     }, 2000);
+//   } else if (allWordsFound) {
+//     Ranking.load();
+//     Ranking.add(nextState.player1.getName(), nextState.player1.getScore());
+//     Ranking.add(nextState.player2.getName(), nextState.player2.getScore());
+//     Ranking.save();
+
+//     setTimeout(() => {
+//       this.setState({ ...nextState, gameOver: true });
+//     }, 2000);
+//   } else {
+//     this.setState(nextState);
+//   }
+// >>>>>>> origin/rankingview
   }
 
   setInputValue(value) {

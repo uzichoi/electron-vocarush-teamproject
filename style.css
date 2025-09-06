@@ -1804,4 +1804,23 @@ body, .game-view {
 }
 
 
+.ranking-item.hightlight{
+    background:linear-gradiet(90deg,#ffe066, #ffcc00);
+    font-weight: bold;
+    animation: ranking-glow 1.5s ease-in-out infinite alternate;
+}
 
+@keyframes ranking-glow {
+  from {
+    box-shadow: 0 0 5px #ffcc00;
+  }
+  to {
+    box-shadow: 0 0 20px #ffaa00;
+  }
+}
+
+.player-date{
+    margin-left: 8px;
+    font-size:0.9em;
+    color: #888;
+};

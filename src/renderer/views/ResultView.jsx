@@ -10,8 +10,9 @@
 // // views/ResultView.jsx
 
 import React, { useEffect, useState } from "react";
+
 import { useNavigate, useLocation } from "react-router-dom";
-//import { gameController } from "../controller/GameController"; // ✅ 인스턴스 import
+import { gameController } from "../controller/GameController"; // ✅ 인스턴스 import
 import { useGameController } from "../hooks/useGameController";
 
 export default function ResultView() {
@@ -19,6 +20,7 @@ export default function ResultView() {
     const { state } = useGameController(); // state 정의
     const location = useLocation();
     const locState = location.state; // 여기서 locState 정의
+      const [setGameResult] = useState(null); //
   // 게임 결과 초기화
   const [gameResult] = useState(() => {
     const player1 = { ...locState.player1 };
@@ -60,6 +62,14 @@ const handleNextRound = () => {
 // console.log("grid", grid);
 // console.log("placedWordCheck", placedWordCheck);
 // console.log("highlight", highlight);
+// =======
+// import { useNavigate } from "react-router-dom";
+// import { gameController } from "../controller/GameController"; 
+
+// export default function ResultView() {
+//   const navigate = useNavigate();
+//   const [gameResult, setGameResult] = useState(null); //
+// >>>>>>> origin/rankingview
 
   useEffect(() => {
     //const unsub = gameController.subscribe((state) => {
@@ -91,7 +101,7 @@ const handleNextRound = () => {
     return <div>결과를 불러오는 중...</div>;
   }
 
-  // ✅ mm:ss 포맷 함수
+  // mm:ss 포맷 함수
   const formatTime = (seconds) => {
     const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
     const ss = String(seconds % 60).padStart(2, "0");
@@ -149,6 +159,7 @@ const handleNextRound = () => {
                                 <div key={i} className="grid-row">
                                     {row.map((cell, j) => {
                                     let cellClass = "grid-cell";
+
 
                                     // 글자가 있는지 여부
                                     cellClass += cell !== "*" ? " letter" : " empty";
@@ -215,6 +226,15 @@ const handleNextRound = () => {
                     <button className="btn-secondary" onClick={handleNextRound}>Next Round</button>
                 </section>
             </main>
+{/* =======
+  return (
+    <div className="result-view">
+      <header className="result-header">
+        <div className="header-center">
+          <h1 className="result-title">GAME RESULT</h1>
+          {/*게임 시간 표시 */}
+          <div className="final-time">⏱ {formatTime(gameResult.gameTime)}</div>
+{/* >>>>>>> origin/rankingview */}
         </div>
     )
 
