@@ -27,7 +27,7 @@ export default function ResultView() {
         gameTime: locState.gameTime ?? 0,
       }
     : null;
-}); // ✅ 오타 수정
+}); // 오타 수정
   const { grid, highlight, placedWordCheck } = location.state;
 
 
@@ -78,7 +78,7 @@ const handleNextRound = () => {
     return <div>결과를 불러오는 중...</div>;
   }
 
-  // ✅ mm:ss 포맷 함수
+  // mm:ss 포맷 함수
   const formatTime = (seconds) => {
     const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
     const ss = String(seconds % 60).padStart(2, "0");

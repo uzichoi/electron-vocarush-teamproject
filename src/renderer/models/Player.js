@@ -9,6 +9,8 @@ export default class Player {
     
     this.wordsFound = 0;
     this.totalAttempts = 0;
+
+    this.photoPath = null; //사진 경로
 }
 
   getData() {
@@ -52,6 +54,10 @@ getAccuracy() {
     return Math.round((this.wordsFound / this.totalAttempts) * 100);
 }
 
+getPhoto(){
+  return this.photoPath;
+}
+
   // Sett
   setName(name) {
     this.name = name;
@@ -73,6 +79,9 @@ getAccuracy() {
     this.hp = hp;
   }
 
+  setPhoto(path){
+    this.photoPath = path;
+  }
   // Methods
   addScore(points) {
     if (this.combo > 0) {
