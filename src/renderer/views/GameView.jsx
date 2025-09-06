@@ -103,7 +103,7 @@ export default function GameView({controller, state}) {
             </header>
         <main className="game-main">
         {/* Player 1 */}
-        <div className="player-info player2">
+        <div className="player-info">
           {/* 사진 박스 */}
           <div className="avatar-large player1-avatar">
             {state.player1.photo || "👤"}
@@ -157,7 +157,7 @@ export default function GameView({controller, state}) {
                     </div>
                 </div>
       {/* Player 2 */}
-      <div className="player-info player2">
+      <div className="player-info">
         {/* 사진 박스 */}
         <div className="avatar-large player2-avatar">
           {state.player2.photo || "👤"}

@@ -2020,6 +2020,15 @@ body, .game-view {
 }
 */
 
+/* Player 1 카드 */
+.player-info.player1 {
+  margin-right: -10px;  /* 오른쪽으로 10px 당김 */
+}
+
+/* Player 2 카드 */
+.player-info.player2 {
+  margin-left: -10px;   /* 왼쪽으로 10px 당김 */
+}
 
 
 
