@@ -21,9 +21,19 @@ export default function GameView() {
         return `${mins}:${secs.toString().padStart(2, "0")}`;
     };
 
-      useEffect(() => {
+  useEffect(() => {
     if (state.gameOver) {
-      navigate("/result");
+      navigate("/result", {
+        state: {
+          player1: state.player1,
+          player2: state.player2,
+          gameTime: state.timeIncreased,
+          grid: state.grid,
+          highlight: state.highlight,
+          placedWordCheck: state.placedWordCheck,
+          difficulty: state.difficulty,
+        },
+      });
     }
   }, [state.gameOver, navigate]);
 

@@ -113,6 +113,7 @@ export class GameController {
     this.board.resetBoard(this.currentSize, this.currentSize);
 
     const words = await this._pickWordsForSize(this.currentSize);
+    console.log("difficulty:", this.currentGameDifficulty, "size:", this.currentSize, "words:", words);
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
   }
 
@@ -125,6 +126,7 @@ export class GameController {
 
     this._resetRoundStates();
     const words = await this._pickWordsForSize(this.currentSize);
+    console.log("difficulty:", this.currentGameDifficulty, "size:", this.currentSize, "words:", words);
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
   }
 

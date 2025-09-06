@@ -34,7 +34,7 @@ export default function ResultView() {
   // Next Round 클릭 시 호출할 함수
 const handleNextRound = () => {
     // 임시 경로를 거쳐서 강제로 GameView 재마운트
-    navigate("/start"); 
+   // navigate("/start"); 
     setTimeout(() => {
         navigate("/game", { 
             state: { nextRound: true,
@@ -43,6 +43,10 @@ const handleNextRound = () => {
     }, 0);
 };
 
+
+// console.log("grid", grid);
+// console.log("placedWordCheck", placedWordCheck);
+// console.log("highlight", highlight);
 
   useEffect(() => {
     //const unsub = gameController.subscribe((state) => {
@@ -140,7 +144,7 @@ const handleNextRound = () => {
                                     const player = highlight?.[i]?.[j];
                                     if (player === 0) cellClass += " found-by-player1";
                                     else if (player === 1) cellClass += " found-by-player2";
-                                    else if (player === -1 && placedWordCheck[i][j])cellClass += " unfound-by-players";
+                                    else if (player === -1 && placedWordCheck?.[i]?.[j])cellClass += " unfound-by-players";
                                     return (
                                         <div key={j} className={cellClass}>
                                         {cell}
