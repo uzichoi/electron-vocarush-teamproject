@@ -18,6 +18,7 @@ export default class Player {
       maxCombo: this.getMaxCombo(),
       wordsFound: this.getWordsFound(),
       accuracy: this.getAccuracy(),
+      hp: this.getHP(),    // 추가
     };
   }
 
