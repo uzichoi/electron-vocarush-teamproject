@@ -51,4 +51,9 @@ class Ranking {
   }
 }
 
+
+
 export default new Ranking();
+// =======
+// export default new Ranking();
+// >>>>>>> origin/playerconfig

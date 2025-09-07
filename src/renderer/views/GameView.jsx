@@ -5,11 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
-export default function GameView() {
+export default function GameView({controller, state}) {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const { controller, state } = useGameController();
     const inputRef = useRef(null);
     
     const [showConfirm, setShowConfirm] = useState(false); // 확인창 상태
@@ -50,10 +49,8 @@ export default function GameView() {
                 if (!mounted) return;
 
                 if (location.state?.nextRound) {
-                    console.log("Next Round!"); // 확인용
                     await controller.restartGame({difficulty: (location.state.difficulty ?? 0) + 1, });
                 } else {
-                    console.log("Initial Game");
                     await controller.startInitialGame();
                 }
             }
@@ -107,9 +104,14 @@ export default function GameView() {
         <main className="game-main">
         {/* Player 1 */}
         <div className="player-info">
-          <div className="player-card">
-            <h3>Player 1</h3>
-            <div className="stat"><span>Name:</span> {state.player1.name}</div>
+          {/* 사진 박스 */}
+          <div className="avatar-large player1-avatar">
+            {state.player1.photo || "👤"}
+          </div>
+
+          {/* 정보 카드 */}
+          <div className="player-card player1-card">
+            <h3>{state.player1.name || "Player 1"}</h3>
             <div className="stat"><span>Score:</span> {state.player1.score}</div>
             <div className="stat"><span>Combo:</span> {state.player1.combo}</div>
             <div className="stat"><span>HP:</span>
@@ -154,29 +156,34 @@ export default function GameView() {
                         ))}
                     </div>
                 </div>
-                {/* Player 2 */}
-        <div className="player-info">
-          <div className="player-card">
-            <h3>Player 2</h3>
-            <div className="stat"><span>Name:</span> {state.player2.name}</div>
-            <div className="stat"><span>Score:</span> {state.player2.score}</div>
-            <div className="stat"><span>Combo:</span> {state.player2.combo}</div>
-            <div className="stat"><span>HP:</span>
-              <div className="hp-bar">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className={`hp-heart ${i < state.player2.hp ? "active" : ""}`}>♥</div>
-                ))}
-              </div>
-            </div>
-            <button
-              className={`turn-btn ${state.currentTurn === "player2" && state.turnActive ? "active" : ""}`}
-              onClick={() => controller.startTurn("player2")}
-              disabled={state.turnActive || state.player2.hp <= 0}
-            >
-              My Turn
-            </button>
-          </div>
+      {/* Player 2 */}
+      <div className="player-info">
+        {/* 사진 박스 */}
+        <div className="avatar-large player2-avatar">
+          {state.player2.photo || "👤"}
         </div>
+
+        {/* 정보 카드 */}
+        <div className="player-card player2-card">
+          <h3>{state.player2.name || "Player 2"}</h3>
+          <div className="stat"><span>Score:</span> {state.player2.score}</div>
+          <div className="stat"><span>Combo:</span> {state.player2.combo}</div>
+          <div className="stat"><span>HP:</span>
+            <div className="hp-bar">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className={`hp-heart ${i < state.player2.hp ? "active" : ""}`}>♥</div>
+              ))}
+            </div>
+          </div>
+          <button
+            className={`turn-btn ${state.currentTurn === "player2" && state.turnActive ? "active" : ""}`}
+            onClick={() => controller.startTurn("player2")}
+            disabled={state.turnActive || state.player2.hp <= 0}
+          >
+            My Turn
+          </button>
+        </div>
+      </div>          
       </main>
       {/* Input + 턴 타이머 */}
       <footer className="game-input">

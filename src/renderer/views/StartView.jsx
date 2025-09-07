@@ -12,7 +12,7 @@ export default function StartView() {
       <div style={{ textAlign: "center" }}>
         <h5 className="start-subtitle">WELCOME TO</h5>
         <h1 className="start-title">VocaRush</h1>
-        <button className="btn btn-primary" onClick={() => navigate('/game')}>
+        <button className="btn btn-primary" onClick={() => navigate('/config')}>
             START
         </button>
         <div className="menu-row">
