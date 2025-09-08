@@ -140,6 +140,20 @@ export class GameController {
     const words = await this._pickWordsForSize(this.currentSize);
     console.log("difficulty:", this.currentGameDifficulty, "size:", this.currentSize, "words:", words);
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
+
+      // 🔹 추가: gameOver false, 턴 상태 초기화
+  this.setState({
+    player1: this.player1.getData(),
+    player2: this.player2.getData(),
+    grid: this.board.grid,
+    highlight: this.board.highlight,
+    placedWordCheck: this.board.wordCheck,
+    difficulty: this.currentGameDifficulty,
+    gameOver: false,      // 반드시 false로 초기화
+    turnActive: true,     // 턴 시작
+    turnTime: 0,
+    currentTurn: this.player1.getName(), // 첫 턴 플레이어
+  });
   }
 
   _resetRoundStates() {
@@ -296,9 +310,27 @@ export class GameController {
       Ranking.add(this.player1.getName(), this.player1.getScore());
       Ranking.add(this.player2.getName(), this.player2.getScore());
       Ranking.save();
+
+      
+      // 최근 승자 기록 (rankingview 쪽 기능)
+      localStorage.setItem("lastWinners", JSON.stringify([
+        this.player1.getName(),
+        this.player2.getName()
+      ]));
+
+
       setTimeout(() => {
-        this.setState({ gameOver: true });
-      }, 2000);
+      this.setState({ 
+        ...this.state,
+        player1: this.player1.getData(),
+        player2: this.player2.getData(),
+        grid: this.board.grid,                  // ✅ 보드 상태 전달
+        highlight: this.board.highlight,        // ✅ 하이라이트 전달
+        placedWordCheck: this.board.placedWordCheck,  // ✅ 못맞춘 단어 체크 전달
+        difficulty: this.currentGameDifficulty,
+        gameOver: true 
+      });
+    }, 2000);
     }
 
     // 턴 초기화
