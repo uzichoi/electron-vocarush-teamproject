@@ -150,7 +150,7 @@ export class GameController {
     placedWordCheck: this.board.wordCheck,
     difficulty: this.currentGameDifficulty,
     gameOver: false,      // 반드시 false로 초기화
-    turnActive: true,     // 턴 시작
+    turnActive: false,     // 턴 시작
     turnTime: 0,
     currentTurn: this.player1.getName(), // 첫 턴 플레이어
   });
