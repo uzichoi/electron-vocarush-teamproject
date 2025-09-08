@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
-import { gameController } from "../controller/GameController"; // ✅ 인스턴스 import
+import { gameController } from "../controllers/GameController"; // ✅ 인스턴스 import
 import { useGameController } from "../hooks/useGameController";
 
 export default function ResultView() {
