@@ -80,16 +80,20 @@ export class GameBoard {
   }
 
   highlightWord(word, playerIndex) {
-    const text = word.getText();
-    const dir = word.getDirection();
-    const x = word.getX();
-    const y = word.getY();
-    for (let i = 0; i < text.length; i++) {
-      const wordX = x + DX[dir] * i;
-      const wordY = y + DY[dir] * i;
-      this.grid[wordY][wordX] = text[i].toUpperCase();
-      this.highlight[wordY][wordX] = playerIndex;
-    }
+  let text = word.getText();
+  const dir = word.getDirection();
+  const x = word.getX();
+  const y = word.getY();
+  const ord = word.order;
+
+  if (ord === Order.BACKWARD) text = Word.reverseWord(text); // 단어 역방향 배치시
+
+  for (let i = 0; i < text.length; i++) {
+    const wordX = x + DX[dir] * i;
+    const wordY = y + DY[dir] * i;
+    this.grid[wordY][wordX] = text[i].toUpperCase();
+    this.highlight[wordY][wordX] = playerIndex;
+  }
   }
 
   getGridSnapshot() {
@@ -111,11 +115,12 @@ placeWordsRandomly(words, directions,orders, maxTries) {
         const dir = directions[Math.floor(Math.random() * directions.length)];
         const ord = orders[Math.floor(Math.random() * orders.length)];
         const w = new Word(text.toLowerCase());
+        w.order = ord;
         w.setPosition(x, y, dir);
         if (this.canPlaceWord(w)) {
           this.placeWord(text.toLowerCase(), x, y, dir, ord);
           placedWords.push(w);
-          console.log(w.getText());
+          console.log(w.getText(), "order:", w.order);
           placed = true;
         }
       }
