@@ -22,6 +22,7 @@ export default function GameView({controller, state}) {
 
   useEffect(() => {
     if (state.gameOver) {
+      setTimeout(() => {
       navigate("/result", {
         state: {
           player1: state.player1,
@@ -33,7 +34,8 @@ export default function GameView({controller, state}) {
           difficulty: state.difficulty,
         },
       });
-    }
+    },0);
+  }
   }, [state.gameOver, navigate]);
 
     useEffect(() => {
@@ -49,8 +51,10 @@ export default function GameView({controller, state}) {
                 if (!mounted) return;
 
                 if (location.state?.nextRound) {
-                    await controller.restartGame({difficulty: (location.state.difficulty ?? 0) + 1, });
-                } else {
+                    await controller.restartGame({difficulty: location.state.difficulty });
+                // 🔹 location.state 초기화 → 중복 실행 방지
+            navigate(location.pathname, { replace: true, state: {} });
+                  } else {
                     await controller.startInitialGame();
                 }
             }
@@ -58,7 +62,7 @@ export default function GameView({controller, state}) {
             startGame();
 
             return () => { mounted = false; };
-        }, [controller, location.key]); // location.key가 바뀌면 useEffect 재실행
+        }, [controller, location.state, location.pathname]); // location.key가 바뀌면 useEffect 재실행
 
 
     const handleSubmit = (e) => {

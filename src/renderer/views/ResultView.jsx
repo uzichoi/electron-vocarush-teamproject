@@ -1,14 +1,3 @@
-// <<<<<<< HEAD
-
-// import { useNavigate } from "react-router-dom";
-// import { gameController } from "../controller/GameController"; // ✅ 인스턴스 import
-
-// export default function ResultView() {
-//   const navigate = useNavigate();
-//   const [gameResult, setGameResult] = useState(null); // ✅ 오타 수정
-// =======
-// // views/ResultView.jsx
-
 import React, { useEffect, useState } from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -44,47 +33,28 @@ export default function ResultView() {
   });
 
   const { grid, highlight, placedWordCheck } = gameResult;
-// =======
-//     const [gameResult, setGameResult] = useState(() => {
-//   return location.state
-//     ? {
-//         player1: locState.player1,
-//         player2: locState.player2,
-//         gameTime: locState.gameTime ?? 0,
-//       }
-//     : null;
-// }); // 오타 수정
-//   const { grid, highlight, placedWordCheck } = location.state;
-// >>>>>>> playerconfig
 
 
   // Next Round 클릭 시 호출할 함수
 const handleNextRound = () => {
     // 임시 경로를 거쳐서 강제로 GameView 재마운트
    // navigate("/start"); 
+    // 현재 난이도에 +1 해서 GameView로 전달
+    const nextDifficulty = (gameResult.difficulty ?? 0) + 1;
+
     setTimeout(() => {
         navigate("/game", { 
             state: { nextRound: true,
-                    difficulty: gameResult.difficulty, // 현재 난이도 같이 전달
-             } });
+                    difficulty: nextDifficulty, // 현재 난이도 같이 전달
+                    }, 
+            replace: false,
+            key: Date.now()  // 강제로 location.key 변경
+                  });
     }, 0);
 };
 
-
-// console.log("grid", grid);
-// console.log("placedWordCheck", placedWordCheck);
-// console.log("highlight", highlight);
-// =======
-// import { useNavigate } from "react-router-dom";
-// import { gameController } from "../controller/GameController"; 
-
-// export default function ResultView() {
-//   const navigate = useNavigate();
-//   const [gameResult, setGameResult] = useState(null); //
-// >>>>>>> origin/rankingview
-
   useEffect(() => {
-    //const unsub = gameController.subscribe((state) => {
+    
       if (state.gameOver) {
         setGameResult({
           gameTime: state.timeIncreased,
@@ -238,14 +208,6 @@ const handleNextRound = () => {
                     <button className="btn-secondary" onClick={handleNextRound}>Next Round</button>
                 </section>
             </main>
-{/* =======
-  return (
-    <div className="result-view">
-      <header className="result-header">
-        <div className="header-center">
-          <h1 className="result-title">GAME RESULT</h1>
-          {/*게임 시간 표시 */}
-          {/* <div className="final-time">⏱ {formatTime(gameResult.gameTime)}</div> */}
 
         </div>
     )
