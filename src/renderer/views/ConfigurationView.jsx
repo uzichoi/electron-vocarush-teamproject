@@ -91,7 +91,7 @@ export default function ConfigurationView({ controller }) {
       </div>
 
       {/* Game Start */}
-      <div className="start-container" style={{ bottom: "50px" }}>
+      <div className="start-container">
         <button
           className="start-btn"
           onClick={handleStartGame}
