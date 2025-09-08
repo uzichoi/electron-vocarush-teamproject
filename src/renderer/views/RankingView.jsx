@@ -44,7 +44,7 @@ export default function RankingView() {
         <div className="header-right">
           <button
             className="btn-small"
-            onClick={() => navigate("/result")}
+            onClick={() => navigate(-1)}
             aria-label="close"
           >
             ×

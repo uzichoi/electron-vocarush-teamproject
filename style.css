@@ -1869,11 +1869,13 @@ body, .game-view {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 40px;
+
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
+  box-sizing:border-box;
   overflow: hidden; /* 스크롤 제거 */
+  margin-top:100px;
 }
 
 .config-players {
@@ -1895,6 +1897,8 @@ body, .game-view {
   backdrop-filter: blur(8px);
   min-width: 220px;
   transition: all 0.3s ease;
+  margin-top:200px;
+  
 }
 
 .player-config input {
@@ -1994,6 +1998,7 @@ body, .game-view {
 
 /* VS 텍스트 */
 .vs-text {
+  margin-top: 50px;
   font-size: 40px;
   font-weight: bold;
   color: var(--accent);
@@ -2002,7 +2007,11 @@ body, .game-view {
 
 /* Game Start 버튼 */
 .start-container {
-  margin-top: 30px;
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;   /* 부모 영역 전체 차지 */
 }
 
 .start-btn {
@@ -2016,6 +2025,8 @@ body, .game-view {
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
+  display:block;
+  margin: 0 auto;
 }
 
 .start-btn:hover {
