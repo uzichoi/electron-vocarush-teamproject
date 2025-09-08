@@ -3,18 +3,24 @@ import React from "react";    // default export
 import { createRoot } from "react-dom/client";    // named export
 // React 18부터는 react-dom에서 render을 직접 쓰지 않고 createRoot를 써야 한다. 현재 버전 react@19.1.1
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import StartView from "./views/StartView";  
+import ConfigView from "./views/ConfigurationView";
 import GameView from "./views/GameView";
 import ManualView from "./views/ManualView";
 import ResultView from "./views/ResultView";
 import RankingView from "./views/RankingView";
 
+import {useGameController} from "./hooks/useGameController";
+
 function App() {
+  const {controller, state} = useGameController();
   return (
     <HashRouter>
       <Routes>
         <Route path="/start" element={<StartView />} />
-        <Route path="/game" element={<GameView />} />
+        <Route path="/config" element={<ConfigView controller={controller} state={state}/>} />
+        <Route path="/game" element={<GameView controller={controller} state={state}/>} />
         <Route path="/manual" element={<ManualView />} />
         <Route path="/result" element={<ResultView />} />
         <Route path="/ranking" element={<RankingView />} />

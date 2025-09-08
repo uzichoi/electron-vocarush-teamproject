@@ -1,6 +1,6 @@
 // hooks/useGameController.js
 import { useEffect, useRef, useState } from "react";
-import { GameController } from "../controller/GameController";
+import { GameController}  from "../controller/GameController";
 
 export function useGameController() {
   // 1) 컨트롤러를 한 번만 생성

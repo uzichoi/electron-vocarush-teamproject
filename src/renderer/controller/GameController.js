@@ -6,6 +6,7 @@ import { Word } from "../models/Word";
 import Player from "../models/Player";
 import path from "path";
 import fs from "fs/promises";
+
 import Ranking from "../models/Ranking";
 
 
@@ -81,9 +82,10 @@ export class GameController {
   }
 
   setState = (next) => {
-    this.state = next;
+    this.state = {...this.state, ...next};
     this.emitter.emit(this.state);
   }
+
 
   // =====================
   // 전체 게임 타이머
@@ -94,6 +96,14 @@ export class GameController {
         this.setState({ ...this.state, timeIncreased: this.state.timeIncreased + 1 });
       }
     }, 1000);
+  }
+
+  setPlayerInfo(playerKey, name, photo) {
+    const player = this[playerKey];
+    if (!player) return;
+    if (name) player.setName(name);
+    if (photo) player.setPhoto(photo);
+    this.setState({ [playerKey]: player.getData() });
   }
 
   unmount() {
@@ -287,7 +297,7 @@ export class GameController {
       Ranking.add(this.player2.getName(), this.player2.getScore());
       Ranking.save();
       setTimeout(() => {
-        this.setState({ ...this.state, gameOver: true });
+        this.setState({ gameOver: true });
       }, 2000);
     }
 
