@@ -9,11 +9,13 @@ def main():
     filename = f"{player}.jpg"
     
     # 저장 경로 (현재 디렉토리 기준)
-    save_path = os.path.join(os.getcwd(), filename)
+    baseDir = os.path.join(os.path.dirname(__file__), "..", "assets", "playerPhotos")
+    savePath = os.path.abspath(os.path.join(baseDir, filename))
+
     
     # 얼굴 인식기 불러오기
-    cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
-    faceClassifier = cv2.CascadeClassifier(cascade_path)
+    cascadePath = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+    faceClassifier = cv2.CascadeClassifier(cascadePath)
     
     if faceClassifier.empty():
         print("오류: 얼굴 인식기를 불러올 수 없습니다")
@@ -150,13 +152,13 @@ def main():
                             cv2.waitKey(100)  # 0.1초간 플래시 효과
                             
                             # 파일 저장
-                            if cv2.imwrite(save_path, face_img):
-                                print(f"✓ 얼굴 캡처 완료: {save_path}")
+                            if cv2.imwrite(savePath, face_img):
+                                print(f"✓ 얼굴 캡처 완료: {savePath}")
                                 print(f"  - 크기: {w}x{h}")
                                 print(f"  - 선명도: {laplacian_var:.1f}")
                                 captured = True
                             else:
-                                print(f"오류: 파일 저장 실패 - {save_path}")
+                                print(f"오류: 파일 저장 실패 - {savePath}")
                                 countdown_active = False
                                 countdown_start_time = None
                                 face_detected_time = None
