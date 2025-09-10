@@ -5,12 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
-export default function GameView({controller, state}) {
+//export default function GameView({controller, state}) {
+export default function GameView() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const { controller, state, submitInput } = useGameController(); // 🔹 훅으로 컨트롤러와 state 접근
     const inputRef = useRef(null);
     
+
+
     const [showConfirm, setShowConfirm] = useState(false); // 확인창 상태
     const [isClosing, setIsClosing] = useState(false);     // 애니메이션 상태
 
@@ -20,6 +24,21 @@ export default function GameView({controller, state}) {
         return `${mins}:${secs.toString().padStart(2, "0")}`;
     };
 
+useEffect(() => {
+    if (controller && !state.boardInitialized) {  // 🔹 boardInitialized가 false일 때만 초기화
+        controller.startInitialGame();           // 🔹 0단계 보드 생성
+    }
+}, [controller, state.boardInitialized]);
+
+      // 🔹 게임 시작, NextRound 여부 확인
+  useEffect(() => {
+    if (location.state?.nextRound) {
+      controller.restartGame({ difficulty: location.state.difficulty });
+      navigate(location.pathname, { replace: true, state: {} }); // 중복 실행 방지
+    }
+  }, [controller, location]);
+
+    // 게임 오버 시 결과 화면으로 이동
   useEffect(() => {
     if (state.gameOver) {
       setTimeout(() => {
@@ -44,25 +63,25 @@ export default function GameView({controller, state}) {
     }
   }, [state.turnActive]);
 
-        useEffect(() => {
-            let mounted = true;
+        // useEffect(() => {
+        //     let mounted = true;
 
-            async function startGame() {
-                if (!mounted) return;
+        //     async function startGame() {
+        //         if (!mounted) return;
 
-                if (location.state?.nextRound) {
-                    await controller.restartGame({difficulty: location.state.difficulty });
-                // 🔹 location.state 초기화 → 중복 실행 방지
-            navigate(location.pathname, { replace: true, state: {} });
-                  } else {
-                    await controller.startInitialGame();
-                }
-            }
+        //         if (location.state?.nextRound) {
+        //             await controller.restartGame({difficulty: location.state.difficulty });
+        //         // 🔹 location.state 초기화 → 중복 실행 방지
+        //     navigate(location.pathname, { replace: true, state: {} });
+        //           } else {
+        //             await controller.startInitialGame();
+        //         }
+        //     }
 
-            startGame();
+        //     startGame();
 
-            return () => { mounted = false; };
-        }, [controller, location.state, location.pathname]); // location.key가 바뀌면 useEffect 재실행
+        //     return () => { mounted = false; };
+        // }, [controller, location.state, location.pathname]); // location.key가 바뀌면 useEffect 재실행
 
 
     const handleSubmit = (e) => {

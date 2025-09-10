@@ -6,7 +6,7 @@ import { useGameController } from "../hooks/useGameController";
 
 export default function ResultView() {
     const navigate = useNavigate();
-    const { state } = useGameController(); // state 정의
+    const { state, startNewGame } = useGameController(); // state 정의
     const location = useLocation();
     const locState = location.state; // 여기서 locState 정의
 
@@ -33,6 +33,11 @@ export default function ResultView() {
   });
 
   const { grid, highlight, placedWordCheck } = gameResult;
+
+  const handleRestart = () => {
+  startNewGame();      // 새 게임 컨트롤러 생성
+  navigate("/start");  // 시작화면으로 이동
+};
 
 
   // Next Round 클릭 시 호출할 함수
@@ -204,7 +209,7 @@ const handleNextRound = () => {
                         <button className="btn-secondary" onClick={() => navigate("/ranking")}>
                         View Ranking
                     </button>
-                    <button className="btn-secondary" onClick={() => navigate('/start')}>Restart</button>
+                    <button className="btn-secondary" onClick={handleRestart}>Restart</button>
                     <button className="btn-secondary" onClick={handleNextRound}>Next Round</button>
                 </section>
             </main>
