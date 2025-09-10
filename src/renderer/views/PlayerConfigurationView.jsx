@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ConfigurationView({ controller }) {
+export default function PlayerConfigurationView({ controller }) {
   const [player1Name, setPlayer1Name] = useState("");
   const [player2Name, setPlayer2Name] = useState("");
   const [player1Photo, setPlayer1Photo] = useState("📷");

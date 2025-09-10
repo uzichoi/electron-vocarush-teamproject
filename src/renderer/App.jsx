@@ -5,7 +5,7 @@ import { createRoot } from "react-dom/client";    // named export
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import StartView from "./views/StartView";  
-import ConfigView from "./views/ConfigurationView";
+import ConfigView from "./views/PlayerConfigurationView";
 import GameView from "./views/GameView";
 import ManualView from "./views/ManualView";
 import ResultView from "./views/ResultView";
