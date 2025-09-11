@@ -30,23 +30,43 @@ export default function GameView() {
 //     }
 // }, [controller, state.boardInitialized]);
 
-  useEffect(() => {
-    if (!player1 || !player2) return;
+  // useEffect(() => {
+  //   if (!player1 || !player2) return;
 
-    // 🟢 받은 설정값으로 컨트롤러 초기화
+  //   // 🟢 받은 설정값으로 컨트롤러 초기화
+  //   controller.setPlayerInfo("player1", player1.name, player1.photo);
+  //   controller.setPlayerInfo("player2", player2.name, player2.photo);
+  //   controller.startInitialGame();
+  // }, [controller, player1, player2]);
+
+
+  //     // 🔹 게임 시작, NextRound 여부 확인
+  // useEffect(() => {
+  //   if (location.state?.nextRound) {
+  //     controller.restartGame({ difficulty: location.state.difficulty });
+  //     navigate(location.pathname, { replace: true, state: {} }); // 중복 실행 방지
+  //   }
+  // }, [controller, location]);
+  useEffect(() => {
+  if (!player1 || !player2) return;
+
+  if (location.state?.nextRound) {
+    // 🔹 Next Round: 기존 점수 유지하면서 게임 재시작
+    controller.restartGame({
+      difficulty: location.state.difficulty,
+      player1: location.state.player1,
+      player2: location.state.player2,
+    });
+    // 🔹 중복 실행 방지
+    navigate(location.pathname, { replace: true, state: {} });
+  } else {
+    // 🔹 처음 게임 시작
     controller.setPlayerInfo("player1", player1.name, player1.photo);
     controller.setPlayerInfo("player2", player2.name, player2.photo);
     controller.startInitialGame();
-  }, [controller, player1, player2]);
+  }
+}, [controller, player1, player2, location]);
 
-
-      // 🔹 게임 시작, NextRound 여부 확인
-  useEffect(() => {
-    if (location.state?.nextRound) {
-      controller.restartGame({ difficulty: location.state.difficulty });
-      navigate(location.pathname, { replace: true, state: {} }); // 중복 실행 방지
-    }
-  }, [controller, location]);
 
     // 게임 오버 시 결과 화면으로 이동
   useEffect(() => {

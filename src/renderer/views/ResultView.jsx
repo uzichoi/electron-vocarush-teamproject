@@ -51,7 +51,9 @@ const handleNextRound = () => {
         navigate("/game", { 
             state: { nextRound: true,
                     difficulty: nextDifficulty, // 현재 난이도 같이 전달
-                    }, 
+                        player1: gameResult.player1,
+                        player2: gameResult.player2,
+                    },
             replace: false,
             key: Date.now()  // 강제로 location.key 변경
                   });
