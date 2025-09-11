@@ -218,15 +218,21 @@ export class GameController {
     this.board.resetBoard(rows, cols);
     this.words = this.board.placeWordsRandomly(words, Object.values(Direction), Object.values(Order), 1000);
     this.board.fillEmptyWithRandomLetters();
-    this.updateGridState();
+    
+    let isChanged = true;
+    while (isChanged) {
+    isChanged = this.board.unintendedWordDelete(this.currentWordLength);
   }
-
+    
+    this.updateGridState();
+}
   updateGridState() {
     const snapGrid = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
     const deepGrid = snapGrid.map(row => [...row]);
     const deepHighlight = this.board.highlight.map(row => [...row]);
     this.setState({ ...this.state, grid: deepGrid, highlight: deepHighlight });
   }
+
 
   // =====================
   // 턴 관리

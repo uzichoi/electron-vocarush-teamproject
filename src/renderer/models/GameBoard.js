@@ -55,7 +55,9 @@ export class GameBoard {
     const ord = word.order;
     const x = word.getX();
     const y = word.getY();
-    const text = word.getText();
+    let text = word.getText();
+
+    if (ord === Order.BACKWARD) text = Word.reverseWord(text); // 단어 역방향 배치시
 
     for (let i = 0; i < text.length; i++) {
       const wordX = x + DX[dir] * i;
@@ -139,7 +141,7 @@ fillEmptyWithRandomLetters() {
     }
 }
 
- unintendedWordDelete() {
+ unintendedWordDelete(PlaceWordLength) {
     const dirRow = [0, 0, 1, -1, 1, -1, -1, 1];
     const dirCol = [1, -1, 0, 0, 1, -1, 1, -1];
     //  { ->, <-, 아래, 위, 오른쪽 아래 대각선, 왼쪽 위 대각선, 오른쪽 위 대각선, 왼쪽 아래 대각선 }
@@ -149,10 +151,10 @@ fillEmptyWithRandomLetters() {
 
     const Row = this.row;
     const Col = this.col;
-    const PlaceWordLength = this.placeWordLength;
+    //const PlaceWordLength = this.placeWordLength;
 
     let changed = false;
-
+    console.log("row:", Row, "col:", Col, "PlaceWordLength:", PlaceWordLength);
     for (let row = 0; row < Row; row++) {
       for (let col = 0; col < Col; col++) {
         for (let dir = 0; dir < 8; dir++) {
