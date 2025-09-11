@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
-export default function PlayerConfigurationView({ controller }) {
+export default function PlayerConfigurationView() {
   const [player1Name, setPlayer1Name] = useState("");
   const [player2Name, setPlayer2Name] = useState("");
   const [player1Photo, setPlayer1Photo] = useState("📷");
