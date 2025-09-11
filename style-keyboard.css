@@ -1,0 +1,40 @@
+/* react-simple-keyboard 기본 스타일 */
+.simple-keyboard {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue",
+    Helvetica, Arial, "Lucida Grande", sans-serif;
+  width: 100%;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.simple-keyboard .hg-row {
+  display: flex;
+}
+
+.simple-keyboard .hg-button {
+  display: inline-block;
+  flex-grow: 1;
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 10px;
+  margin: 3px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+  font-size: 16px;
+  text-align: center;
+}
+
+.simple-keyboard .hg-button:active {
+  background: #e0e0e0;
+}
+
+/* Enter, Shift 같은 특수키 스타일 */
+.simple-keyboard .hg-button.hg-functionBtn {
+  background: #dcdcdc;
+}
+
+.simple-keyboard .hg-button.hg-functionBtn:active {
+  background: #c0c0c0;
+}
+

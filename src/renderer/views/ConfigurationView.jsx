@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CustomKeyboard from "../components/Customkeyboard";
 
 export default function ConfigurationView({ controller }) {
   const [player1Name, setPlayer1Name] = useState("");
@@ -8,6 +9,7 @@ export default function ConfigurationView({ controller }) {
   const [player2Photo, setPlayer2Photo] = useState("📷");
   const [countdown, setCountdown] = useState(null);
   const [countTarget, setCountTarget] = useState(null);
+  const [focusedInput, setFocusedInput] = useState(null);
 
   const navigate = useNavigate();
 
@@ -63,6 +65,7 @@ export default function ConfigurationView({ controller }) {
             type="text"
             placeholder="이름 입력"
             value={player1Name}
+            onFocus={() => setFocusedInput("p1")}
             onChange={(e) => setPlayer1Name(e.target.value)}
           />
           <div className="photo-box">{player1Photo}</div>
@@ -81,7 +84,8 @@ export default function ConfigurationView({ controller }) {
             type="text"
             placeholder="이름 입력"
             value={player2Name}
-            onChange={(e) => setPlayer2Name(e.target.value)}
+            onFocus={() => setFocusedInput("p2")}
+            onChange={(e) => setGameInput(e.target.value)}
           />
           <div className="photo-box">{player2Photo}</div>
           <button className="btn-capture" onClick={() => handleCapture(2)}>
@@ -99,7 +103,19 @@ export default function ConfigurationView({ controller }) {
         >
           Game Start
         </button>
+
+        {/*키보드 기분좋게 등장*/}
+        {
+        <CustomKeyboard
+            focusedInput={focusedInput}
+            setPlayer1={setPlayer1Name}
+            setPlayer2={setPlayer2Name}
+            //setGameText={setGameInput}
+            //onEnter={handleStartGame}
+        />
+        }
       </div>
+      
     </div>
   );
 }

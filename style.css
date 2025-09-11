@@ -2065,6 +2065,43 @@ body, .game-view {
   margin-left: -10px;   /* 왼쪽으로 10px 당김 */
 }
 
+/* Custom Keyboard */
+.keyboard-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
+/* react-simple-keyboard 기본 스타일 */
+.hg-theme-default {
+  background-color: #222;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.hg-button {
+  background: #444;
+  color: white;
+  border-radius: 6px;
+  margin: 3px;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.hg-button:active {
+  background: #666;
+}
+
+.keyboard-wrapper {
+  position: absolute;   /* ✅ 버튼 기준 위치 */
+  top: 100%;            /* 부모의 아래쪽에 붙음 */
+  left: 0;
+  width: 600px;         /* 원하는 가로 크기 */
+  margin-top: 10px;     /* 버튼과 간격 */
+  z-index: 9999;
+}
 
 
 
