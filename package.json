@@ -3,14 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": ".tmp/main/index.js",
-  "scripts": {
-    "clean": "rmdir /s /q .tmp dist build || echo clean done",
-    "test": "echo \"Error: no test specified\" && exit 1",
-
-    "build": "npm run clean && npx babel src -d .tmp",
+    "scripts": {
+    "clean": "rm -rf .tmp dist build || echo clean done",
+    "build": "npm run clean && npx babel src node_modules/react-simple-keyboard -d .tmp --extensions \".js,.jsx\"",
     "start": "npm run build && npx electron ."
   },
-  
   "keywords": [],
   "author": "jiyu",
   "license": "ISC",
