@@ -60,6 +60,7 @@ export class GameController {
       timeIncreased: 0,
       turnActive: false,
       currentTurn: null,
+      //boardInitialized: false,        // 🔹 보드 초기화 상태
       turnTime: 0,
       inputValue: "",
       player1: this.player1.getData(),
@@ -128,9 +129,25 @@ export class GameController {
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
   }
 
-  async restartGame({ difficulty } = {}) {
+  async restartGame({ difficulty, player1: p1Data, player2: p2Data } = {}) {
     if (difficulty !== undefined) this.currentGameDifficulty = difficulty;
     if (this.currentGameDifficulty > Difficulty.VERYHARD) this.currentGameDifficulty = Difficulty.VERYHARD;
+
+      // 🔹 기존 플레이어 상태 복원
+  if (p1Data) {
+    this.player1.setScore(p1Data.score);
+    this.player1.setName(p1Data.name);
+    //this.player1.setCombo(p1Data.combo);
+    this.player1.setMaxCombo(p1Data.maxCombo);
+    //this.player1.setHP(p1Data.hp);
+  }
+  if (p2Data) {
+    this.player2.setScore(p2Data.score);
+    this.player2.setName(p2Data.name);
+    //this.player2.setCombo(p2Data.combo);
+    this.player2.setMaxCombo(p2Data.maxCombo);
+    //this.player2.setHP(p2Data.hp);
+  }
 
     this.currentSize = BoardSize[this.currentGameDifficulty];
     this.currentWordLength = PlaceWordLength[this.currentGameDifficulty];
@@ -200,15 +217,21 @@ export class GameController {
     this.board.resetBoard(rows, cols);
     this.words = this.board.placeWordsRandomly(words, Object.values(Direction), Object.values(Order), 1000);
     this.board.fillEmptyWithRandomLetters();
-    this.updateGridState();
+    
+    let isChanged = true;
+    while (isChanged) {
+    isChanged = this.board.unintendedWordDelete(this.currentWordLength);
   }
-
+    
+    this.updateGridState();
+}
   updateGridState() {
     const snapGrid = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
     const deepGrid = snapGrid.map(row => [...row]);
     const deepHighlight = this.board.highlight.map(row => [...row]);
     this.setState({ ...this.state, grid: deepGrid, highlight: deepHighlight });
   }
+
 
   // =====================
   // 턴 관리
