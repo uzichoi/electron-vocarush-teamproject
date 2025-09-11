@@ -195,19 +195,26 @@ export class GameController {
     let fileName;
     switch (this.currentGameDifficulty) {
       case Difficulty.VERYEASY:
-      case Difficulty.EASY: fileName = "easy.txt"; break;
+      case Difficulty.EASY: 
+        fileName = "easy.txt"; 
+        break;
       case Difficulty.NORMAL:
-      case Difficulty.HARD: fileName = "normal.txt"; break;
-      case Difficulty.VERYHARD: fileName = "hard.txt"; break;
+      case Difficulty.HARD: 
+        fileName = "normal.txt"; 
+        break;
+      case Difficulty.VERYHARD: 
+        fileName = "hard.txt";
+        break;
       default: fileName = "easy.txt";
     }
 
     try {
-      const filePath = path.join(process.cwd(), fileName);
+      const filePath = path.join(process.cwd(), "src", "renderer", "assets", "wordLists", fileName);
       const data = await fs.readFile(filePath, "utf-8");
       const lines = data.split(/\r?\n/).filter(line => line.trim() !== "");
       words = lines.sort(() => 0.5 - Math.random()).slice(0, 5);
-    } catch (err) {
+    } 
+    catch (err) {
       console.error(fileName, "파일 읽기 실패", err);
     }
     return words;
