@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 // 랭킹 파일은 프로젝트 루트에 저장
-const rankingPath = path.join(process.cwd(), "ranking.json");
+const rankingPath = path.join(process.cwd(), "../ranking/ranking.json");
 
 class Ranking {
   constructor() {

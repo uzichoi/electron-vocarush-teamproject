@@ -178,11 +178,11 @@ export class GameController {
     let fileName;
     switch (this.currentGameDifficulty) {
       case Difficulty.VERYEASY:
-      case Difficulty.EASY: fileName = "Easy.txt"; break;
+      case Difficulty.EASY: fileName = "easy.txt"; break;
       case Difficulty.NORMAL:
-      case Difficulty.HARD: fileName = "Normal.txt"; break;
-      case Difficulty.VERYHARD: fileName = "Hard.txt"; break;
-      default: fileName = "Easy.txt";
+      case Difficulty.HARD: fileName = "normal.txt"; break;
+      case Difficulty.VERYHARD: fileName = "hard.txt"; break;
+      default: fileName = "easy.txt";
     }
 
     try {
