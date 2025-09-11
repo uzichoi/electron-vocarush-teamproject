@@ -35,7 +35,7 @@ export default function ResultView() {
   const { grid, highlight, placedWordCheck } = gameResult;
 
   const handleRestart = () => {
-  startNewGame();      // 새 게임 컨트롤러 생성
+  //startNewGame();      // 새 게임 컨트롤러 생성
   navigate("/start");  // 시작화면으로 이동
 };
 

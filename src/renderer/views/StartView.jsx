@@ -7,7 +7,7 @@ export default function StartView() {
   const { startNewGame } = useGameController();
 
     const handleStart = () => {
-    startNewGame();        // 새 GameController 생성
+    //startNewGame();        // 새 GameController 생성
     navigate("/config");   // 설정 화면으로 이동
   };
 

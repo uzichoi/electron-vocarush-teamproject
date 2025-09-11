@@ -12,7 +12,7 @@ export default function GameView() {
     const location = useLocation();
     const { controller, state, submitInput } = useGameController(); // 🔹 훅으로 컨트롤러와 state 접근
     const inputRef = useRef(null);
-    
+    const { player1, player2 } = location.state || {}; // 🔹 여기서 가져오기
 
 
     const [showConfirm, setShowConfirm] = useState(false); // 확인창 상태
@@ -24,11 +24,21 @@ export default function GameView() {
         return `${mins}:${secs.toString().padStart(2, "0")}`;
     };
 
-useEffect(() => {
-    if (controller && !state.boardInitialized) {  // 🔹 boardInitialized가 false일 때만 초기화
-        controller.startInitialGame();           // 🔹 0단계 보드 생성
-    }
-}, [controller, state.boardInitialized]);
+// useEffect(() => {
+//     if (controller && !state.boardInitialized) {  // 🔹 boardInitialized가 false일 때만 초기화
+//         controller.startInitialGame();           // 🔹 0단계 보드 생성
+//     }
+// }, [controller, state.boardInitialized]);
+
+  useEffect(() => {
+    if (!player1 || !player2) return;
+
+    // 🟢 받은 설정값으로 컨트롤러 초기화
+    controller.setPlayerInfo("player1", player1.name, player1.photo);
+    controller.setPlayerInfo("player2", player2.name, player2.photo);
+    controller.startInitialGame();
+  }, [controller, player1, player2]);
+
 
       // 🔹 게임 시작, NextRound 여부 확인
   useEffect(() => {

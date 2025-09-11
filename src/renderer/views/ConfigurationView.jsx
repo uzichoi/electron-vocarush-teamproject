@@ -39,12 +39,22 @@ import { useGameController } from "../hooks/useGameController";
   };
 
   // 게임 시작
+  // const handleStartGame = () => {
+  //   if (!controller) return;
+  //   controller.setPlayerInfo("player1", player1Name, player1Photo);
+  //   controller.setPlayerInfo("player2", player2Name, player2Photo);
+  //   controller.startInitialGame(); // 🔹 게임 초기화
+  //   navigate("/game",{ state: { fromConfig: true, key: Date.now() } }); // GameView 라우트로 이동
+  // };
+
   const handleStartGame = () => {
-    if (!controller) return;
-    controller.setPlayerInfo("player1", player1Name, player1Photo);
-    controller.setPlayerInfo("player2", player2Name, player2Photo);
-    //controller.startInitialGame(); // 🔹 게임 초기화
-    navigate("/game",{ state: { fromConfig: true, key: Date.now() } }); // GameView 라우트로 이동
+    // 🟢 컨트롤러는 만들지 않고, 설정값만 전달
+    navigate("/game", { 
+      state: { 
+        player1: { name: player1Name, photo: player1Photo },
+        player2: { name: player2Name, photo: player2Photo }
+      }
+    });
   };
 
   return (

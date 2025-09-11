@@ -12,7 +12,11 @@ export function useGameController(initialController = null) {
 
   // 2) 상태 관리
   // 1) controller와 state를 상태로 관리
-  const [controller, setController] = useState(() => new GameController());
+  //const [controller, setController] = useState(() => new GameController());
+    // 🟢 GameView 진입 시점에만 새 컨트롤러 생성
+  const controllerRef = useRef(new GameController());
+  const controller = controllerRef.current;
+  
   const [state, setState] = useState(controller.state);
 
   // 3) 초기화 및 구독
@@ -33,12 +37,12 @@ export function useGameController(initialController = null) {
   const nextRound = () => controller.restartGame();
 
   // 4) 새 게임 시작 (Restart 또는 Start 버튼)
-  const startNewGame = () => {
-    const newController = new GameController();
-    setController(newController);
-    setState(newController.state);
-    //return newController;
-  };
+  // const startNewGame = () => {
+  //   const newController = new GameController();
+  //   setController(newController);
+  //   setState(newController.state);
+  //   //return newController;
+  // };
 
   return {
     controller,
@@ -47,6 +51,6 @@ export function useGameController(initialController = null) {
     setInputValue,
     startTurn,
     nextRound,
-    startNewGame,
+    startNewGame: () => controller.startInitialGame(),
   };
 }

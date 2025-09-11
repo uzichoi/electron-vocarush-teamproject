@@ -61,6 +61,7 @@ export class GameController {
       timeIncreased: 0,
       turnActive: false,
       currentTurn: null,
+      //boardInitialized: false,        // 🔹 보드 초기화 상태
       turnTime: 0,
       inputValue: "",
       player1: this.player1.getData(),
