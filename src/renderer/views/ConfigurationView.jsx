@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomKeyboard from "../components/Customkeyboard";
+import CustomKeyboard from "../components/CustomKeyboard";
 
 export default function ConfigurationView({ controller }) {
   const [player1Name, setPlayer1Name] = useState("");
