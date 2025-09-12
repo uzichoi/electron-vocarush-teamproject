@@ -3,21 +3,31 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
 export default function PlayerConfigurationView() {
-  const [player1Name, setPlayer1Name] = useState("");
-  const [player2Name, setPlayer2Name] = useState("");
-  const [player1Photo, setPlayer1Photo] = useState("📷");
-  const [player2Photo, setPlayer2Photo] = useState("📷");
+  const navigate = useNavigate();
+  const { state, controller } = useGameController(); // 훅에서 최신 컨트롤러 가져오기. 실시간 상태 구독
+  const { player1, player2 } = state;
+
   const [countdown, setCountdown] = useState(null);
   const [countTarget, setCountTarget] = useState(null);
 
-  const navigate = useNavigate();
-  const { controller } = useGameController(); // 🔹 훅에서 최신 컨트롤러 가져오기
+  // 이름 입력 시, 컨트롤러에 즉시 반영
+  const onChangeName = (idx, e) => {
+    controller.setPlayerName?.(idx, e.target.value);
+  };
+  
+  // 얼굴 촬영, IPC로 파이썬 호출해 파일 저장 + 경로 반환
+  const handleCapture = async(idx) => {
+    const currentPlayer = (idx == 0) ? player1 : player2;   // 이름 미입력 시 alert
+    const name = currentPlayer.name;  
 
-    if (!controller) return <div>Error: Controller not found</div>;
-  // 사진 촬영 카운트다운
-  const handleCapture = (player) => {
+    if(!name) {
+      alert("먼저 플레이어 이름을 입력해주세요.");
+      return;
+    }
+
+    // UI 카운트다운
     let count = 3;
-    setCountTarget(player);
+    setCountTarget(idx);
     setCountdown(count);
 
     const timer = setInterval(() => {
@@ -29,32 +39,35 @@ export default function PlayerConfigurationView() {
         setCountdown(null);
         setCountTarget(null);
 
-        // 사진 대신 이모지 사용
-        if (player === 1) setPlayer1Photo("👤");
-        else setPlayer2Photo("👤");
+        controller.setPlayerPhoto?.(idx, "👤");   // fallback: 사진 대신 기본 아이콘
       }
     }, 1000);
-  };
 
-  // 게임 시작
-  // const handleStartGame = () => {
-  //   if (!controller) return;
-  //   controller.setPlayerInfo("player1", player1Name, player1Photo);
-  //   controller.setPlayerInfo("player2", player2Name, player2Photo);
-  //   controller.startInitialGame(); // 🔹 게임 초기화
-  //   navigate("/game",{ state: { fromConfig: true, key: Date.now() } }); // GameView 라우트로 이동
-  // };
+    // 실제 사진 촬영
+    try {
+      const savePath = await window.electronAPI?.captureFace(name); // 저장된 이미지 파일의 경로
 
-  const handleStartGame = () => {
-    // 🟢 컨트롤러는 만들지 않고, 설정값만 전달
-    navigate("/game", { 
-      state: { 
-        player1: { name: player1Name, photo: player1Photo },
-        player2: { name: player2Name, photo: player2Photo }
+      if (savePath) {
+        controller.setPlayer1Photo?.(idx, savePath);
+      } else {
+        alert("얼굴 캡처에 실패했습니다.");
       }
-    });
+    } catch (e) {
+      console.error(e);
+      alert("얼굴 캡처 중 오류가 발생했습니다.");
+    }
   };
 
+  // 게임 시작. GameView로 이동
+  const handleStartGame = () => { 
+    navigate("/game");
+  };
+
+  if (!controller) {
+    return <div>Error: Controller not found</div>   // 컨트롤러 객체 존재하지 않으면, 에러 메시지 반환
+  }
+
+  // 화면에 표시되는 내용
   return (
     <div className="config-view">
       {/* 중앙 카운트다운 */}
@@ -76,11 +89,13 @@ export default function PlayerConfigurationView() {
           <input
             type="text"
             placeholder="이름 입력"
-            value={player1Name}
-            onChange={(e) => setPlayer1Name(e.target.value)}
+            value={player1.name}
+            onChange={(e) => onChangeName(0, e)}
           />
-          <div className="photo-box">{player1Photo}</div>
-          <button className="btn-capture" onClick={() => handleCapture(1)}>
+          <div className="photo-box">
+            <img src={`file://${player1.photoPath}`} alt="player1"></img>
+          </div>
+          <button className="btn-capture" onClick={() => handleCapture(0)}>
             사진 촬영
           </button>
         </div>
@@ -94,11 +109,13 @@ export default function PlayerConfigurationView() {
           <input
             type="text"
             placeholder="이름 입력"
-            value={player2Name}
-            onChange={(e) => setPlayer2Name(e.target.value)}
+            value={player2.name}
+            onChange={(e) => onChangeName(1, e)}
           />
-          <div className="photo-box">{player2Photo}</div>
-          <button className="btn-capture" onClick={() => handleCapture(2)}>
+          <div className="photo-box">
+            <img src={`file://${player2.photoPath}`} alt="player2"></img>
+          </div>
+          <button className="btn-capture" onClick={() => handleCapture(1)}>
             사진 촬영
           </button>
         </div>
@@ -109,7 +126,7 @@ export default function PlayerConfigurationView() {
         <button
           className="start-btn"
           onClick={handleStartGame}
-          disabled={!player1Name || !player2Name}
+          disabled={!player1.name || !player2.name}
         >
           Game Start
         </button>

@@ -6,10 +6,8 @@ export default class Player {
     this.maxCombo = 0;
     this.hp = 5;
     // this.playerView = new PlayerView(); → React에서는 View와 분리해 관리 (컴포넌트 렌더링)
-    
     this.wordsFound = 0;
     this.totalAttempts = 0;
-
     this.photoPath = null; //사진 경로
 }
 
