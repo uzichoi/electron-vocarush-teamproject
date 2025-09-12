@@ -36,13 +36,13 @@ const CustomKeyboard = ({ focusedInput, setPlayer1, setPlayer2, setGameText, onE
             "q w e r t y u i o p",
             "a s d f g h j k l",
             "{shift} z x c v b n m {pre}",
-            "{space} {dot} {enterText}",
+            "{dot} {space} {enterText}",
           ],
           shift: [
             "Q W E R T Y U I O P",
             "A S D F G H J K L",
             "{shift} Z X C V B N M {pre}",
-            "{space} {dot} {enterText}",
+            "{dot} {space} {enterText}",
           ],
         }}
         onKeyPress={onKeyPress}
