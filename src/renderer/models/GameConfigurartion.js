@@ -7,11 +7,11 @@ export const Difficulty = { // 게임 난이도
 };
 
 export const BoardSize = { // ROW, COL
-    [Difficulty.VERYEASY]: 5, 
-    [Difficulty.EASY]: 6,  
-    [Difficulty.NORMAL]: 6,    
-    [Difficulty.HARD]: 7,
-    [Difficulty.VERYHARD]: 7
+    [Difficulty.VERYEASY]: 4, 
+    [Difficulty.EASY]: 5,  
+    [Difficulty.NORMAL]: 5,    
+    [Difficulty.HARD]: 6,
+    [Difficulty.VERYHARD]: 6
 };
 
 export const PlaceWordLength = { // 단어길이
