@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+
 import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
+
+//import { useNavigate } from "react-router-dom";
+import CustomKeyboard from "../components/CustomKeyboard";
 
 export default function PlayerConfigurationView() {
   const [player1Name, setPlayer1Name] = useState("");
@@ -9,6 +13,7 @@ export default function PlayerConfigurationView() {
   const [player2Photo, setPlayer2Photo] = useState("📷");
   const [countdown, setCountdown] = useState(null);
   const [countTarget, setCountTarget] = useState(null);
+  const [focusedInput, setFocusedInput] = useState(null);
 
   const navigate = useNavigate();
   const { controller } = useGameController(); // 🔹 훅에서 최신 컨트롤러 가져오기
@@ -77,6 +82,7 @@ export default function PlayerConfigurationView() {
             type="text"
             placeholder="이름 입력"
             value={player1Name}
+            onFocus={() => setFocusedInput("p1")}
             onChange={(e) => setPlayer1Name(e.target.value)}
           />
           <div className="photo-box">{player1Photo}</div>
@@ -95,6 +101,7 @@ export default function PlayerConfigurationView() {
             type="text"
             placeholder="이름 입력"
             value={player2Name}
+            onFocus={() => setFocusedInput("p2")}
             onChange={(e) => setPlayer2Name(e.target.value)}
           />
           <div className="photo-box">{player2Photo}</div>
@@ -113,7 +120,19 @@ export default function PlayerConfigurationView() {
         >
           Game Start
         </button>
+
+        {/*키보드 기분좋게 등장*/}
+        {
+        <CustomKeyboard
+            focusedInput={focusedInput}
+            setPlayer1={setPlayer1Name}
+            setPlayer2={setPlayer2Name}
+            //setGameText={setGameInput}
+            //onEnter={handleStartGame}
+        />
+        }
       </div>
+      
     </div>
   );
 }
