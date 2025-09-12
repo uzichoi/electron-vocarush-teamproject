@@ -19,10 +19,10 @@ export class GameBoard {
 
   setSize(row, col) {
     // 최소 5, 최대 7 보장
-    if (row < 5) row = 5;
-    if (row > 7) row = 7;
-    if (col < 5) col = 5;
-    if (col > 7) col = 7;
+    if (row < 4) row = 4;
+    if (row > 6) row = 6;
+    if (col < 4) col = 4;
+    if (col > 6) col = 6;
 
     this.row = row;
     this.col = col;
