@@ -398,13 +398,21 @@ body {
 
 /* 입력 영역 */
 .game-input {
-    padding: 20px 40px;
+    position:fixed;
+    bottom:300px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10000;
+    background:transparent;
+    padding:0;
+    width: auto;
     margin-top: auto; /* 하단에 고정 */
 }
 
 .input-form {
-    max-width: 600px;
-    margin: 0 auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 .input-container {
@@ -1610,6 +1618,7 @@ body, .game-view {
 .game-board {
   transform: scale(1.2);     /* ← 보드 전체 축소 */
   transform-origin: top center;
+  transform: translateY(-200px);
 }
 .game-board .word-grid {
   display: flex;
@@ -1639,6 +1648,7 @@ body, .game-view {
 .player-info {
   transform: scale(var(--panel-scale));     /* ← 패널 축소 */
   transform-origin: top center;
+  transform: translateY(-100px);
 }
 .player-card h3 {
   font-size: 1.2em;
@@ -2007,7 +2017,7 @@ body, .game-view {
 
 /* Game Start 버튼 */
 .start-container {
-  margin-top: 20px;
+  margin-top: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2066,11 +2076,24 @@ body, .game-view {
 }
 
 /* Custom Keyboard */
-.keyboard-wrapper {
+.keyboard-wrapper.keyboard-config {
   position: fixed;
-  bottom: 0;
-  left: 0;
+  bottom: 40px;
+  left: 50%;
+  transform:translateX(-50%);
+  width: 90%;
+  max-width:800px;
+  z-index: 9999;
+}
+
+.keyboard-wrapper.keyboard-game {
+  position: absolute;
+  top: 100%;     /* input-container 바로 아래 */
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
+  max-width: 800px;
+  margin-top: 200px;
   z-index: 9999;
 }
 
@@ -2095,8 +2118,8 @@ body, .game-view {
 }
 
 .keyboard-wrapper {
-  position: absolute;   /* ✅ 버튼 기준 위치 */
-  top: 100%;            /* 부모의 아래쪽에 붙음 */
+  position: absolute;   /* 버튼 기준 위치 */
+              /* 부모의 아래쪽에 붙음 */
   left: 0;
   width: 600px;         /* 원하는 가로 크기 */
   margin-top: 10px;     /* 버튼과 간격 */
