@@ -11,8 +11,8 @@ function createWindow() {
     alwaysOnTop: true,    // 윈도우를 항상 다른 창들 위에 표시
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: true,      // Node.js require 허용
-      contextIsolation: false,     // context 간 분리 해제 (require 사용 가능)
+      nodeIntegration: false, // Node resuires 금지
+      contextIsolation: true, // contextBridge 강제
       enableRemoteModule: false
     }
   });

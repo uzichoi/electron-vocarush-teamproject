@@ -5,8 +5,8 @@
   "main": ".tmp/main/index.js",
   "scripts": {
     "clean": "rm -rf .tmp dist build || echo clean done",
-    "build": "npm run clean && npx babel src node_modules/react-simple-keyboard -d .tmp --extensions \".js,.jsx\"",
-    "start": "npm run build && npx electron ."
+    "build:renderer": "webpack --config webpack.config.js",
+    "start": "npm run build:renderer && npx electron ."
   },
   "keywords": [],
   "author": "jiyu",
@@ -17,8 +17,11 @@
     "@babel/core": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
+    "babel-loader": "^10.0.0",
     "concurrently": "^8.2.0",
-    "electron": "^37.2.6"
+    "electron": "^37.2.6",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
     "react": "18.3.1",
