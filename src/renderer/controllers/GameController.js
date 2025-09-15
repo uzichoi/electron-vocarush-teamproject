@@ -40,12 +40,11 @@ export class GameController {
     this.currentWordLength = PlaceWordLength[this.currentGameDifficulty];
 
     // Player 인스턴스
-    this.player1 = new Player("Player 1");
-    this.player2 = new Player("Player 2");
-    this.player1.setHP(5);
-    this.player2.setHP(5);
-    this.player1.photo;
-    this.player2.photo;
+    this.players = [new Player("Player 1"), new Player("Player 2")];  // 배열 기반으로 수정
+    this.players[0].setHP(5);
+    this.players[1].setHP(5);
+    this.players[0].photo;
+    this.players[1].photo;
 
     // UI state
     this.state = {
@@ -54,8 +53,8 @@ export class GameController {
       currentTurn: null,
       turnTime: 0,
       inputValue: "",
-      player1: this.player1.getData(),
-      player2: this.player2.getData(),
+      player1: this.players[0].getData(),
+      player2: this.players[1].getData(),
       grid: [],
       highlight: [],
       gameOver: false
@@ -84,12 +83,24 @@ export class GameController {
     }, 1000);
   }
 
-  setPlayerName(playerKey, name) {
-    const player = this[playerKey];
+  setPlayerName(idx, name) {
+    const player = this.players[idx];
     if (!player) return;
     if (name) player.setName(name);
-    //if (photo) player.setPhoto(photo);
-    this.setState({ [playerKey]: player.getData() });
+    this.setState({
+      player1: this.players[0].getData(),
+      player2: this.players[1].getData(),
+    });
+  }
+
+  setPlayerPhoto(idx, savePath) {
+    const player = this.players[idx];
+    if (!player) return;
+    player.setPhoto(savePath);
+    this.setState({
+      player1: this.players[0].getData(),
+      player2: this.players[1].getData(), 
+    });
   }
 
   unmount() {
@@ -97,9 +108,7 @@ export class GameController {
     if (this.turnTimer) clearInterval(this.turnTimer);
   }
 
-  // =====================
   // 보드 초기화 및 새 게임
-  // =====================
   async startInitialGame() {
     if (this.gameStarted) return;
     this.gameStarted = true;
@@ -119,21 +128,21 @@ export class GameController {
     if (difficulty !== undefined) this.currentGameDifficulty = difficulty;
     if (this.currentGameDifficulty > Difficulty.VERYHARD) this.currentGameDifficulty = Difficulty.VERYHARD;
 
-      // 기존 플레이어 상태 복원
-  if (p1Data) {
-    this.player1.setScore(p1Data.score);
-    this.player1.setName(p1Data.name);
-    //this.player1.setCombo(p1Data.combo);
-    this.player1.setMaxCombo(p1Data.maxCombo);
-    //this.player1.setHP(p1Data.hp);
-  }
-  if (p2Data) {
-    this.player2.setScore(p2Data.score);
-    this.player2.setName(p2Data.name);
-    //this.player2.setCombo(p2Data.combo);
-    this.player2.setMaxCombo(p2Data.maxCombo);
-    //this.player2.setHP(p2Data.hp);
-  }
+    // 기존 플레이어 상태 복원
+    if (p1Data) {
+      this.players[0].setScore(p1Data.score);
+      this.players[0].setName(p1Data.name);
+      //this.players[0].setCombo(p1Data.combo);
+      this.players[0].setMaxCombo(p1Data.maxCombo);
+      //this.players[0].setHP(p1Data.hp);
+    }
+    if (p2Data) {
+      this.players[1].setScore(p2Data.score);
+      this.players[1].setName(p2Data.name);
+      //this.players[1].setCombo(p2Data.combo);
+      this.players[1].setMaxCombo(p2Data.maxCombo);
+      //this.players[1].setHP(p2Data.hp);
+    }
 
     this.currentSize = BoardSize[this.currentGameDifficulty];
     this.currentWordLength = PlaceWordLength[this.currentGameDifficulty];
@@ -143,31 +152,31 @@ export class GameController {
     console.log("difficulty:", this.currentGameDifficulty, "size:", this.currentSize, "words:", words);
     await this.newGame({ rows: this.currentSize, cols: this.currentSize, words });
 
-      // 추가: gameOver false, 턴 상태 초기화
-  this.setState({
-    player1: this.player1.getData(),
-    player2: this.player2.getData(),
-    grid: this.board.grid,
-    highlight: this.board.highlight,
-    placedWordCheck: this.board.wordCheck,
-    difficulty: this.currentGameDifficulty,
-    gameOver: false,      // 반드시 false로 초기화
-    turnActive: false,    // 턴 시작
-    turnTime: 0,
-    currentTurn: this.player1.getName(), // 첫 턴 플레이어
-  });
+    // 추가: gameOver false, 턴 상태 초기화
+    this.setState({
+      player1: this.players[0].getData(),
+      player2: this.players[1].getData(),
+      grid: this.board.grid,
+      highlight: this.board.highlight,
+      placedWordCheck: this.board.wordCheck,
+      difficulty: this.currentGameDifficulty,
+      gameOver: false,      // 반드시 false로 초기화
+      turnActive: false,    // 턴 시작
+      turnTime: 0,
+      currentTurn: 0, // 첫 턴은 players[0]
+    });
   }
 
   _resetRoundStates() {
-    this.player1.setCombo(0);
-    this.player1.setHP(5);
-    this.player2.setCombo(0);
-    this.player2.setHP(5);
+    this.players[0].setCombo(0);
+    this.players[0].setHP(5);
+    this.players[1].setCombo(0);
+    this.players[1].setHP(5);
 
     this.setState({
       ...this.state,
-      player1: this.player1.getData(),
-      player2: this.player2.getData(),
+      player1: this.players[0].getData(),
+      player2: this.players[1].getData(),
       turnActive: false,
       turnTime: 0,
       currentTurn: null,
@@ -191,7 +200,7 @@ export class GameController {
 
     try {
       const lines = await window.electronAPI.readWordList(fileName);
-      const shuffled = filtered.sort(() => Math.random() - 0.5);
+      const shuffled = lines.sort(() => Math.random() - 0.5);
       words = shuffled.slice(0, 5);
     } catch (e) {
       console.error("readWordList 실패: ", e);
@@ -219,9 +228,38 @@ export class GameController {
   }
 
   // 턴 관리
-  startTurn(playerKey) {
+  startTurn(idx) {
+  const player = this.players[idx];
+  if (!player || player.getHP() <= 0) return;
+
+  this.setState({
+    ...this.state,
+    currentTurn: idx,   // 문자열 대신 숫자 저장
+    turnActive: true,
+    turnTime: 10,
+    inputValue: ""
+  });
+
+  this.turnTimer = setInterval(() => {
+    if (this.state.turnTime > 0) {
+      this.setState({ ...this.state, turnTime: this.state.turnTime - 1 });
+    } else {
+      clearInterval(this.turnTimer);
+      player.subHP();
+      player.setCombo(0);
+      this.setState({
+        player1: this.players[0].getData(),
+        player2: this.players[1].getData(),
+        turnActive: false,
+        turnTime: 0
+      });
+    }
+  }, 1000);
+}
+
+  /*startTurn(idx) {
     if (this.state.turnActive) return;
-    const playerHP = playerKey === "player1" ? this.player1.getHP() : this.player2.getHP();
+    const playerHP = idx === "players[0]" ? this.players[0].getHP() : this.players[1].getHP();
     if (playerHP <= 0) return;
 
     if (this.turnTimer) clearInterval(this.turnTimer);
@@ -244,23 +282,23 @@ export class GameController {
       ...this.state,
       turnActive: false,
       turnTime: 0,
-      player1: this.player1.getData(),
-      player2: this.player2.getData()
+      players[0]: this.players[0].getData(),
+      players[1]: this.players[1].getData()
     }); 
       }
     }, 1000);
-  }
+  }*/
 
   // 단어 입력 처리
   submitInput(wordRaw) {
     const guess = (wordRaw || "").trim().toLowerCase();
     if (!guess || !this.state.turnActive) return;
 
-    const currentPlayerKey = this.state.currentTurn === "player1" ? "player1" : "player2";
-    const opponentKey = currentPlayerKey === "player1" ? "player2" : "player1";
+    const currentIdx = this.state.currentTurn;
+    const opponentIdx = currentIdx === 0 ? 1 : 0;
 
-    const player = this[currentPlayerKey];
-    const opponent = this[opponentKey];
+    const player = this.players[currentIdx];
+    const opponent = this.players[opponentIdx];
 
     // 안전 체크
     const match = this.words.find(
@@ -274,9 +312,9 @@ export class GameController {
       player.addScore(100);
       opponent.subHP();
       opponent.setCombo(0);
-      player.addWord(match);
-      const playerIndex = currentPlayerKey === "player1" ? 0 : 1;
-      this.board.highlightWord(match, playerIndex);
+      player.addWord(true); // 성공
+      const playerIndex = (currentPlayerKey === 0) ? 0 : 1;
+      this.board.highlightWord(match, currentIdx);
       this.updateGridState();
       console.log("Correct word:", guess);
     } else {
@@ -290,8 +328,8 @@ export class GameController {
     this.setInputValue("");
     this.setState({
       ...this.state,
-      player1: this.player1.getData(),
-      player2: this.player2.getData()
+      player1: this.players[0].getData(),
+      player2: this.players[1].getData()
     });
 
     // 턴 종료
@@ -305,28 +343,28 @@ export class GameController {
     }
 
     const allWordsFound = this.words.every(w => w && typeof w.isFound === "function" && w.isFound());
-    const playersDead = this.player1.getHP() <= 0 && this.player2.getHP() <= 0;
+    const playersDead = this.players[0].getHP() <= 0 && this.players[1].getHP() <= 0;
 
     if (allWordsFound || playersDead) {
       console.log("Game Over!");
       Ranking.load();
-      Ranking.add(this.player1.getName(), this.player1.getScore());
-      Ranking.add(this.player2.getName(), this.player2.getScore());
+      Ranking.add(this.players[0].getName(), this.players[0].getScore());
+      Ranking.add(this.players[1].getName(), this.players[1].getScore());
       Ranking.save();
 
       
       // 최근 승자 기록 (rankingview 쪽 기능)
       localStorage.setItem("lastWinners", JSON.stringify([
-        this.player1.getName(),
-        this.player2.getName()
+        this.players[0].getName(),
+        this.players[1].getName()
       ]));
 
 
       setTimeout(() => {
       this.setState({ 
         ...this.state,
-        player1: this.player1.getData(),
-        player2: this.player2.getData(),
+        player1: this.players[0].getData(),
+        player2: this.players[1].getData(),
         grid: this.board.grid,                  // 보드 상태 전달
         highlight: this.board.highlight,        // 하이라이트 전달
         placedWordCheck: this.board.placedWordCheck,  // 못 맞힌 단어 체크 전달
@@ -339,8 +377,8 @@ export class GameController {
     // 턴 초기화
     this.setState({
       ...this.state,
-      player1: this.player1.getData(),
-      player2: this.player2.getData(),
+      player1: this.players[0].getData(),
+      player2: this.players[1].getData(),
       turnActive: false,
       turnTime: 0,
       currentTurn: null

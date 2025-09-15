@@ -1,5 +1,7 @@
+// views/PlayerConfigurationView.jsx
+
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
 export default function PlayerConfigurationView() {
@@ -38,8 +40,6 @@ export default function PlayerConfigurationView() {
         clearInterval(timer);
         setCountdown(null);
         setCountTarget(null);
-
-        controller.setPlayerPhoto?.(idx, "👤");   // fallback: 사진 대신 기본 아이콘
       }
     }, 1000);
 
@@ -48,7 +48,7 @@ export default function PlayerConfigurationView() {
       const savePath = await window.electronAPI?.captureFace(name); // 저장된 이미지 파일의 경로
 
       if (savePath) {
-        controller.setPlayer1Photo?.(idx, savePath);
+        controller.setPlayerPhoto?.(idx, savePath);
       } else {
         alert("얼굴 캡처에 실패했습니다.");
       }
@@ -92,8 +92,12 @@ export default function PlayerConfigurationView() {
             value={player1.name}
             onChange={(e) => onChangeName(0, e)}
           />
-          <div className="photo-box">
-            <img src={`file://${player1.photoPath}`} alt="player1"></img>
+           <div className="photo-box">
+            {player1.photoPath ? (
+              <img src={player1.photoPath} alt="player1" />
+            ) : (
+               "👤"
+            )}
           </div>
           <button className="btn-capture" onClick={() => handleCapture(0)}>
             사진 촬영
@@ -113,7 +117,11 @@ export default function PlayerConfigurationView() {
             onChange={(e) => onChangeName(1, e)}
           />
           <div className="photo-box">
-            <img src={`file://${player2.photoPath}`} alt="player2"></img>
+            {player2.photoPath ? (
+              <img src={player2.photoPath} alt="player2" />
+            ) : (
+               "👤"
+            )}
           </div>
           <button className="btn-capture" onClick={() => handleCapture(1)}>
             사진 촬영

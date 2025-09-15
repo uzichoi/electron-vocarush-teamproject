@@ -19,7 +19,8 @@ export default class Player {
       combo: this.getCombo(),
       wordsFound: this.getWordsFound(),
       accuracy: this.getAccuracy(),
-      hp: this.getHP(),    // 추가
+      hp: this.getHP(),   
+      photoPath: this.getPhoto(),
     };
   }
 
@@ -57,7 +58,7 @@ getPhoto(){
   return this.photoPath;
 }
 
-  // Sett
+  // Setter
   setName(name) {
     this.name = name;
   }
@@ -81,6 +82,7 @@ getPhoto(){
   setPhoto(path){
     this.photoPath = path;
   }
+
   // Methods
   addScore(points) {
     if (this.combo > 0) {
