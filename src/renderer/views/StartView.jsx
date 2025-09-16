@@ -1,13 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
+import SoundManager from "../models/SoundManager";
 
 export default function StartView() {
   const navigate = useNavigate();
   const { startNewGame } = useGameController();
-
+    
     const handleStart = () => {
     //startNewGame();        // 새 GameController 생성
+    SoundManager.play("clickPop");   // ✅ 효과음 재생
     navigate("/config");   // 설정 화면으로 이동
   };
 
@@ -20,7 +22,7 @@ export default function StartView() {
             START
         </button>
         <div className="menu-row">
-          <button className="btn" onClick={() => navigate('/manual')}>Manual</button>
+          <button className="btn" onClick={() => {navigate('/manual'); SoundManager.play("clickPop") ;} }>Manual</button>
           <button className="btn btn-danger" onClick={() => window.close()}>Exit</button>
         </div>
       </div>

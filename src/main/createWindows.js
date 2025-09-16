@@ -12,7 +12,8 @@ function createWindow() {
     webPreferences: {
         nodeIntegration: true,      // Node.js require 허용
         contextIsolation: false,     // context 간 분리 해제 (require 사용 가능)
-        enableRemoteModule: false
+        enableRemoteModule: false,
+        //webSecurity: false
       }
   });
 
