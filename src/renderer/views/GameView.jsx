@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
+import CustomKeyboard from "../components/Customkeyboard";
 
 //export default function GameView({controller, state}) {
 export default function GameView() {
@@ -18,12 +19,15 @@ export default function GameView() {
     const [showConfirm, setShowConfirm] = useState(false); // 확인창 상태
     const [isClosing, setIsClosing] = useState(false);     // 애니메이션 상태
 
+    const [focusedInput, setFocusedInput] = useState(null);
+
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins}:${secs.toString().padStart(2, "0")}`;
-    };
-
+   
+     };
+    
 // useEffect(() => {
 //     if (controller && !state.boardInitialized) {  // 🔹 boardInitialized가 false일 때만 초기화
 //         controller.startInitialGame();           // 🔹 0단계 보드 생성
@@ -253,6 +257,7 @@ export default function GameView() {
               type="text"
               value={state.inputValue}
               onChange={(e) => controller.setInputValue(e.target.value)}
+              onFocus={() => setFocusedInput("game")}
               disabled={!state.turnActive}
               className="word-input"
               placeholder="Type your word..."
@@ -260,6 +265,15 @@ export default function GameView() {
             <button type="submit" className="btn btn-primary submit-btn">SUBMIT</button>
           </div>
         </form>
+
+        {/*멋찐 키보드님 등장*/}
+        <CustomKeyboard
+          viewType="game"
+          focusedInput={focusedInput}
+          setGameText={(val) =>controller.setInputValue(val)}
+          gameValue={state.inputValue}
+          onEnter={() => controller.submitInput(state.inputValue)}
+        />
       </footer>
 
       {/* Quit 확인 모달 */}

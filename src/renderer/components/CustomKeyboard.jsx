@@ -1,34 +1,57 @@
 import React, { useState } from "react";
 import Keyboard from "react-simple-keyboard";
 
-const CustomKeyboard = ({ focusedInput, setPlayer1, setPlayer2, setGameText, onEnter }) => {
+const CustomKeyboard = ({
+  focusedInput,
+  setPlayer1,
+  setPlayer2,
+  setGameText,
+  onEnter,
+  viewType = "config",
+  gameValue = ""
+}) => {
   const [layoutName, setLayoutName] = useState("default");
 
   const onKeyPress = (key) => {
-    let updater;
-    if (focusedInput === "p1") updater = setPlayer1;
-    if (focusedInput === "p2") updater = setPlayer2;
-    if (focusedInput === "game") updater = setGameText;
-
-    if (!updater) return;
-
-    if (key === "{pre}") {
-      updater((prev) => prev.slice(0, -1));
-    } else if (key === "{shift}") {
-      setLayoutName((prev) => (prev === "default" ? "shift" : "default"));
-    } else if (key === "{enterText}") {
-      if (onEnter) onEnter();
-    } else if (key === "{dot}") {
-      updater((prev) => prev + ".");
-    } else if (key === "{space}") {
-      updater((prev) => prev + " ");
-    } else {
-      updater((prev) => prev + key);
+    if (focusedInput === "p1") {
+      if (key === "{pre}") setPlayer1((prev) => prev.slice(0, -1));
+      else if (key === "{space}") setPlayer1((prev) => prev + " ");
+      else if (key === "{dot}") setPlayer1((prev) => prev + ".");
+      else if (key === "{shift}") {
+        setLayoutName((prev) => (prev === "default" ? "shift" : "default"));
+      } else if (key === "{enterText}") {
+        if (onEnter) onEnter();
+      } else setPlayer1((prev) => prev + key);
     }
+
+    else if (focusedInput === "p2") {
+      if (key === "{pre}") setPlayer2((prev) => prev.slice(0, -1));
+      else if (key === "{space}") setPlayer2((prev) => prev + " ");
+      else if (key === "{dot}") setPlayer2((prev) => prev + ".");
+      else if (key === "{shift}") {
+        setLayoutName((prev) => (prev === "default" ? "shift" : "default"));
+      } else if (key === "{enterText}") {
+        if (onEnter) onEnter();
+      } else setPlayer2((prev) => prev + key);
+    }
+
+    else if (focusedInput === "game") {
+      console.log("현재 값:", gameValue,"누른키: ",key);
+      if (key === "{pre}") setGameText(gameValue.slice(0, -1));
+      else if (key === "{space}") setGameText(gameValue + " ");
+      else if (key === "{dot}") setGameText(gameValue + ".");
+      else if (key === "{shift}") {
+        setLayoutName((prev) => (prev === "default" ? "shift" : "default"));
+      } else if (key === "{enterText}") {
+        if (onEnter) onEnter();
+      } else {
+        setGameText(gameValue + key);
+      }
+  }
   };
 
   return (
-    <div className="keyboard-wrapper">
+    <div className={`keyboard-wrapper keyboard-${viewType}`}>
       <Keyboard
         layoutName={layoutName}
         layout={{

@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
 //import { useNavigate } from "react-router-dom";
-import CustomKeyboard from "../components/CustomKeyboard";
+import CustomKeyboard from "../components/Customkeyboard";
 
 export default function PlayerConfigurationView() {
   const [player1Name, setPlayer1Name] = useState("");
@@ -51,7 +51,7 @@ export default function PlayerConfigurationView() {
   // };
 
   const handleStartGame = () => {
-    // 🟢 컨트롤러는 만들지 않고, 설정값만 전달
+    // 컨트롤러는 만들지 않고, 설정값만 전달
     navigate("/game", { 
       state: { 
         player1: { name: player1Name, photo: player1Photo },
@@ -124,6 +124,7 @@ export default function PlayerConfigurationView() {
         {/*키보드 기분좋게 등장*/}
         {
         <CustomKeyboard
+            viewType="config"
             focusedInput={focusedInput}
             setPlayer1={setPlayer1Name}
             setPlayer2={setPlayer2Name}
