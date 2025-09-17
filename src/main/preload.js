@@ -5,5 +5,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   captureFace: (name) => ipcRenderer.invoke('face:capture', name),
   readWordList: (fileName) => ipcRenderer.invoke("words:read", fileName),
   readRanking: () => ipcRenderer.invoke("ranking:read"),
-  wrtieRanking: (data) => ipcRenderer.invoke("ranking:write", data)
+  writeRanking: (data) => ipcRenderer.invoke("ranking:write", data)
 });

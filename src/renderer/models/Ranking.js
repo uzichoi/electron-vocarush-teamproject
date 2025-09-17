@@ -72,7 +72,7 @@ export default class Ranking {
     this.data.sort((a, b) => b.score - a.score);
   }
 
-  static getTop(n = 10) {
+  static getTopEntries(n = 10) {
     return this.data.slice(0, n);
   }
 }

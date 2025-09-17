@@ -1,6 +1,8 @@
-const { ipcRenderer, app, ipcMain } = require("electron");
+// main/ipc/ranking.js
+
+const { app, ipcMain } = require("electron");
 const path = require("path");
-const fs = requre("fs");
+const fs = require("fs");
 
 const rankingFile = app.isPackaged 
     ? path.join(process.resourcesPath, "renderer", "assets", "ranking", "ranking.json")
