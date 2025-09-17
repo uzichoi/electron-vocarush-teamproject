@@ -1,3 +1,5 @@
+// webpack.config.js
+
 const path = require("path");
 
 module.exports = {
@@ -24,7 +26,12 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [".js", ".jsx"] // import 시 확장자 생략 가능
-  },
+  extensions: [".js", ".jsx"],
+  fallback: {
+    fs: false,
+    path: false,
+    child_process: false
+  }
+},
   devtool: "source-map" // 개발 편의
 };

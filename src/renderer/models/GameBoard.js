@@ -1,8 +1,6 @@
 import { Word } from "./Word";
 import { DX, DY, Order } from "./Direction";
 import { Difficulty } from "./GameConfiguration";
-import fs from "fs/promises";
-import path from "path";
 
 export class GameBoard {
   constructor() {
@@ -31,8 +29,6 @@ export class GameBoard {
     this.placedWordCheck = Array.from({ length: row }, () => Array(col).fill(false));
     this.highlight = Array.from({ length: row }, () => Array(col).fill(false)); // 나중에 true / false 말고 플레이어 구분 할수있도록 (플레이어가 각각 맞춘 단어 색 다르게)
   }
-
-
 
   getRow() { return this.row; }
   getCol() { return this.col; }
@@ -202,7 +198,7 @@ fillEmptyWithRandomLetters() {
     return changed;
   }
 
-    async fileRead() {
+   /* async fileRead() {
     try {
       const filePath = path.join(process.cwd(), "words.txt"); // 프로젝트 루트 기준
       const data = await fs.readFile(filePath, "utf-8");
@@ -215,7 +211,19 @@ fillEmptyWithRandomLetters() {
     } catch (err) {
       console.error("file open fail", err);
     }
+  }*/
+
+  async fileRead(fileName = "words.txt") {
+  try {
+    const lines = await window.electronAPI.readWordList(fileName);
+    for (let line of lines) {
+      this.words.add(line);
+    }
+  } catch (err) {
+    console.error("file open fail", err);
   }
+}
+
 
 
 setBoardSize(rows, cols) {

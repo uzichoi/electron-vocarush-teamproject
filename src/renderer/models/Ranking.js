@@ -1,4 +1,4 @@
-import fs from "fs";
+/*import fs from "fs";
 import path from "path";
 
 // 랭킹 파일은 프로젝트 루트에 저장
@@ -51,4 +51,28 @@ class Ranking {
   }
 }
 
-export default new Ranking();
+export default new Ranking();*/
+
+
+
+export default class Ranking {
+  static data = [];
+
+  static async load() {
+    const rankingData = await window.electronAPI.readRanking();
+    this.data = Array.isArray(rankingData) ? rankingData : [];
+  }
+
+  static async save() {
+    await window.electronAPI.writeRanking(this.data);
+  }
+
+  static add(name, score) {
+    this.data.push({name, score});
+    this.data.sort((a, b) => b.score - a.score);
+  }
+
+  static getTop(n = 10) {
+    return this.data.slice(0, n);
+  }
+}
