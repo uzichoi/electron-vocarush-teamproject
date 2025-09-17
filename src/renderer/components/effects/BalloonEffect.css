@@ -1,0 +1,13 @@
+/* BalloonEffect.css */
+.balloon-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* 클릭 방해 안되게 */
+}
+
+.balloon {
+  font-size: 2rem;
+  position: absolute;
+}

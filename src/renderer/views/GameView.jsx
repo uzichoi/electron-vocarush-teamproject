@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 import CustomKeyboard from "../components/Customkeyboard";
+import ComboEffect from "../components/effects/comboEffect";
+import BalloonEffect from "../components/effects/BalloonEffect";
+
 
 //export default function GameView({controller, state}) {
 export default function GameView() {
@@ -186,6 +189,10 @@ export default function GameView() {
               My Turn
             </button>
           </div>
+          {/*콤보 효과 멋찌게 등장 */}
+          {state.player1.combo >= 2 && <ComboEffect combo={state.player1.combo} />}
+          {state.player1.combo >= 4 && <BalloonEffect combo={state.player1.combo} />}
+      
         </div>
                 {/* Board */}
                 <div className="game-board">
@@ -240,6 +247,10 @@ export default function GameView() {
             My Turn
           </button>
         </div>
+
+        {/*콤보 효과 멋찌게 등장 */}
+        {state.player1.combo >= 2 && <ComboEffect combo={state.player2.combo} />}
+        {state.player1.combo >= 4 && <BalloonEffect combo={state.player2.combo} />}
       </div>          
       </main>
       {/* Input + 턴 타이머 */}
