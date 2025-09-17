@@ -2,20 +2,23 @@
 <html>
     <head>
         <title>VocaRush Prototype</title>
-        <meta 
-            charset="UTF-8" 
-            http-equiv="Content-Security-Policy" 
-            content="default-src 'self'; script-src 'self' 'unsafe-inline';"\
-            http-equiv="Content-Security-Policy"
-            content="default-src 'self';
-               script-src 'self' 'unsafe-eval';
-               style-src 'self' 'unsafe-inline';
-               img-src 'self' data:">
-        <link href="style.css" rel="stylesheet"> </link>
-        <link href="style-keyboard.css" rel="stylesheet"></link>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Security-Policy" 
+              content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:">
+        <link href="style.css" rel="stylesheet">
+        <link href="style-keyboard.css" rel="stylesheet">
     </head>
     <body>
         <div id="app"></div>
-        <script>require("./.tmp/renderer/App.js")</script>
+        <script>
+            console.log("HTML 로드됨, React 앱 로딩 시작...");
+            try {
+                require("./.tmp/renderer/App.js");
+                console.log("React 앱 로드 성공!");
+            } catch(error) {
+                console.error("React 앱 로드 실패:", error);
+                document.getElementById('app').innerHTML = '<h1 style="color:red;">앱 로딩 실패: ' + error.message + '</h1>';
+            }
+        </script>
     </body>
 </html>

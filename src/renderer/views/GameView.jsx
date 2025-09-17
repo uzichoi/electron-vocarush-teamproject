@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
-import CustomKeyboard from "../components/Customkeyboard";
+import CustomKeyboard from "../components/CustomKeyboard";
 
 //export default function GameView({controller, state}) {
 export default function GameView() {
