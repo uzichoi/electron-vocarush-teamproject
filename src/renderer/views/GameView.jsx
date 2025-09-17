@@ -1,49 +1,81 @@
 
 import React, { useRef, useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
+import CustomKeyboard from "../components/Customkeyboard";
+import ComboEffect from "../components/effects/comboEffect";
+import BalloonEffect from "../components/effects/BalloonEffect";
+
 
 //export default function GameView({controller, state}) {
 export default function GameView() {
 
-    const navigate = useNavigate(); 
-    const location = useLocation();   // 현재 위치 정보 가져오기
-    const { controller, state, submitInput } = useGameController(); // 훅으로 컨트롤러와 state 접근
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { controller, state, submitInput } = useGameController(); // 🔹 훅으로 컨트롤러와 state 접근
     const inputRef = useRef(null);
-    const { player1, player2 } = location.state || {}; // PlayerConfigurationView.jsx에서 전달받은 데이터 추출. 데이터 없으면 {} 공백으로 대체
+    const { player1, player2 } = location.state || {}; // 🔹 여기서 가져오기
+
 
     const [showConfirm, setShowConfirm] = useState(false); // 확인창 상태
     const [isClosing, setIsClosing] = useState(false);     // 애니메이션 상태
+
+    const [focusedInput, setFocusedInput] = useState(null);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins}:${secs.toString().padStart(2, "0")}`;
-    };
+   
+     };
+    
+// useEffect(() => {
+//     if (controller && !state.boardInitialized) {  // 🔹 boardInitialized가 false일 때만 초기화
+//         controller.startInitialGame();           // 🔹 0단계 보드 생성
+//     }
+// }, [controller, state.boardInitialized]);
 
-  useEffect(() => { 
-    if (!player1 || !player2) return;   // 데이터가 없으면 실행 X
+  // useEffect(() => {
+  //   if (!player1 || !player2) return;
 
-    // Next Round인 경우, 기존 점수 유지하면서 게임 재시작
-    if (location.state?.nextRound) {    
-      controller.restartGame({      
-        difficulty: location.state.difficulty,
-        player1: location.state.player1,
-        player2: location.state.player2,
-      });
-      // 중복 실행 방지. 현재 페이지의 경로('/game')이라면, 같은 페이지에 머무르면서 상태 변경
-      navigate(location.pathname, { replace: true, state: {} });  // 현재 히스토리 덮어쓰면서, location.state를 빈 객체로 초기화
-    } 
-    else {
-      // 처음 게임 시작하는 경우, 데이터를 컨트롤러에 저장.
-      controller.setPlayerInfo("player1", player1.name, player1.photo);
-      controller.setPlayerInfo("player2", player2.name, player2.photo);
-      controller.startInitialGame();
-    }
-  }, [controller, player1, player2, location]);   // 의존성 배열. 배열 원소 중 하나라도 변경되면 useEffect 안의 코드가 다시 실행된다.
+  //   // 🟢 받은 설정값으로 컨트롤러 초기화
+  //   controller.setPlayerInfo("player1", player1.name, player1.photo);
+  //   controller.setPlayerInfo("player2", player2.name, player2.photo);
+  //   controller.startInitialGame();
+  // }, [controller, player1, player2]);
 
-  // 게임 오버 시 결과 화면으로 이동
+
+  //     // 🔹 게임 시작, NextRound 여부 확인
+  // useEffect(() => {
+  //   if (location.state?.nextRound) {
+  //     controller.restartGame({ difficulty: location.state.difficulty });
+  //     navigate(location.pathname, { replace: true, state: {} }); // 중복 실행 방지
+  //   }
+  // }, [controller, location]);
+  useEffect(() => {
+  if (!player1 || !player2) return;
+
+  if (location.state?.nextRound) {
+    // 🔹 Next Round: 기존 점수 유지하면서 게임 재시작
+    controller.restartGame({
+      difficulty: location.state.difficulty,
+      player1: location.state.player1,
+      player2: location.state.player2,
+    });
+    // 🔹 중복 실행 방지
+    navigate(location.pathname, { replace: true, state: {} });
+  } else {
+    // 🔹 처음 게임 시작
+    controller.setPlayerInfo("player1", player1.name, player1.photo);
+    controller.setPlayerInfo("player2", player2.name, player2.photo);
+    controller.startInitialGame();
+  }
+}, [controller, player1, player2, location]);
+
+
+    // 게임 오버 시 결과 화면으로 이동
   useEffect(() => {
     if (state.gameOver) {
       setTimeout(() => {
@@ -93,7 +125,7 @@ export default function GameView() {
         e.preventDefault();
         controller.submitInput(state.inputValue);
     };
-    
+
     const handleQuitToResult = () => { // 진행된 보드 상태를 ResultView로 전달
     navigate("/result", {
     state: {
@@ -157,6 +189,10 @@ export default function GameView() {
               My Turn
             </button>
           </div>
+          {/*콤보 효과 멋찌게 등장 */}
+          {state.player1.combo >= 2 && <ComboEffect combo={state.player1.combo} />}
+          {state.player1.combo >= 4 && <BalloonEffect combo={state.player1.combo} />}
+      
         </div>
                 {/* Board */}
                 <div className="game-board">
@@ -211,6 +247,10 @@ export default function GameView() {
             My Turn
           </button>
         </div>
+
+        {/*콤보 효과 멋찌게 등장 */}
+        {state.player1.combo >= 2 && <ComboEffect combo={state.player2.combo} />}
+        {state.player1.combo >= 4 && <BalloonEffect combo={state.player2.combo} />}
       </div>          
       </main>
       {/* Input + 턴 타이머 */}
@@ -228,6 +268,7 @@ export default function GameView() {
               type="text"
               value={state.inputValue}
               onChange={(e) => controller.setInputValue(e.target.value)}
+              onFocus={() => setFocusedInput("game")}
               disabled={!state.turnActive}
               className="word-input"
               placeholder="Type your word..."
@@ -235,6 +276,15 @@ export default function GameView() {
             <button type="submit" className="btn btn-primary submit-btn">SUBMIT</button>
           </div>
         </form>
+
+        {/*멋찐 키보드님 등장*/}
+        <CustomKeyboard
+          viewType="game"
+          focusedInput={focusedInput}
+          setGameText={(val) =>controller.setInputValue(val)}
+          gameValue={state.inputValue}
+          onEnter={() => controller.submitInput(state.inputValue)}
+        />
       </footer>
 
       {/* Quit 확인 모달 */}
