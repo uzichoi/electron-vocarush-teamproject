@@ -105,7 +105,7 @@ const handleNextRound = () => {
                 </div> */}
                 <div className="header-center">
                     <h1 className="result-title">GAME RESULT</h1>
-                    {/* ✅ 게임 시간 표시 */}
+                    {/*  게임 시간 표시 */}
                     <div className="final-time">⏱ {formatTime(gameResult.gameTime)}</div>
                 </div>
                 
@@ -141,33 +141,33 @@ const handleNextRound = () => {
                           
                     {/* 게임 보드 섹션 */}
                     <section className="result-board-section">
-                        <div className="board-title">Found Words</div>
-                        <div className="result-board">
-                            <div className="result-grid">
-                                {grid.map((row, i) => (
-                                <div key={i} className="grid-row">
-                                    {row.map((cell, j) => {
-                                    let cellClass = "grid-cell";
+                    <div className="board-title">Found Words</div>
+                    <div
+                        className="result-board"
+                        style={{
+                        gridTemplateColumns: `repeat(${grid[0].length}, 1fr)`, // 가로 칸수 자동
+                        }}
+                    >
+                        {grid.map((row, i) =>
+                        row.map((cell, j) => {
+                            let cellClass = "grid-cell";
+                            cellClass += cell !== "*" ? " letter" : " empty";
 
+                            const player = highlight?.[i]?.[j];
+                            if (player === 0) cellClass += " found-by-player1";
+                            else if (player === 1) cellClass += " found-by-player2";
+                            else if (player === -1 && placedWordCheck?.[i]?.[j])
+                            cellClass += " unfound-by-players";
 
-                                    // 글자가 있는지 여부
-                                    cellClass += cell !== "*" ? " letter" : " empty";
-
-                                    // 플레이어별 하이라이트
-                                    const player = highlight?.[i]?.[j];
-                                    if (player === 0) cellClass += " found-by-player1";
-                                    else if (player === 1) cellClass += " found-by-player2";
-                                    else if (player === -1 && placedWordCheck?.[i]?.[j])cellClass += " unfound-by-players";
-                                    return (
-                                        <div key={j} className={cellClass}>
-                                        {cell}
-                                        </div>
-                                    );
-                                    })}
-                                </div>
-                                ))}
+                            return (
+                            <div key={`${i}-${j}`} className={cellClass}>
+                                {cell}
                             </div>
-                        </div>
+                            );
+                        })
+                        )}
+                    </div>
+                    </section>
                          
                      
                     {/* 게임 통계를 게임 보드 하단에 배치 */}
@@ -177,7 +177,7 @@ const handleNextRound = () => {
                             <div className="stat-row">전체 단어: {gameResult.totalWords}개</div>
                             <div className="stat-row">발견 단어: {gameResult.foundWords}개</div>
                         </div> */}
-                    </section>
+        
 
                     {/* 플레이어 2 */}
                     <section className="player-section">

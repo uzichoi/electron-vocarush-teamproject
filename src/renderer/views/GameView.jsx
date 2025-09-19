@@ -108,7 +108,7 @@ export default function GameView() {
 
         //         if (location.state?.nextRound) {
         //             await controller.restartGame({difficulty: location.state.difficulty });
-        //         // 🔹 location.state 초기화 → 중복 실행 방지
+        //         //  location.state 초기화 → 중복 실행 방지
         //     navigate(location.pathname, { replace: true, state: {} });
         //           } else {
         //             await controller.startInitialGame();
@@ -249,8 +249,8 @@ export default function GameView() {
         </div>
 
         {/*콤보 효과 멋찌게 등장 */}
-        {state.player1.combo >= 2 && <ComboEffect combo={state.player2.combo} />}
-        {state.player1.combo >= 4 && <BalloonEffect combo={state.player2.combo} />}
+        {state.player2.combo >= 2 && <ComboEffect combo={state.player2.combo} />}
+        {state.player2.combo >= 4 && <BalloonEffect combo={state.player2.combo} />}
       </div>          
       </main>
       {/* Input + 턴 타이머 */}
@@ -269,11 +269,11 @@ export default function GameView() {
               value={state.inputValue}
               onChange={(e) => controller.setInputValue(e.target.value)}
               onFocus={() => setFocusedInput("game")}
-              disabled={!state.turnActive}
+              readOnly={!state.turnActive}
               className="word-input"
               placeholder="Type your word..."
             />
-            <button type="submit" className="btn btn-primary submit-btn">SUBMIT</button>
+            <button type="submit" className="btn btn-primary submit-btn" disabled={!state.turnActive}>SUBMIT</button>
           </div>
         </form>
 

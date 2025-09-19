@@ -131,7 +131,7 @@ placeWordsRandomly(words, directions,orders, maxTries) {
 }
 
 fillEmptyWithRandomLetters() {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const letters = "abcdefghijklmnopqrstuvwxyz";
     for (let r = 0; r < this.grid.length; r++) {
         for (let c = 0; c < this.grid[r].length; c++) {
             if (!this.grid[r][c] || this.grid[r][c] === "*") {
