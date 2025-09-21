@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Keyboard from "react-simple-keyboard";
-
+import SoundManager from "../models/SoundManager";
 const CustomKeyboard = ({
   focusedInput,
   setPlayer1,
@@ -13,6 +13,8 @@ const CustomKeyboard = ({
   const [layoutName, setLayoutName] = useState("default");
 
   const onKeyPress = (key) => {
+
+    SoundManager.play("clickKeyboard");
     if (focusedInput === "p1") {
       if (key === "{pre}") setPlayer1((prev) => prev.slice(0, -1));
       else if (key === "{space}") setPlayer1((prev) => prev + " ");

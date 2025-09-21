@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-
+import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
 //import { useNavigate } from "react-router-dom";
 import CustomKeyboard from "../components/Customkeyboard";
+import SoundManager from "../models/SoundManager";
 
 export default function PlayerConfigurationView() {
   const [player1Name, setPlayer1Name] = useState("");
@@ -18,18 +19,28 @@ export default function PlayerConfigurationView() {
   const navigate = useNavigate();
   const { controller } = useGameController(); // 🔹 훅에서 최신 컨트롤러 가져오기
 
+  useEffect(() => {
+    // 마운트 시 특별히 할 일 없으면 생략 가능
+
+    return () => {
+      // ✅ 언마운트 시 BGM 정지
+      SoundManager.stopBgm();
+    };
+  }, []); // 빈 deps → 마운트 시 1회, 언마운트 시 cleanup 실행
+
     if (!controller) return <div>Error: Controller not found</div>;
   // 사진 촬영 카운트다운
   const handleCapture = (player) => {
     let count = 3;
     setCountTarget(player);
     setCountdown(count);
-
+    SoundManager.play("clickTurn");
     const timer = setInterval(() => {
       count -= 1;
       if (count > 0) {
         setCountdown(count); // 3,2,1 다 보이게 함
       } else {
+          SoundManager.play("kamera");
         clearInterval(timer);
         setCountdown(null);
         setCountTarget(null);
@@ -39,6 +50,8 @@ export default function PlayerConfigurationView() {
         else setPlayer2Photo("👤");
       }
     }, 1000);
+
+
   };
 
   // 게임 시작
@@ -52,6 +65,7 @@ export default function PlayerConfigurationView() {
 
   const handleStartGame = () => {
     // 컨트롤러는 만들지 않고, 설정값만 전달
+    SoundManager.play("clickGameStart");
     navigate("/game", { 
       state: { 
         player1: { name: player1Name, photo: player1Photo },
@@ -61,6 +75,7 @@ export default function PlayerConfigurationView() {
   };
 
   return (
+    
     <div className="config-view">
       {/* 중앙 카운트다운 */}
       {countdown !== null && (
@@ -82,7 +97,7 @@ export default function PlayerConfigurationView() {
             type="text"
             placeholder="이름 입력"
             value={player1Name}
-            onFocus={() => setFocusedInput("p1")}
+            onFocus={() => {setFocusedInput("p1"); SoundManager.play("clickTurn")}}
             onChange={(e) => setPlayer1Name(e.target.value)}
           />
           <div className="photo-box">{player1Photo}</div>
@@ -101,7 +116,7 @@ export default function PlayerConfigurationView() {
             type="text"
             placeholder="이름 입력"
             value={player2Name}
-            onFocus={() => setFocusedInput("p2")}
+            onFocus={() => {setFocusedInput("p2"); SoundManager.play("clickTurn")}}
             onChange={(e) => setPlayer2Name(e.target.value)}
           />
           <div className="photo-box">{player2Photo}</div>

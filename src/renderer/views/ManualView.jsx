@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import SoundManager from "../models/SoundManager";
 export default function ManualView() {
   const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ export default function ManualView() {
             </div>
         </div>
         <footer className="manual-footer">
-            <button className="manual-btn-small" onClick={() => navigate('/start')}>← Back</button>
+            <button className="manual-btn-small" onClick={() =>{SoundManager.play("clickPop"); navigate('/start');}}>← Back</button>
         </footer>
     </div>
   );

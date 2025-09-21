@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { gameController } from "../controllers/GameController"; // ✅ 인스턴스 import
 import { useGameController } from "../hooks/useGameController";
-
+import SoundManager from "../models/SoundManager";
 export default function ResultView() {
     const navigate = useNavigate();
     const { state, startNewGame } = useGameController(); // state 정의
@@ -20,7 +20,7 @@ export default function ResultView() {
 
     player1.isWinner = player1Score > player2Score;
     player2.isWinner = player2Score > player1Score;
-
+    //SoundManager.play("tada");
     return {
       player1,
       player2,
@@ -32,10 +32,44 @@ export default function ResultView() {
     };
   });
 
+  const [played, setPlayed] = useState(false); // ✅ 효과음이 이미 나왔는지 여부 저장
+
+
+  useEffect(() => {
+    SoundManager.playBgm("resultBgm"); // 마운트 시 BGM 재생
+  
+    return () => {
+    // 👇 Ranking 페이지로 이동할 때는 끊지 않음
+    // 👇 결과뷰에서 다른 곳으로 이동할 때만 정지
+    if (location.pathname !== "/ranking") {
+      SoundManager.stopBgm();
+    }
+    };
+  }, []);
+
+    // ✅ 컴포넌트 마운트 시 0.5초 후 사운드 재생
+useEffect(() => {
+  if (!gameResult) return;
+
+  // ✅ 뒤로 온 경우라면 소리 막기
+  if (sessionStorage.getItem("fromBack") === "true") {
+    sessionStorage.removeItem("fromBack"); // 플래그 제거
+    return;
+  }
+
+  const timer = setTimeout(() => {
+    SoundManager.play("tada");
+  }, 500);
+
+
+
+  return () => clearTimeout(timer);
+}, [gameResult]);
   const { grid, highlight, placedWordCheck } = gameResult;
 
   const handleRestart = () => {
   //startNewGame();      // 새 게임 컨트롤러 생성
+  SoundManager.play("clickPop");
   navigate("/start");  // 시작화면으로 이동
 };
 
@@ -45,6 +79,7 @@ const handleNextRound = () => {
     // 임시 경로를 거쳐서 강제로 GameView 재마운트
    // navigate("/start"); 
     // 현재 난이도에 +1 해서 GameView로 전달
+    SoundManager.play("clickPop");
     const nextDifficulty = (gameResult.difficulty ?? 0) + 1;
 
     setTimeout(() => {
@@ -208,7 +243,7 @@ const handleNextRound = () => {
 
                 {/* 액션 버튼들 */}
                 <section className="result-actions">
-                        <button className="btn-secondary" onClick={() => navigate("/ranking")}>
+                        <button className="btn-secondary" onClick={() => {SoundManager.play("clickPop"); navigate("/ranking");}}>
                         View Ranking
                     </button>
                     <button className="btn-secondary" onClick={handleRestart}>Restart</button>

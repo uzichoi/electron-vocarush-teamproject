@@ -7,7 +7,7 @@ import Player from "../models/Player";
 import path from "path";
 import fs from "fs/promises";
 import Ranking from "../models/Ranking";
-
+import SoundManager from "../models/SoundManager";
 // =====================
 // 이벤트 emitter
 // =====================
@@ -250,16 +250,21 @@ export class GameController {
     if (this.turnTimer) clearInterval(this.turnTimer);
 
     this.setState({ ...this.state, currentTurn: playerKey, turnActive: true, turnTime: 10, inputValue: "" });
-
+    SoundManager.playLoop("gameClock");
     this.turnTimer = setInterval(() => {
       if (this.state.turnTime > 0) {
+        //SoundManager.play("gameClock");
         this.setState({ ...this.state, turnTime: this.state.turnTime - 1 });
       } else {
         clearInterval(this.turnTimer);
+        //SoundManager.stopBgm();
             // 현재 턴 플레이어 가져오기
+          SoundManager.stop("gameClock");
+            SoundManager.play("timeOver");
       const currentPlayerKey = this.state.currentTurn;
       if (currentPlayerKey) {
         const player = this[currentPlayerKey];
+        //SoundManager.stopBgm();
         player.subHP();      // HP 감소
         player.setCombo(0);  // 콤보 초기화
       }
@@ -272,6 +277,7 @@ export class GameController {
     }); 
       }
     }, 1000);
+    //SoundManager.stopBgm();
   }
 
   // =====================
@@ -301,10 +307,12 @@ export class GameController {
       opponent.setCombo(0);
       player.addWord(match);
       const playerIndex = currentPlayerKey === "player1" ? 0 : 1;
+      SoundManager.playComboSound(player.getCombo())
       this.board.highlightWord(match, playerIndex);
       this.updateGridState();
       console.log("Correct word:", guess);
     } else {
+      SoundManager.play("gameWrong");
       player.setCombo(0);
       player.subHP();
       player.addWord(match);
@@ -320,6 +328,7 @@ export class GameController {
     });
 
     // 턴 종료
+    SoundManager.stop("gameClock");
     this.endTurn();
   }
 
@@ -328,7 +337,7 @@ export class GameController {
       clearInterval(this.turnTimer);
       this.turnTimer = null;
     }
-
+    SoundManager.stop("gameClock");
     const allWordsFound = this.words.every(w => w && typeof w.isFound === "function" && w.isFound());
     const playersDead = this.player1.getHP() <= 0 && this.player2.getHP() <= 0;
 

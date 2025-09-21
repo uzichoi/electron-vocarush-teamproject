@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 import CustomKeyboard from "../components/Customkeyboard";
-import ComboEffect from "../components/effects/comboEffect";
+import ComboEffect from "../components/effects/ComboEffect";
 import BalloonEffect from "../components/effects/BalloonEffect";
-
+import SoundManager from "../models/SoundManager";
 
 //export default function GameView({controller, state}) {
 export default function GameView() {
@@ -74,6 +74,14 @@ export default function GameView() {
   }
 }, [controller, player1, player2, location]);
 
+    
+useEffect(() => {
+  SoundManager.playBgm("gameBgm"); // 마운트 시 BGM 재생
+
+  return () => {
+    SoundManager.stopBgm(); // 언마운트 시 정지
+  };
+}, []);
 
     // 게임 오버 시 결과 화면으로 이동
   useEffect(() => {
@@ -122,11 +130,13 @@ export default function GameView() {
 
 
     const handleSubmit = (e) => {
+      //SoundManager.play("clickPop");
         e.preventDefault();
         controller.submitInput(state.inputValue);
     };
 
     const handleQuitToResult = () => { // 진행된 보드 상태를 ResultView로 전달
+      SoundManager.play("clickPop");
     navigate("/result", {
     state: {
         player1: state.player1,
@@ -183,7 +193,7 @@ export default function GameView() {
             </div>
             <button
               className={`turn-btn ${state.currentTurn === "player1" && state.turnActive ? "active" : ""}`}
-              onClick={() => controller.startTurn("player1")}
+              onClick={() => {SoundManager.play("clickTurn"); controller.startTurn("player1")}}
               disabled={state.turnActive || state.player1.hp <= 0}
             >
               My Turn
@@ -241,7 +251,7 @@ export default function GameView() {
           </div>
           <button
             className={`turn-btn ${state.currentTurn === "player2" && state.turnActive ? "active" : ""}`}
-            onClick={() => controller.startTurn("player2")}
+            onClick={() => {SoundManager.play("clickTurn"); controller.startTurn("player2")}}
             disabled={state.turnActive || state.player2.hp <= 0}
           >
             My Turn

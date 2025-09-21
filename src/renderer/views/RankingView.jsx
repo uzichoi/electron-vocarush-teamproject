@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Ranking from "../models/Ranking";  // 모델 불러오기
-
+import SoundManager from "../models/SoundManager";
 
 export default function RankingView() {
   const navigate = useNavigate();
@@ -27,6 +27,17 @@ export default function RankingView() {
     setRankingData(ranked);
   }, []);
 
+    useEffect(() => {
+      SoundManager.playBgm("rankingBgm"); // 마운트 시 BGM 재생
+    
+      return () => {
+      // 👇 Ranking 페이지로 이동할 때는 끊지 않음
+      // 👇 결과뷰에서 다른 곳으로 이동할 때만 정지
+      if (location.pathname !== "/ranking") {
+        SoundManager.stopBgm();
+      }
+      };
+    }, []);
 
   const formatDate = (dateString) => {
     if(!dateString) return "";
@@ -44,7 +55,7 @@ export default function RankingView() {
         <div className="header-right">
           <button
             className="btn-small"
-            onClick={() => navigate(-1)}
+            onClick={() => {SoundManager.play("clickPop");sessionStorage.setItem("fromBack", "true");navigate(-1);}}
             aria-label="close"
           >
             ×
