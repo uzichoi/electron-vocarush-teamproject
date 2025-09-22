@@ -2,7 +2,7 @@
   "name": "vocarush_electron",
   "version": "1.0.0",
   "description": "",
-  "main": ".tmp/main/index.js",
+  "main": "src/main/index.js",
   "scripts": {
     "clean": "rm -rf .tmp dist build || echo clean done",
     "build:renderer": "npx webpack --config webpack.config.js",

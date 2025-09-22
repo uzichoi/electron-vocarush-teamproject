@@ -1,12 +1,12 @@
 // main/index.js
+const { app, BrowserWindow } = require("electron");
+const createWindow = require("./createWindows");
 
-import { app, BrowserWindow } from "electron";
-import createWindow from "./createWindows.js";
 
 // IPC 핸들러 등록
-import "./ipc/face.js";
-import "./ipc/ranking.js";
-import "./ipc/words.js";
+require("./ipc/face");
+require("./ipc/ranking");
+require("./ipc/words");
 
 app.whenReady().then(() => {
   createWindow();

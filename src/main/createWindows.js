@@ -1,5 +1,7 @@
-import { BrowserWindow } from "electron";
-import path from "path";
+// main/createWindows.js
+
+const { BrowserWindow } = require("electron");
+const path = require("path");
 
 let win;
 
@@ -24,4 +26,4 @@ function createWindow() {
   });
 }
 
-export default createWindow;
+module.exports = createWindow;
