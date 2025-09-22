@@ -6,7 +6,7 @@ export default function BalloonEffect({ combo }) {
 
   const containerStyle = {
     position: "fixed",
-    bottom: "50%",
+    bottom: "75%",
     left: "50%",
     transform: "translate(-50%, 50%)",
     pointerEvents: "none",
@@ -25,7 +25,7 @@ export default function BalloonEffect({ combo }) {
         const angle = Math.random() * 2 * Math.PI; 
         const distance = 200 + Math.random() * 200; // 확산 거리
         const endX = Math.cos(angle) * distance;
-        const endY = Math.sin(angle) * distance * -1; // 위쪽으로 날아가게 음수
+        const endY = Math.sin(angle) * distance * -1.3; // 위쪽으로 날아가게 음수
 
         return (
           <motion.div

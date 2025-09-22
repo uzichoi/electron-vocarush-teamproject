@@ -140,7 +140,7 @@ const handleNextRound = () => {
                 </div> */}
                 <div className="header-center">
                     <h1 className="result-title">GAME RESULT</h1>
-                    {/* ✅ 게임 시간 표시 */}
+                    {/*  게임 시간 표시 */}
                     <div className="final-time">⏱ {formatTime(gameResult.gameTime)}</div>
                 </div>
                 
@@ -150,13 +150,15 @@ const handleNextRound = () => {
                 <div className="result-content">
                     {/* 플레이어 1 */}
                     <section className="player-section">
-                        <div className="player-final">
+                        <div className={`player-final ${gameResult.player1.isWinner ? 'winner' : ''} player1-final`}>
                             {gameResult.player1.isWinner && (
                                 <div className="winner-crown" aria-label="승자">👑</div>
                             )}
                             <div className="player-avatar">📷</div>
                             <h3 className="player-name">{gameResult.player1.name}</h3>
-                            <div className="final-score">{gameResult.player1.score.toLocaleString()}</div>
+                            <div className={`final-score ${gameResult.player1.isWinner ? 'winner' : ''}`}>
+                                {gameResult.player1.score.toLocaleString()}
+                            </div>
                             <div className="player-stats">
                                 <div className="stat-item">
                                     <span>단어:</span> {gameResult.player1.wordsFound}개
@@ -176,33 +178,33 @@ const handleNextRound = () => {
                           
                     {/* 게임 보드 섹션 */}
                     <section className="result-board-section">
-                        <div className="board-title">Found Words</div>
-                        <div className="result-board">
-                            <div className="result-grid">
-                                {grid.map((row, i) => (
-                                <div key={i} className="grid-row">
-                                    {row.map((cell, j) => {
-                                    let cellClass = "grid-cell";
+                    <div className="board-title">Found Words</div>
+                    <div
+                        className="result-board"
+                        style={{
+                        gridTemplateColumns: `repeat(${grid[0].length}, 1fr)`, // 가로 칸수 자동
+                        }}
+                    >
+                        {grid.map((row, i) =>
+                        row.map((cell, j) => {
+                            let cellClass = "grid-cell";
+                            cellClass += cell !== "*" ? " letter" : " empty";
 
+                            const player = highlight?.[i]?.[j];
+                            if (player === 0) cellClass += " found-by-player1";
+                            else if (player === 1) cellClass += " found-by-player2";
+                            else if (player === -1 && placedWordCheck?.[i]?.[j])
+                            cellClass += " unfound-by-players";
 
-                                    // 글자가 있는지 여부
-                                    cellClass += cell !== "*" ? " letter" : " empty";
-
-                                    // 플레이어별 하이라이트
-                                    const player = highlight?.[i]?.[j];
-                                    if (player === 0) cellClass += " found-by-player1";
-                                    else if (player === 1) cellClass += " found-by-player2";
-                                    else if (player === -1 && placedWordCheck?.[i]?.[j])cellClass += " unfound-by-players";
-                                    return (
-                                        <div key={j} className={cellClass}>
-                                        {cell}
-                                        </div>
-                                    );
-                                    })}
-                                </div>
-                                ))}
+                            return (
+                            <div key={`${i}-${j}`} className={cellClass}>
+                                {cell}
                             </div>
-                        </div>
+                            );
+                        })
+                        )}
+                    </div>
+                    </section>
                          
                      
                     {/* 게임 통계를 게임 보드 하단에 배치 */}
@@ -212,17 +214,19 @@ const handleNextRound = () => {
                             <div className="stat-row">전체 단어: {gameResult.totalWords}개</div>
                             <div className="stat-row">발견 단어: {gameResult.foundWords}개</div>
                         </div> */}
-                    </section>
+        
 
                     {/* 플레이어 2 */}
                     <section className="player-section">
-                        <div className="player-final">
+                        <div className={`player-final ${gameResult.player2.isWinner ? 'winner' : ''} player2-final`}>
                             {gameResult.player2.isWinner && (
                                 <div className="winner-crown" aria-label="승자">👑</div>
                             )}
                             <div className="player-avatar">📷</div>
                             <h3 className="player-name">{gameResult.player2.name}</h3>
-                            <div className="final-score">{gameResult.player2.score.toLocaleString()}</div>
+                            <div className={`final-score ${gameResult.player2.isWinner ? 'winner' : ''}`}>
+                                {gameResult.player2.score.toLocaleString()}
+                            </div>
                             <div className="player-stats">
                                 <div className="stat-item">
                                     <span>단어:</span> {gameResult.player2.wordsFound}개
@@ -243,8 +247,18 @@ const handleNextRound = () => {
 
                 {/* 액션 버튼들 */}
                 <section className="result-actions">
+
                         <button className="btn-secondary" onClick={() => {SoundManager.play("clickPop"); navigate("/ranking");}}>
+
+                        <button className="btn-secondary" onClick={() => navigate("/ranking", {
+                            state: {
+                                lastPlayers: [state.player1.name, state.player2.name]
+                            }
+                            })
+                            }>
+
                         View Ranking
+                        </button>
                     </button>
                     <button className="btn-secondary" onClick={handleRestart}>Restart</button>
                     <button className="btn-secondary" onClick={handleNextRound}>Next Round</button>
