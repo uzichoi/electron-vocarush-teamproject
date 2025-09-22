@@ -14,7 +14,7 @@ export default function ComboEffect({ combo }) {
         spread: 160, 
         startVelocity: 45,
         origin: { y: 0.6 },
-        useWorker: false
+        useWorker: false,
       });
     }
   }, [combo]);

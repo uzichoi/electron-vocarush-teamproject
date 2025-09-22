@@ -13,41 +13,38 @@ const CustomKeyboard = ({
   const [layoutName, setLayoutName] = useState("default");
 
   const onKeyPress = (key) => {
+    // Shift 토글
+    if (key === "{shift}") {
+      setLayoutName((prev) => (prev === "default" ? "shift" : "default"));
+      return; // 여기서 끝내야 글자가 안 붙음
+    }
+
     if (focusedInput === "p1") {
       if (key === "{pre}") setPlayer1((prev) => prev.slice(0, -1));
       else if (key === "{space}") setPlayer1((prev) => prev + " ");
       else if (key === "{dot}") setPlayer1((prev) => prev + ".");
-      else if (key === "{shift}") {
-        setLayoutName((prev) => (prev === "default" ? "shift" : "default"));
-      } else if (key === "{enterText}") {
+      else if (key === "{enterText}") {
         if (onEnter) onEnter();
-      } else setPlayer1((prev) => prev + key);
+      } else setPlayer1((prev) => prev + key); // ✅ shift 적용된 글자 그대로 들어감
     }
 
     else if (focusedInput === "p2") {
       if (key === "{pre}") setPlayer2((prev) => prev.slice(0, -1));
       else if (key === "{space}") setPlayer2((prev) => prev + " ");
       else if (key === "{dot}") setPlayer2((prev) => prev + ".");
-      else if (key === "{shift}") {
-        setLayoutName((prev) => (prev === "default" ? "shift" : "default"));
-      } else if (key === "{enterText}") {
+      else if (key === "{enterText}") {
         if (onEnter) onEnter();
-      } else setPlayer2((prev) => prev + key);
+      } else setPlayer2((prev) => prev + key); // ✅
     }
 
     else if (focusedInput === "game") {
-      console.log("현재 값:", gameValue,"누른키: ",key);
       if (key === "{pre}") setGameText(gameValue.slice(0, -1));
       else if (key === "{space}") setGameText(gameValue + " ");
       else if (key === "{dot}") setGameText(gameValue + ".");
-      else if (key === "{shift}") {
-        setLayoutName((prev) => (prev === "default" ? "shift" : "default"));
-      } else if (key === "{enterText}") {
+      else if (key === "{enterText}") {
         if (onEnter) onEnter();
-      } else {
-        setGameText(gameValue + key);
-      }
-  }
+      } else setGameText(gameValue + key); // ✅
+    }
   };
 
   return (

@@ -67,7 +67,7 @@ export default function PlayerConfigurationView() {
         <div
           className="global-countdown"
           style={{
-            color: countTarget === 1 ? "#ec4899" : "#10b981",
+            color: countTarget === 1 ? "#42a5f5" : "#ffb3d1",
           }}
         >
           {countdown}

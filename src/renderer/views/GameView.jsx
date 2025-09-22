@@ -7,6 +7,7 @@ import { useGameController } from "../hooks/useGameController";
 import CustomKeyboard from "../components/Customkeyboard";
 import ComboEffect from "../components/effects/comboEffect";
 import BalloonEffect from "../components/effects/BalloonEffect";
+import ComboTextEffect from "../components/effects/ComboTextEffect";
 
 
 //export default function GameView({controller, state}) {
@@ -189,9 +190,6 @@ export default function GameView() {
               My Turn
             </button>
           </div>
-          {/*콤보 효과 멋찌게 등장 */}
-          {state.player1.combo >= 2 && <ComboEffect combo={state.player1.combo} />}
-          {state.player1.combo >= 4 && <BalloonEffect combo={state.player1.combo} />}
       
         </div>
                 {/* Board */}
@@ -207,7 +205,11 @@ export default function GameView() {
 
                             // 플레이어별 하이라이트
                             const player = state.highlight?.[i]?.[j];
-                            if (player === 0) cellClass += " found-by-player1";
+
+                            if(player === "wrong"){
+                              cellClass += "wrong-word";
+                            }
+                            else if (player === 0) cellClass += " found-by-player1";
                             else if (player === 1) cellClass += " found-by-player2";
 
                             return (
@@ -247,10 +249,6 @@ export default function GameView() {
             My Turn
           </button>
         </div>
-
-        {/*콤보 효과 멋찌게 등장 */}
-        {state.player1.combo >= 2 && <ComboEffect combo={state.player2.combo} />}
-        {state.player1.combo >= 4 && <BalloonEffect combo={state.player2.combo} />}
       </div>          
       </main>
       {/* Input + 턴 타이머 */}
@@ -277,6 +275,12 @@ export default function GameView() {
           </div>
         </form>
 
+        {/*콤보 효과 멋찌게 등장 */}
+        {state.player1.combo >= 2 && <ComboEffect combo={state.player1.combo} />}
+        {state.player1.combo >= 4 && <BalloonEffect combo={state.player1.combo} />}
+        {state.player2.combo >= 2 && <ComboEffect combo={state.player2.combo} />}
+        {state.player2.combo >= 4 && <BalloonEffect combo={state.player2.combo} />}
+        
         {/*멋찐 키보드님 등장*/}
         <CustomKeyboard
           viewType="game"
@@ -286,7 +290,10 @@ export default function GameView() {
           onEnter={() => controller.submitInput(state.inputValue)}
         />
       </footer>
-
+        {/*콤보글씨효과 멋찌게등장*/}
+        <ComboTextEffect combo={state.player1.combo} player="player1" />
+        <ComboTextEffect combo={state.player2.combo} player="player2" />  
+      
       {/* Quit 확인 모달 */}
         {showConfirm && (
         <div className="confirm-overlay">

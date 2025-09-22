@@ -9,7 +9,7 @@ export default function RankingView() {
 
   useEffect(() => {
     Ranking.load(); // 파일에서 불러오기
-    const entries = Ranking.getTopEntries(20);
+    const entries = Ranking.getTopEntries(100);
 
     let lastScore = null;
     let lastRank = 0;
