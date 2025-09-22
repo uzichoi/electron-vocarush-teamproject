@@ -12,7 +12,7 @@ class SoundManager {
     this.sounds = {
             // clickPop: new Audio(`file://${path.join(basePath, "clickPop.mp3")}`),
       clickPop : new Howl({
-      src: ["D:VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickPop.wav"],
+      src: ["/home/pi/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickPop.wav"],
     })
     };
   }
