@@ -15,11 +15,9 @@ export default function ComboEffect({ combo }) {
         spread: 160, 
         startVelocity: 45,
         origin: { y: 0.6 },
-<<<<<<< HEAD
-        ...options
-=======
+        ...options,
         useWorker: false,
->>>>>>> origin/lightScreenSecond
+
       });
     }
   }, [combo]);
