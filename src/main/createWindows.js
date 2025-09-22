@@ -1,4 +1,4 @@
-// main/createWindows.js
+// main/createWindow.js
 
 const { BrowserWindow } = require("electron");
 const path = require("path");
