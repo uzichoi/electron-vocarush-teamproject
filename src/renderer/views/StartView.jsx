@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
-import SoundManager from "../models/SoundManager";
+//import SoundManager from "../models/SoundManager";
 
 export default function StartView() {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function StartView() {
             START
         </button>
         <div className="menu-row">
-          <button className="btn" onClick={() => {navigate('/manual'); SoundManager.play("clickPop") ;} }>Manual</button>
+          <button className="btn" onClick={() =>navigate('/manual')}  >Manual</button>
           <button className="btn btn-danger" onClick={() => window.close()}>Exit</button>
         </div>
       </div>
