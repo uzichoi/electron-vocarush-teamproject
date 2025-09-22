@@ -10,7 +10,7 @@ class SoundManager {
   constructor() {
     this.sounds = {
             // clickPop: new Audio(`file://${path.join(basePath, "clickPop.mp3")}`),
-            clickPop: new Audio('D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickPop.mp3'),
+            clickPop: () => new Audio('/home/pi//VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickPop.mp3'),
 
     };
   }
