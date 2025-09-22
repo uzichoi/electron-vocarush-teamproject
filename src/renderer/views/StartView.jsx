@@ -9,7 +9,7 @@ export default function StartView() {
     
     const handleStart = () => {
     //startNewGame();        // 새 GameController 생성
-    SoundManager.play("clickPop");   // ✅ 효과음 재생
+    //SoundManager.play("clickPop");   // ✅ 효과음 재생
     navigate("/config");   // 설정 화면으로 이동
   };
 
