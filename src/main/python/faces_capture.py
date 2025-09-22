@@ -216,13 +216,17 @@ def main():
         camera.release()
         cv2.destroyAllWindows()
     
-    return captured
+    return captured, save_path
 
 if __name__ == "__main__":
-    success = main()
+    success, save_path = main()
+    print(f"[DEBUG] main() returned success={success}, save_path={save_path}", flush=True)
+
     if success:
-        print("SAVE_PATH: {save_path}")
+        print(f"SAVE_PATH: {save_path}", flush=True)
         sys.exit(0)
     else:
-        print("얼굴 캡처를 완료하지 못했습니다.")
+        print("[DEBUG] Exiting with code 1 because success=False", flush=True)
+        print("얼굴 캡처를 완료하지 못했습니다.", flush=True)
         sys.exit(1)
+        

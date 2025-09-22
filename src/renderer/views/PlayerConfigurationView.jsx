@@ -19,7 +19,7 @@ export default function PlayerConfigurationView() {
   
   // 얼굴 촬영, IPC로 파이썬 호출해 파일 저장 + 경로 반환
   const handleCapture = async(idx) => {
-    const currentPlayer = (idx == 0) ? player1 : player2;   // 이름 미입력 시 alert
+    const currentPlayer = (idx === 0) ? player1 : player2;   // 이름 미입력 시 alert
     const name = currentPlayer.name;  
 
     if(!name) {
@@ -45,15 +45,22 @@ export default function PlayerConfigurationView() {
 
     // 실제 사진 촬영
     try {
-      const savePath = await window.electronAPI?.captureFace(name); // 저장된 이미지 파일의 경로
+      // IPC를 통해 Python 실행 → 캡처 성공 시 저장된 파일 경로 반환
+      const savePath = await window.electronAPI?.captureFace(name);
+      console.log("📷 [DEBUG] captureFace returned:", savePath);
 
       if (savePath) {
+        // 반환된 경로를 컨트롤러에 반영 → UI에 사진 표시
         controller.setPlayerPhoto?.(idx, savePath);
+        console.log("📷 [DEBUG] Player photo updated for:", name);
       } else {
+        // savePath가 null 또는 undefined라면 실패로 간주
+        console.warn("⚠️ [DEBUG] savePath is empty (null/undefined).");
         alert("얼굴 캡처에 실패했습니다.");
       }
     } catch (e) {
-      console.error(e);
+      // Python 프로세스 에러, IPC 통신 에러 등은 여기서 잡힘
+      console.error("❌ [DEBUG] captureFace error:", e);
       alert("얼굴 캡처 중 오류가 발생했습니다.");
     }
   };
@@ -88,19 +95,18 @@ export default function PlayerConfigurationView() {
           <h2>Player 1</h2>
           <input
             type="text"
-            placeholder="이름 입력"
-            value={player1.name}
+            placeholder="Input your name"
             onChange={(e) => onChangeName(0, e)}
           />
-           <div className="photo-box">
+          <div className="photo-box">
             {player1.photoPath ? (
               <img src={player1.photoPath} alt="player1" />
             ) : (
-               "👤"
+              "👤"
             )}
           </div>
           <button className="btn-capture" onClick={() => handleCapture(0)}>
-            사진 촬영
+            Capture
           </button>
         </div>
 
@@ -112,19 +118,18 @@ export default function PlayerConfigurationView() {
           <h2>Player 2</h2>
           <input
             type="text"
-            placeholder="이름 입력"
-            value={player2.name}
+            placeholder="Input your name"
             onChange={(e) => onChangeName(1, e)}
           />
           <div className="photo-box">
             {player2.photoPath ? (
               <img src={player2.photoPath} alt="player2" />
             ) : (
-               "👤"
+              "👤"
             )}
           </div>
           <button className="btn-capture" onClick={() => handleCapture(1)}>
-            사진 촬영
+            Capture
           </button>
         </div>
       </div>
