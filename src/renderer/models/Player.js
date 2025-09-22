@@ -47,16 +47,16 @@ export default class Player {
 
   getWordsFound() {
     return this.wordsFound;
-}
+  }
 
-getAccuracy() {
-    if(this.totalAttempts == 0) return 0;
-    return Math.round((this.wordsFound / this.totalAttempts) * 100);
-}
+  getAccuracy() {
+      if(this.totalAttempts == 0) return 0;
+      return Math.round((this.wordsFound / this.totalAttempts) * 100);
+  }
 
-getPhoto(){
-  return this.photoPath;
-}
+  getPhoto(){
+    return this.photoPath;
+  }
 
   // Setter
   setName(name) {

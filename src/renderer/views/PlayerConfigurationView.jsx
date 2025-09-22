@@ -9,8 +9,8 @@ export default function PlayerConfigurationView() {
   const { state, controller } = useGameController(); // 훅에서 최신 컨트롤러 가져오기. 실시간 상태 구독
   const { player1, player2 } = state;
 
-  const [countdown, setCountdown] = useState(null);
-  const [countTarget, setCountTarget] = useState(null);
+  // const [countdown, setCountdown] = useState(null);
+  // const [countTarget, setCountTarget] = useState(null);
 
   // 이름 입력 시, 컨트롤러에 즉시 반영
   const onChangeName = (idx, e) => {
@@ -19,49 +19,46 @@ export default function PlayerConfigurationView() {
   
   // 얼굴 촬영, IPC로 파이썬 호출해 파일 저장 + 경로 반환
   const handleCapture = async(idx) => {
-    const currentPlayer = (idx === 0) ? player1 : player2;   // 이름 미입력 시 alert
+    const currentPlayer = (idx === 0) ? player1 : player2;   
     const name = currentPlayer.name;  
 
-    if(!name) {
-      alert("먼저 플레이어 이름을 입력해주세요.");
-      return;
-    }
-
+    if (!name) { alert("먼저 플레이어 이름을 입력해주세요."); return; }
+    
     // UI 카운트다운
     let count = 3;
-    setCountTarget(idx);
-    setCountdown(count);
+    //setCountTarget(idx);
+    //setCountdown(count); 
 
-    const timer = setInterval(() => {
+    /*const timer = setInterval(() => {
       count -= 1;
-      if (count > 0) {
-        setCountdown(count); // 3,2,1 다 보이게 함
-      } else {
+      if (count > 0) setCountdown(count); 
+      else {
         clearInterval(timer);
         setCountdown(null);
         setCountTarget(null);
       }
-    }, 1000);
+    }, 1000);*/
 
-    // 실제 사진 촬영
+    let result;
     try {
-      // IPC를 통해 Python 실행 → 캡처 성공 시 저장된 파일 경로 반환
-      const savePath = await window.electronAPI?.captureFace(name);
-      console.log("📷 [DEBUG] captureFace returned:", savePath);
-
-      if (savePath) {
-        // 반환된 경로를 컨트롤러에 반영 → UI에 사진 표시
-        controller.setPlayerPhoto?.(idx, savePath);
-        console.log("📷 [DEBUG] Player photo updated for:", name);
-      } else {
-        // savePath가 null 또는 undefined라면 실패로 간주
-        console.warn("⚠️ [DEBUG] savePath is empty (null/undefined).");
-        alert("얼굴 캡처에 실패했습니다.");
-      }
+      result = await window.electronAPI.captureFace(name);
     } catch (e) {
-      // Python 프로세스 에러, IPC 통신 에러 등은 여기서 잡힘
-      console.error("❌ [DEBUG] captureFace error:", e);
-      alert("얼굴 캡처 중 오류가 발생했습니다.");
+      console.error("IPC invoke error:", e);
+      return;
+    }
+
+    const { code, fileUrl, stdout, stderr } = result; // 여기까지 왔으면 invoke 자체는 성공 (항상 resolve하는 형태로 바꿨기 때문)
+    console.log("[PY DONE]", { code, stdout, stderr, fileUrl });
+
+    if (code !== 0 || !fileUrl) {
+      console.warn("capture failed\n", stderr || stdout || `exit code: ${code}`);
+      return;
+    }
+
+    try {   
+      controller.setPlayerPhoto?.(idx, fileUrl); // 사진 교체 최종 트리거
+    } catch (e) {
+      console.error("setPlayerPhoto error: ", e);
     }
   };
 
@@ -77,18 +74,6 @@ export default function PlayerConfigurationView() {
   // 화면에 표시되는 내용
   return (
     <div className="config-view">
-      {/* 중앙 카운트다운 */}
-      {countdown !== null && (
-        <div
-          className="global-countdown"
-          style={{
-            color: countTarget === 1 ? "#ec4899" : "#10b981",
-          }}
-        >
-          {countdown}
-        </div>
-      )}
-
       <div className="config-players">
         {/* Player 1 */}
         <div className="player-config player1-config">
@@ -100,7 +85,17 @@ export default function PlayerConfigurationView() {
           />
           <div className="photo-box">
             {player1.photoPath ? (
-              <img src={player1.photoPath} alt="player1" />
+              <img  // src 바뀔 때 강제 리렌더
+                key={player1.photoPath}    
+                src={player1.photoPath}
+                alt="player1"
+                onError={(e) => {
+                  // 드물게 파일을 잠깐 못 읽어들이는 경우 한 번 더 버스팅해서 재시도
+                  const [base] = player1.photoPath.split("?"); 
+                  e.currentTarget.src = `${base}?t=${Date.now()}`;
+                  console.warn("Image reload attempted: ", e);
+                }}
+              />
             ) : (
               "👤"
             )}
@@ -123,7 +118,17 @@ export default function PlayerConfigurationView() {
           />
           <div className="photo-box">
             {player2.photoPath ? (
-              <img src={player2.photoPath} alt="player2" />
+              <img  // src 바뀔 때 강제 리렌더
+                key={player2.photoPath}    
+                src={player2.photoPath}
+                alt="player2"
+                onError={(e) => {
+                  // 드물게 파일을 잠깐 못 읽어들이는 경우 한 번 더 버스팅해서 재시도
+                  const [base] = player2.photoPath.split("?"); 
+                  e.currentTarget.src = `${base}?t=${Date.now()}`;
+                  console.warn("Image reload attempted: ", e);
+                }}
+              />
             ) : (
               "👤"
             )}

@@ -1,39 +1,42 @@
+// main/ipc/face.js
+
 const { ipcMain } = require("electron");
 const { spawn } = require("child_process");
 const path = require("path");
 
+const PY = process.platform === "win32" ? "python" : "python3";
+
 ipcMain.handle("face:capture", async (_evt, name) => {
   const script = path.join(__dirname, "..", "python", "faces_capture.py");
 
-  return await new Promise((resolve, reject) => {
-    const p = spawn("python3", [script, name], { env: { ...process.env } });
+  return await new Promise((resolve) => {
+    const p = spawn(PY, [script, name], { env: { ...process.env } });
+
     let out = "";
     let err = "";
 
-    p.stdout.on("data", (d) => {
-      out += d.toString();
+    p.on("error", (e) => {  // spawn 자체 실패(예: python3 없음)
+       resolve({
+        code: -1,
+        savePath: null,
+        stdout: out,
+        stderr: `spawn error: ${e.message}`
+      });
     });
-    p.stderr.on("data", (d) => {
-      err += d.toString();
-    });
+
+    p.stdout.on("data", d => (out += d.toString()));
+    p.stderr.on("data", d => (err += d.toString()));
 
     p.on("close", (code) => {
-      console.log("📷 Python stdout:\n", out);
-      console.log("📷 Python stderr:\n", err);
-      console.log("📷 Python exit code:", code);
+      console.log("Python stdout: ", out);
+      console.log("Python stderr: ", err);
+      console.log("Python exit code: ", code);
 
-      if (code === 0) {
-        // SAVE_PATH 라인을 추출 (개행·공백 대응)
-        const m = out.match(/SAVE_PATH:\s*(.*)/);
-        if (m) {
-          resolve(m[1].trim());
-        } else {
-          console.warn("⚠️ SAVE_PATH 라인을 찾지 못했습니다.");
-          resolve(null);
-        }
-      } else {
-        reject(new Error(err || "face capture failed"));
-      }
+      const m = out.match(/SAVE_PATH:\s*(.*)/);
+      const savePath = m ? m[1].trim() : null;
+
+      // reject 쓰지 말고 항상 결과 객체 resolve
+      resolve({ code, savePath, stdout: out, stderr: err });
     });
   });
 });

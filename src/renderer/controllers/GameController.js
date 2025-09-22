@@ -93,10 +93,12 @@ export class GameController {
     });
   }
 
-  setPlayerPhoto(idx, savePath) {
+  setPlayerPhoto(idx, urlFromPreload) {
     const player = this.players[idx];
     if (!player) return;
-    player.setPhoto(savePath);
+
+    player.setPhoto(urlFromPreload);  // preload.js 에서 받아온 fileUrl을 그대로 저장. 이미 캐시 버스팅 완료
+
     this.setState({
       player1: this.players[0].getData(),
       player2: this.players[1].getData(), 
