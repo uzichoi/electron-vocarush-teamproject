@@ -19,6 +19,9 @@ function createWindow() {
 
   win.loadFile(path.join(__dirname, "../../index.html"));   // 창에 표시할 내용을 불러옴. index.html이 Electron 창 안에서 "앱의 첫 화면"이 된다.
 
+    // DevTools 열기
+  win.webContents.openDevTools();
+
   win.on("closed", () => {
     win = null;
   });
