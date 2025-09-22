@@ -107,6 +107,7 @@ playLoop(name) {
   if (sound) {
     sound.loop = true;
     sound.currentTime = 0;
+    sound.volume = 0.4;
     sound.play();
     this.currentLoop = sound;  // loop 전용 관리
   } else {
