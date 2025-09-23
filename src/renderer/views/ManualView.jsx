@@ -6,29 +6,32 @@ export default function ManualView() {
 
   return (
     <div className="manual-view"> 
-        <div className="manual-title">How to Play</div>
-        <div className="manual-content">
-            <div className="description-board">
-                <div className="description-row">
-                    <span>1.  2인 배틀형 단어 찾기 게임입니다.</span>
-                </div>
-                <div className="description-row">
-                    <span>2.  버튼을 먼저 누른 사람이 입력 기회를 가집니다.</span>
-                </div>
-                <div className="description-row">
-                    <span>3.  입력 제한 시간은 5초입니다.</span>
-                </div>
-                <div className="description-row">
-                    <span>4.  EASY, NORMAL, HARD 세 단계로 구성되며, 난이도에 따라 정답 단어의 길이와 배점이 다릅니다.</span>
-                </div>
-                <div className="description-row">
-                    <span>5.  연속 정답 시 콤보 배수가 적용됩니다.</span>
-                </div>
-            </div>
+      <div className="manual-title">How to Play</div>
+      <div className="manual-content">
+        <div className="description-board">
+          <div className="description-row">
+            <span>1. This is a 2-player word battle game.</span>
+          </div>
+          <div className="description-row">
+            <span>2. The player who presses <b>My Turn</b> first gets the chance to answer.</span>
+          </div>
+          <div className="description-row">
+            <span>3. Each turn has a <b>10-second</b> time limit.</span>
+          </div>
+          <div className="description-row">
+            <span>4. Levels: Very Easy, Easy, Normal, Hard, Very Hard. Higher levels = longer words.</span>
+          </div>
+          <div className="description-row">
+            <span>5. Consecutive correct answers give <b>combo multipliers</b>.</span>
+          </div>
+          <div className="description-row">
+            <span>6. Find the Hidden Word on the board! Earn +1000 bonus points and a 🍬 Candy!</span>
+          </div>
         </div>
-        <footer className="manual-footer">
-            <button className="manual-btn-small" onClick={() => navigate('/start')}>← Back</button>
-        </footer>
+      </div>
+      <footer className="manual-footer">
+        <button className="manual-btn-small" onClick={() => navigate('/start')}>← Back</button>
+      </footer>
     </div>
   );
 }

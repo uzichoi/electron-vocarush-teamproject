@@ -16,7 +16,7 @@ export default function PlayerConfigurationView() {
   const [focusedInput, setFocusedInput] = useState(null);
 
   const navigate = useNavigate();
-  const { controller } = useGameController(); // 🔹 훅에서 최신 컨트롤러 가져오기
+  const { controller } = useGameController(); // 훅에서 최신 컨트롤러 가져오기
 
     if (!controller) return <div>Error: Controller not found</div>;
   // 사진 촬영 카운트다운

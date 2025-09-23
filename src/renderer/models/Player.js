@@ -59,6 +59,8 @@ getPhoto(){
   return this.photoPath;
 }
 
+
+
   // Sett
   setName(name) {
     this.name = name;

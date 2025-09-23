@@ -1,7 +1,7 @@
 // controllers/GameController.js
 import { GameBoard } from "../models/GameBoard";
 import { Direction, Order } from "../models/Direction";
-import { Difficulty, BoardSize, PlaceWordLength } from "../models/GameConfigurartion.js";
+import { Difficulty, BoardSize, PlaceWordLength } from "../models/GameConfiguration.js";
 import { Word } from "../models/Word";
 import Player from "../models/Player";
 import path from "path";
@@ -352,9 +352,9 @@ export class GameController {
         ...this.state,
         player1: this.player1.getData(),
         player2: this.player2.getData(),
-        grid: this.board.grid,                  // ✅ 보드 상태 전달
-        highlight: this.board.highlight,        // ✅ 하이라이트 전달
-        placedWordCheck: this.board.placedWordCheck,  // ✅ 못맞춘 단어 체크 전달
+        grid: this.board.grid,                  // 보드 상태 전달
+        highlight: this.board.highlight,        //하이라이트 전달
+        placedWordCheck: this.board.placedWordCheck,  //못맞춘 단어 체크 전달
         difficulty: this.currentGameDifficulty,
         gameOver: true 
       });
@@ -407,4 +407,6 @@ export class GameController {
   setInputValue(value) {
     this.setState({ ...this.state, inputValue: value.toUpperCase() });
   }
+
+  
 }

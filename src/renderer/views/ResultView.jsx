@@ -33,6 +33,7 @@ export default function ResultView() {
   });
 
   const { grid, highlight, placedWordCheck } = gameResult;
+  const [highlightState, setHighlightState] = useState(highlight);
 
   const handleRestart = () => {
   //startNewGame();      // 새 게임 컨트롤러 생성
@@ -59,6 +60,20 @@ const handleNextRound = () => {
                   });
     }, 0);
 };
+
+const triggerEasterEgg = () => {
+    const newHighlight = grid.map((row, i) =>
+      row.map((cell, j) =>
+        placedWordCheck?.[i]?.[j] ? "easterEgg" : highlight?.[i]?.[j]
+      )
+    );
+
+    setHighlightState(newHighlight);
+
+    setTimeout(() => {
+      setHighlightState(highlight);
+    }, 100);
+  };
 
   useEffect(() => {
     
@@ -90,6 +105,8 @@ const handleNextRound = () => {
     return <div>결과를 불러오는 중...</div>;
   }
 
+  
+
   // mm:ss 포맷 함수
   const formatTime = (seconds) => {
     const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -103,10 +120,27 @@ const handleNextRound = () => {
                 {/* <div className="header-left">
                     <button className="btn-small" onClick={() => {navigate('/game')}}>← BACK</button>
                 </div> */}
-                <div className="header-center">
+                <div className="header-center" style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+                >
                     <h1 className="result-title">GAME RESULT</h1>
+
                     {/*  게임 시간 표시 */}
-                    <div className="final-time">⏱ {formatTime(gameResult.gameTime)}</div>
+                    <div className="final-time" style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}>
+                        ⏱ {formatTime(gameResult.gameTime)}
+                        <span className="time-secret"
+                        onClick={triggerEasterEgg}
+                        style={{ cursor: "poniter", marginLeft: "10px"}}
+                        ></span>
+                    </div>
                 </div>
                 
             </header>
