@@ -9,7 +9,7 @@
     --accent2: #6f3ff4;
     --glass-bg: rgba(255, 255, 255, 0.35);
     --glass-border: rgba(255, 255, 255, 0.4);
-    --shadow-glass: 0 8px 32px rgba(33, 150, 243, 0.2);
+    --shadow-glass: 0 0.8vw 3.2vw rgba(33, 150, 243, 0.2);
 }
 /* Global Styles */
 * {
@@ -39,7 +39,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;     /* fraction */
     align-items: center;
-    padding: 20px 40px;
+    padding: 2vh 4vw;
     position: relative;
 }
 
@@ -56,63 +56,64 @@ body {
 }
 
 .game-title {
-    font-size: 32px;
+    font-size: 2.2vw;
     font-weight: 700;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 2px;
+    letter-spacing: 0.2vw;
 }
 
 .game-timer {
-    font-size: 24px;
+    font-size: 1.6vw;
     font-weight: 600;
     color: #2c3e50;
     text-align: center;
-    padding: 12px 24px;
+    padding: 1vh 2vw;
     background: rgba(236, 240, 241, 0.9);
-    border: 2px solid rgba(255, 255, 255, 0.25); /* 기존: var(--accent) */
-    border-radius: 16px;
-    min-width: 100px;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 6px 24px rgba(255, 255, 255, 0.1);
+    border: 0.15vw solid rgba(255, 255, 255, 0.25); 
+    border-radius: 1.2vw;
+    min-width: 7vw;
+    backdrop-filter: blur(2vh);
+    box-shadow: 0 0.6vh 2.4vh rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
-}
+}  
+/* ---------- line 100 ---------- */
 
 /* main game area - 수직 중앙 정렬 개선 */
 .game-main {
     display: grid;
-    grid-template-columns: 350px 1fr 350px;
-    gap: 40px;
+    grid-template-columns: 24vw 1fr 24vw;
+    gap: 3vw;
     flex: 1;
     align-items: center;
     justify-items: center;
-    padding: 0 40px;
-    margin-top: 20px;
+    padding: 0 4vw;
+    margin-top: 2vh;
 }
 
 /* player info area*/
 .player-info {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 2.4vh;
     width: 100%;
     align-items: center;
-    margin: 0 10px;
+    margin: 0 1vw;
 }
 
 /* player photo box */
 .player-photo {
-    width: 120px;
-    height: 120px;
-    border: 2px solid var(--muted-b2);
-    border-radius: 12px;
+    width: 8vw;
+    height: 8vw;
+    border: 0.15vw solid var(--muted-b2);
+    border-radius: 0.8vw;
     background: rgba(255, 255, 255, 0.03);
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(1vh);
     transition: all 0.3s ease;
 }
 
@@ -122,7 +123,7 @@ body {
 }
 
 .photo-placeholder {
-    font-size: 32px;
+    font-size: 2vw;
     opacity: 0.4;
     transition: all 0.3s ease;
 }
@@ -133,42 +134,43 @@ body {
 }
 
 .player-card {
-    margin-top:40px;
-    margin-left:10px;
-    margin-right:10px;
-    width:360px;
+    margin-top: 4vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    width: 26vw;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--muted-b2);
-    border-radius: 12px;
-    padding: 20px;
-    backdrop-filter: blur(10px);
+    border: 0.1vw solid var(--muted-b2);
+    border-radius: 0.8vw;
+    padding: 2vh;
+    backdrop-filter: blur(1vh);
 }
+/* ---------- line 200 ---------- */
 
 .avatar-box {
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
+  width: 6vw;
+  height: 6vw;
+  border-radius: 0.8vw;
   background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48px; /* 👤 크게 보이도록 */
-  margin-bottom: 12px;
+  font-size: 3.5vw; 
+  margin-bottom: 1vh;
 }
 
 .avatar-large {
-    width: 180px;
-    height: 180px;
-    border-radius: 24px;
+    width: 13vw;
+    height: 13vw;
+    border-radius: 1.6vw;
     background: var(--glass-bg);
-    backdrop-filter: blur(25px);
+    backdrop-filter: blur(2.5vh);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 72px;
+    font-size: 5vw;
     color: var(--text-light);
-    margin-bottom: 20px;
-    border: 3px solid var(--glass-border);
+    margin-bottom: 2vh;
+    border: 0.25vw solid var(--glass-border);
     box-shadow: var(--shadow-glass);
     transition: all 0.3s ease;
     position: relative;
@@ -186,49 +188,50 @@ body {
 }
 
 .avatar-large:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 12px 40px rgba(33, 150, 243, 0.25);
+    transform: translateY(-0.4vh) scale(1.02);
+    box-shadow: 0 1.2vh 4vh rgba(33, 150, 243, 0.25);
 }
+/* ---------- line 300 ---------- */
 
-/* Player-specific Avatar Colors */
 .player1-avatar {
     border-color: #42a5f5;
-    box-shadow: 0 8px 32px rgba(66, 165, 245, 0.3);
+    box-shadow: 0 0.8vh 3.2vh rgba(66, 165, 245, 0.3);
 }
 
 .player1-avatar:hover {
-    box-shadow: 0 12px 40px rgba(66, 165, 245, 0.4);
+    box-shadow: 0 1.2vh 4vh rgba(66, 165, 245, 0.4);
 }
 
 .player2-avatar {
     border-color: #ffb3d1;
-    box-shadow: 0 8px 32px rgba(255, 179, 209, 0.3);
+    box-shadow: 0 0.8vh 3.2vh rgba(255, 179, 209, 0.3);
 }
 
 .player2-avatar:hover {
-    box-shadow: 0 12px 40px rgba(255, 179, 209, 0.4);
+    box-shadow: 0 1.2vh 4vh rgba(255, 179, 209, 0.4);
 }
 
 /* Player-specific Card Borders */
 .player1-card {
     border-color: rgba(66, 165, 245, 0.5);
-    box-shadow: 0 8px 32px rgba(66, 165, 245, 0.2);
+    box-shadow: 0 0.8vh 3.2vh rgba(66, 165, 245, 0.2);
 }
 
 .player1-card:hover {
     border-color: rgba(66, 165, 245, 0.7);
-    box-shadow: 0 12px 40px rgba(66, 165, 245, 0.3);
+    box-shadow: 0 1.2vh 4vh rgba(66, 165, 245, 0.3);
 }
 
 .player2-card {
     border-color: rgba(255, 179, 209, 0.5) !important;
-    box-shadow: 0 8px 32px rgba(255, 179, 209, 0.2) !important;
+    box-shadow: 0 0.8vh 3.2vh rgba(255, 179, 209, 0.2) !important;
 }
 
 .player2-card:hover {
     border-color: rgba(255, 179, 209, 0.7) !important;
-    box-shadow: 0 12px 40px rgba(255, 179, 209, 0.3) !important;
+    box-shadow: 0 1.2vh 4vh rgba(255, 179, 209, 0.3) !important;
 }
+
 
 /* Enhanced Player Name */
 .player-card h3 {
