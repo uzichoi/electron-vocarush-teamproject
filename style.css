@@ -16,11 +16,17 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: 'EmojiFont';
+    src: local('Noto Color Emoji');
+    unicode-range: U+1F300-1FAFF; /* 이모지 범위 */
+}
+
 body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: Inter, system-ui, sans-serif;
+    font-family: Inter, system-ui, sans-serif,'EmojiFont';
 }
 
 
