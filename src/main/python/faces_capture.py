@@ -3,22 +3,21 @@ import sys
 import os
 import time
 
-def main():
-    # 인자 처리 (기본값 player1)
-    player = sys.argv[1] if len(sys.argv) > 1 else "player1"
-    filename = f"{player}.jpg"
-    
-    # 저장 경로 (현재 디렉토리 기준)
-    baseDir = os.path.join(os.path.dirname(__file__), "..", "assets", "playerPhotos")
-    savePath = os.path.abspath(os.path.join(baseDir, filename))
+# UTF-8로 인코딩 강제 (avoid Windows cp949 issues)
+sys.stdout.reconfigure(encoding='utf-8')
 
-    
+def main():
+    name = sys.argv[1] if len(sys.argv) > 1 else "player"
+    base_dir = os.path.join(os.path.dirname(__file__), "..", "..", "renderer", "assets", "playerPhotos")
+    os.makedirs(base_dir, exist_ok=True)
+    save_path = os.path.abspath(os.path.join(base_dir, f"{name}.jpg"))
+
     # 얼굴 인식기 불러오기
     cascadePath = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
     faceClassifier = cv2.CascadeClassifier(cascadePath)
     
     if faceClassifier.empty():
-        print("오류: 얼굴 인식기를 불러올 수 없습니다")
+        print("Error: Could not load face classifier")
         return False
     
     # 카메라 열기 (크로스 플랫폼 호환)
@@ -26,7 +25,7 @@ def main():
     
     # 카메라 초기화 확인
     if not camera.isOpened():
-        print("오류: 카메라를 열 수 없습니다")
+        print("Error: Could not open camera")
         return False
     
     # 카메라 설정
@@ -34,9 +33,9 @@ def main():
     camera.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     
-    print(f"얼굴 인식을 시작합니다. ({player})")
-    print("카메라를 보고 얼굴이 인식되면 3초 카운트다운 후 촬영됩니다.")
-    print("ESC 키를 누르면 종료됩니다.")
+    print(f"Face recognition started. (name={name})")
+    #print("Look at the camera. Photo will be taken after 3 seconds countdown.")
+    #print("Press ESC to exit.")
     
     # 상태 변수들
     captured = False
@@ -50,7 +49,7 @@ def main():
         while not captured:            
             ret, frame = camera.read()
             if not ret:
-                print("카메라에서 프레임을 읽을 수 없습니다")
+                print("Error: No frame available from camera")
                 time.sleep(0.1)
                 continue
             
@@ -98,7 +97,7 @@ def main():
                     if not countdown_active and stable_time >= face_stable_duration:
                         countdown_active = True
                         countdown_start_time = current_time
-                        print("얼굴이 인식되었습니다! 카운트다운을 시작합니다...")
+                        print("Face detected! Starting countdown...")
                     
                     # 카운트다운 진행
                     if countdown_active:
@@ -119,13 +118,13 @@ def main():
                             text_x = (display_frame.shape[1] - text_width) // 2
                             text_y = (display_frame.shape[0] + text_height) // 2
                             
-                            # 카운트다운 색상 (빨강에서 노랑으로)
+                            # 카운트다운 색상 (빨강 → 노랑)
                             if countdown_number <= 1:
-                                color = (0, 0, 255)  # 빨강
+                                color = (0, 0, 255)  # red
                             elif countdown_number <= 2:
-                                color = (0, 165, 255)  # 주황
+                                color = (0, 165, 255)  # orange
                             else:
-                                color = (0, 255, 255)  # 노랑
+                                color = (0, 255, 255)  # yellow
                             
                             # 텍스트 배경 (검은색 반투명)
                             overlay = display_frame.copy()
@@ -145,20 +144,19 @@ def main():
                                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                         else:
                             # 카운트다운 완료 - 사진 촬영
-                            # 플래시 효과
                             flash_frame = display_frame.copy()
-                            flash_frame[:] = (255, 255, 255)  # 흰색으로 채움
-                            cv2.imshow(f'Face Capture - {player}', flash_frame)
-                            cv2.waitKey(100)  # 0.1초간 플래시 효과
+                            flash_frame[:] = (255, 255, 255)  # white flash
+                            cv2.imshow(f'Face Capture - {name}', flash_frame)
+                            cv2.waitKey(100)  # flash duration
                             
                             # 파일 저장
-                            if cv2.imwrite(savePath, face_img):
-                                print(f"✓ 얼굴 캡처 완료: {savePath}")
-                                print(f"  - 크기: {w}x{h}")
-                                print(f"  - 선명도: {laplacian_var:.1f}")
-                                captured = True
+                            if cv2.imwrite(save_path, face_img):
+                                print(f"Face capture completed: {save_path}", flush=True)
+                                print(f"SAVE_PATH: {save_path}", flush=True)
+                                captured = True   # 루프 탈출 플래그 세팅
+                                break             # while 강제 종료
                             else:
-                                print(f"오류: 파일 저장 실패 - {savePath}")
+                                print(f"Error: Failed to save file - {save_path}")
                                 countdown_active = False
                                 countdown_start_time = None
                                 face_detected_time = None
@@ -193,37 +191,33 @@ def main():
                 countdown_start_time = None
             
             # 화면 표시
-            cv2.imshow(f'Face Capture - {player}', display_frame)
+            cv2.imshow(f'Face Capture - {name}', display_frame)
             
             # 키보드 입력 체크
             key = cv2.waitKey(1) & 0xFF
-            if key == 27:  # ESC 키
-                print("사용자가 취소했습니다")
+            if key == 27:  # ESC
+                print("User cancelled capture")
                 break
-            elif key == ord('r'):  # 'r' 키로 리셋
-                print("카운트다운을 리셋합니다")
+            elif key == ord('r'):  # reset
+                print("Countdown reset")
                 face_detected_time = None
                 countdown_active = False
                 countdown_start_time = None
     
     except KeyboardInterrupt:
-        print("\n프로그램이 중단되었습니다")
+        print("\nProgram interrupted")
     
     except Exception as e:
-        print(f"예상치 못한 오류가 발생했습니다: {e}")
+        print(f"Unexpected error occurred: {e}")
     
     finally:
         # 리소스 정리
         camera.release()
         cv2.destroyAllWindows()
     
-    return captured
+    return captured, save_path
 
 if __name__ == "__main__":
-    success = main()
-    if success:
-        print("얼굴 캡처가 성공적으로 완료되었습니다!")
-        sys.exit(0)
-    else:
-        print("얼굴 캡처를 완료하지 못했습니다.")
-        sys.exit(1)
+    success, save_path = main()
+    print(f"[DEBUG] main() finished with success={success}, save_path={save_path}", flush=True)
+    sys.exit(0 if success else 1)

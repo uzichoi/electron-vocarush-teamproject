@@ -1,48 +1,70 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import Ranking from "../models/Ranking";  // 모델 불러오기
 import SoundManager from "../models/SoundManager";
 
 export default function RankingView() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [rankingData, setRankingData] = useState([]);
 
+  // 랭킹 데이터 불러오기
   useEffect(() => {
-    Ranking.load(); // 파일에서 불러오기
-    const entries = Ranking.getTopEntries(100);
-
-    let lastScore = null;
-    let lastRank = 0;
-
-    const ranked = entries.map((entry,idx) => {
-
-      if(entry.score === lastScore) {
-        return{...entry, rank: lastRank};
-      }else{
-        lastScore = entry.score;
-        lastRank = idx+1;
-        return{...entry, rank:lastRank};
+    async function fetchRanking() {
+      const result = await window.electronAPI.readRanking();
+      if (!result.ok) {
+        console.error("랭킹 파일 읽기 실패:", result.error.message);
+        console.error("파일 경로:", result.error.pathTried);
+        return;
       }
-    });
-    setRankingData(ranked);
+
+      const entries = result.rankings || [];
+      let lastScore = null;
+      let lastRank = 0;
+
+      const ranked = entries
+        .sort((a, b) => b.score - a.score)
+        .map((entry, idx) => {
+          if (entry.score === lastScore) {
+            return { ...entry, rank: lastRank };
+          } else {
+            lastScore = entry.score;
+            lastRank = idx + 1;
+            return { ...entry, rank: lastRank };
+          }
+        });
+
+      setRankingData(ranked);
+    }
+
+    fetchRanking();
   }, []);
 
-    useEffect(() => {
-      SoundManager.playBgm("rankingBgm"); // 마운트 시 BGM 재생
-    
-      return () => {
-      // 👇 Ranking 페이지로 이동할 때는 끊지 않음
-      // 👇 결과뷰에서 다른 곳으로 이동할 때만 정지
+  // BGM 재생
+  useEffect(() => {
+    SoundManager.playBgm("rankingBgm");
+
+    return () => {
       if (location.pathname !== "/ranking") {
         SoundManager.stopBgm();
       }
-      };
-    }, []);
+    };
+  }, [location.pathname]);
 
   const formatDate = (dateString) => {
-    if(!dateString) return "";
+    if (!dateString) return "";
     const [year, month, day] = dateString.split("-");
     return `${year.slice(2)}-${month}-${day}`;
+  };
+
+  const handleClearRanking = async () => {
+    const result = await window.electronAPI.writeRanking([]);
+    if (!result.ok) {
+      console.error("랭킹 초기화 실패:", result.error.message);
+    } else {
+      setRankingData([]);
+    }
   };
 
   return (
@@ -55,7 +77,11 @@ export default function RankingView() {
         <div className="header-right">
           <button
             className="btn-small"
-            onClick={() => {SoundManager.play("clickPop");sessionStorage.setItem("fromBack", "true");navigate(-1);}}
+            onClick={() => {
+              SoundManager.play("clickPop");
+              sessionStorage.setItem("fromBack", "true");
+              navigate(-1);
+            }}
             aria-label="close"
           >
             ×
@@ -69,12 +95,11 @@ export default function RankingView() {
             {rankingData.map((player, idx) => (
               <div key={`${player.name}-${player.score}-${idx}`} className="ranking-item">
                 <div className="rank-number">#{player.rank}</div>
-                <div className="player-name">{player.name}
+                <div className="player-name">
+                  {player.name}
                   <span className="player-date">{formatDate(player.date)}</span>
                 </div>
-                <div className="player-score">
-                  {player.score.toLocaleString()}
-                </div>
+                <div className="player-score">{player.score.toLocaleString()}</div>
               </div>
             ))}
           </div>

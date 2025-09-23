@@ -13,7 +13,7 @@ export function useGameController(initialController = null) {
   // 2) 상태 관리
   // 1) controller와 state를 상태로 관리
   //const [controller, setController] = useState(() => new GameController());
-    // 🟢 GameView 진입 시점에만 새 컨트롤러 생성
+    // GameView 진입 시점에만 새 컨트롤러 생성
   const controllerRef = useRef(new GameController());
   const controller = controllerRef.current;
   

@@ -24,7 +24,7 @@ useEffect(() => {
   return (
     <div className="start-view">
       <div style={{ textAlign: "center" }}>
-        <h5 className="start-subtitle">WELCOME TO</h5>
+        <h5 className="start-subtitle">Welcome to</h5>
         <h1 className="start-title">VocaRush</h1>
         <button className="btn btn-primary" onClick={handleStart}>
             START

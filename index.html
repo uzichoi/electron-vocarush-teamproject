@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>VocaRush Prototype</title>
@@ -18,6 +19,22 @@
 </head>
 <body>
     <div id="app"></div>
-    <script>require("./.tmp/renderer/App.js")</script>
+    <script type="module" src="./.tmp/renderer/bundle.js"></script>
 </body>
 </html>
+<!-- =======
+    <head>
+        <title>VocaRush Prototype</title>
+         <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-eval';
+                   style-src 'self' 'unsafe-inline';
+                   img-src 'self' data:;">
+        <link href="style.css" rel="stylesheet"> </link>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script type="module" src="./.tmp/renderer/bundle.js"></script>
+    </body>
+</html>
+>>>>>>> feature/ipc-refactor -->
