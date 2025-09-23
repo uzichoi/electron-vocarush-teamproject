@@ -11,7 +11,7 @@ class SoundManager {
   constructor() {
     this.sounds = {
             // clickPop: new Audio(`file://${path.join(basePath, "clickPop.mp3")}`),
-
+       startBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/startBgm.wav"),
     clickPop: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickPop.wav"),
     };
   }
@@ -24,6 +24,22 @@ class SoundManager {
     }
     else {
       console.warn(`[SoundManager] 효과음 '${name}'을(를) 찾을 수 없습니다.`);
+    }
+  }
+
+    playBgm(name) {
+    if (this.currentBgm) {
+      this.currentBgm.pause();
+      this.currentBgm.currentTime = 0;
+    }
+    const bgm = this.sounds[name];
+    if (bgm) {
+      bgm.loop = true;   // 무한 반복
+      bgm.volume = 0.3;  // 필요 시 볼륨 조절
+      bgm.play();
+      this.currentBgm = bgm;
+    } else {
+      console.warn(`[SoundManager] BGM '${name}'을(를) 찾을 수 없습니다.`);
     }
   }
 }

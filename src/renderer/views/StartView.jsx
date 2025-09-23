@@ -7,6 +7,14 @@ export default function StartView() {
   const navigate = useNavigate();
   const { startNewGame } = useGameController();
     
+useEffect(() => {
+  SoundManager.playBgm("startBgm"); // 마운트 시 BGM 재생
+
+  return () => {
+    //SoundManager.stopBgm(); // 언마운트 시 정지
+  };
+}, []);
+
     const handleStart = () => {
     //startNewGame();        // 새 GameController 생성
     SoundManager.play("clickPop");   // ✅ 효과음 재생
