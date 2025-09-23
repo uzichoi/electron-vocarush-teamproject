@@ -5,7 +5,10 @@ import { useGameController } from "../hooks/useGameController";
 
 //import { useNavigate } from "react-router-dom";
 import CustomKeyboard from "../components/CustomKeyboard";
+<<<<<<< HEAD
 import SoundManager from "../models/SoundManager";
+=======
+>>>>>>> audio-fix
 
 export default function PlayerConfigurationView() {
   const [player1Name, setPlayer1Name] = useState("");

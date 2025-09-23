@@ -2,12 +2,15 @@
 //import clickPop from "../assets/soundEffect/clickPop.mp3";
 import path from "path";
 import Howl from "Howl";
+
+
 const basePath = path.join(__dirname, "../assets/soundEffect");
 
 
 
 class SoundManager {
   constructor() {
+
 this.sounds = {
     clickPop: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickPop.mp3"),
     clickKeyboard: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickKeyboard.mp3"),
@@ -30,6 +33,7 @@ this.sounds = {
     resultBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/resultBgm.mp3"),
     rankingBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/rankingBgm.mp3"),
   };
+
 
   }
 

@@ -30,8 +30,10 @@ useEffect(() => {
             START
         </button>
         <div className="menu-row">
+
           <button className="btn" onClick={() => {navigate('/manual'); SoundManager.play("clickPop") ;} }>Manual</button>
           <button className="btn btn-danger" onClick={() => {SoundManager.play("clickPop"); window.close();}}>Exit</button>
+
         </div>
       </div>
     </div>
