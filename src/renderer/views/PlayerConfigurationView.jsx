@@ -1,23 +1,30 @@
 // views/PlayerConfigurationView.jsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 import CustomKeyboard from "../components/CustomKeyboard";
 import SoundManager from "../models/SoundManager";
 
 export default function PlayerConfigurationView() {
-  // UI-only states (keep original intent)
+  // UI-only states
   const [countdown, setCountdown] = useState(null);
-  const [countTarget, setCountTarget] = useState(null); // 0 or 1
+  const [countTarget, setCountTarget] = useState(null);   // 0 or 1
   const [focusedInput, setFocusedInput] = useState(null); // "p1" | "p2" | null
 
+  // 입력 로컬 미러(입력창은 로컬을 단일 소스로 유지)
+  const [nameP1, setNameP1] = useState("");
+  const [nameP2, setNameP2] = useState("");
+
+  // 캡처 중복 방지 락 (per player)
+  const [capBusy, setCapBusy] = useState([false, false]);
+
   const navigate = useNavigate();
-  const { state, controller } = useGameController(); // subscribe latest controller/state
+  const { state, controller } = useGameController();
   const { player1, player2 } = state || {};
 
+  // mount/unmount
   useEffect(() => {
-    // Mount/Unmount side effects: stop BGM on unmount (kept from original)
     return () => {
       SoundManager.stopBgm();
     };
@@ -25,84 +32,134 @@ export default function PlayerConfigurationView() {
 
   if (!controller) return <div>Error: Controller not found</div>;
 
-  // ---- Handlers ----
-  // Keep feature branch behavior: write directly into controller state
-  const onChangeName = (idx, eOrText) => {
-    const value = typeof eOrText === "string" ? eOrText : eOrText?.target?.value;
-    controller.setPlayerName?.(idx, value ?? "");
+  // 안전 문자열/기본명 판별
+  const safeTrim = (s) => {
+    if (typeof s === "string") return s.trim();
+    if (s == null) return "";
+    try { return String(s).trim(); } catch { return ""; }
+  };
+  const isDefaultName = (s) => {
+    const v = safeTrim(s);
+    return v === "Player 1" || v === "Player 2";
   };
 
-  // Merge: show simple 3-2-1 countdown (from HEAD) + IPC capture (from feature)
-  const handleCapture = async (idx) => {
-    const currentPlayer = idx === 0 ? player1 : player2;
-    const name = currentPlayer?.name || "";
+  // ✅ 초기 1회만 컨트롤러의 이름을 로컬에 반영 (이후엔 로컬만 신뢰)
+  const initRef = useRef(false);
+  useEffect(() => {
+    if (initRef.current) return;
+    const n1 = safeTrim(player1?.name);
+    const n2 = safeTrim(player2?.name);
+    if (!isDefaultName(n1)) setNameP1(n1);
+    if (!isDefaultName(n2)) setNameP2(n2);
+    initRef.current = true;
+  }, [player1?.name, player2?.name]);
 
+  // 컨트롤러에 이름 쓰기
+  const writeNameToController = (idx, value) => {
+    try {
+      controller.setPlayerName?.(idx, value ?? "");
+    } catch (e) {
+      console.error("setPlayerName error:", e);
+    }
+  };
+
+  // file:// 스킴 보장
+  const toFileURL = (p) => {
+    if (!p) return "";
+    const hasScheme = /^([a-z]+):\/\//i.test(p);
+    if (hasScheme) return p;
+    const normalized = p.replace(/\\/g, "/");
+    return `file:///${normalized.replace(/^\/+/, "")}`;
+  };
+
+  // 사진 촬영 + 저장 (중복 방지 락 + 로컬 이름 사용)
+  const handleCapture = async (idx) => {
+    if (capBusy[idx]) return; // 이미 캡처 중이면 무시
+
+    const localName = idx === 0 ? nameP1 : nameP2;          // 👈 로컬 이름 신뢰
+    const name = safeTrim(localName);
     if (!name) {
       alert("먼저 플레이어 이름을 입력해주세요.");
       return;
     }
 
-    // Countdown visual + sounds (non-blocking UI)
-    let count = 3;
-    setCountTarget(idx);
-    setCountdown(count);
-    SoundManager.play("clickTurn");
-
-    await new Promise((resolve) => {
-      const timer = setInterval(() => {
-        count -= 1;
-        if (count > 0) {
-          setCountdown(count);
-        } else {
-          clearInterval(timer);
-          setCountdown(null);
-          setCountTarget(null);
-          SoundManager.play("kamera");
-          resolve();
-        }
-      }, 1000);
+    // 락 획득
+    setCapBusy((prev) => {
+      const next = [...prev];
+      next[idx] = true;
+      return next;
     });
 
-    // IPC call to Python to capture and return file URL
-    let result;
     try {
-      result = await window.electronAPI.captureFace(name);
-    } catch (e) {
-      console.error("IPC invoke error:", e);
-      return;
-    }
+      // 3-2-1 카운트다운
+      let count = 3;
+      setCountTarget(idx);
+      setCountdown(count);
+      SoundManager.play("clickTurn");
 
-    const { code, fileUrl, stdout, stderr } = result || {};
-    console.log("[PY DONE]", { code, stdout, stderr, fileUrl });
+      await new Promise((resolve) => {
+        const timer = setInterval(() => {
+          count -= 1;
+          if (count > 0) setCountdown(count);
+          else {
+            clearInterval(timer);
+            setCountdown(null);
+            setCountTarget(null);
+            SoundManager.play("kamera");
+            resolve();
+          }
+        }, 1000);
+      });
 
-    if (code !== 0 || !fileUrl) {
-      console.warn("capture failed\n", stderr || stdout || `exit code: ${code}`);
-      return;
-    }
+      if (!window?.electronAPI?.captureFace) {
+        console.error("electronAPI.captureFace not available (check preload expose)");
+        return;
+      }
 
-    try {
-      controller.setPlayerPhoto?.(idx, fileUrl);
-    } catch (e) {
-      console.error("setPlayerPhoto error: ", e);
+      let result;
+      try {
+        result = await window.electronAPI.captureFace(name);
+      } catch (e) {
+        console.error("IPC invoke error:", e);
+        return;
+      }
+
+      const { code, fileUrl, stdout, stderr } = result || {};
+      console.log("[PY DONE]", { code, stdout, stderr, fileUrl });
+
+      if (code !== 0 || !fileUrl) {
+        console.warn("capture failed\n", stderr || stdout || `exit code: ${code}`);
+        return;
+      }
+
+      try {
+        const fileSrc = toFileURL(fileUrl);
+        controller.setPlayerPhoto?.(idx, fileSrc); // 내부에서 photoPath로 저장되도록
+      } catch (e) {
+        console.error("setPlayerPhoto error: ", e);
+      }
+    } finally {
+      // 락 해제
+      setCapBusy((prev) => {
+        const next = [...prev];
+        next[idx] = false;
+        return next;
+      });
     }
   };
 
-  // Start game: GameView will pull controller/state via hook
   const handleStartGame = () => {
     SoundManager.play("clickGameStart");
     navigate("/game");
   };
 
-  // ---- Render ----
   return (
     <div className="config-view">
-      {/* 중앙 카운트다운 (kept from original) */}
+      {/* 중앙 카운트다운 */}
       {countdown !== null && (
         <div
           className="global-countdown"
-          style={{
-            color: countTarget === 0 ? "#42a5f5" : "#ffb3d1",
-          }}
+          style={{ color: countTarget === 0 ? "#42a5f5" : "#ffb3d1" }}
         >
           {countdown}
         </div>
@@ -115,12 +172,16 @@ export default function PlayerConfigurationView() {
           <input
             type="text"
             placeholder="이름 입력"
-            value={player1?.name ?? ""}
+            value={nameP1}
             onFocus={() => {
               setFocusedInput("p1");
               SoundManager.play("clickTurn");
             }}
-            onChange={(e) => onChangeName(0, e)}
+            onChange={(e) => {
+              const v = e.target.value;
+              setNameP1(v);                 // 로컬 즉시 반응
+              writeNameToController(0, v);  // 컨트롤러에도 반영
+            }}
           />
           <div className="photo-box">
             {player1?.photoPath ? (
@@ -129,7 +190,7 @@ export default function PlayerConfigurationView() {
                 src={player1.photoPath}
                 alt="player1"
                 onError={(e) => {
-                  const [base] = player1.photoPath.split("?");
+                  const [base] = (player1.photoPath || "").split("?");
                   e.currentTarget.src = `${base}?t=${Date.now()}`;
                   console.warn("Image reload attempted: ", e);
                 }}
@@ -138,8 +199,12 @@ export default function PlayerConfigurationView() {
               "👤"
             )}
           </div>
-          <button className="btn-capture" onClick={() => handleCapture(0)}>
-            Capture
+          <button
+            className="btn-capture"
+            onClick={() => handleCapture(0)}
+            disabled={capBusy[0]}           // 캡처 중에는 비활성화
+          >
+            사진 촬영
           </button>
         </div>
 
@@ -152,12 +217,16 @@ export default function PlayerConfigurationView() {
           <input
             type="text"
             placeholder="이름 입력"
-            value={player2?.name ?? ""}
+            value={nameP2}
             onFocus={() => {
               setFocusedInput("p2");
               SoundManager.play("clickTurn");
             }}
-            onChange={(e) => onChangeName(1, e)}
+            onChange={(e) => {
+              const v = e.target.value;
+              setNameP2(v);
+              writeNameToController(1, v);
+            }}
           />
           <div className="photo-box">
             {player2?.photoPath ? (
@@ -166,7 +235,7 @@ export default function PlayerConfigurationView() {
                 src={player2.photoPath}
                 alt="player2"
                 onError={(e) => {
-                  const [base] = player2.photoPath.split("?");
+                  const [base] = (player2.photoPath || "").split("?");
                   e.currentTarget.src = `${base}?t=${Date.now()}`;
                   console.warn("Image reload attempted: ", e);
                 }}
@@ -175,8 +244,12 @@ export default function PlayerConfigurationView() {
               "👤"
             )}
           </div>
-          <button className="btn-capture" onClick={() => handleCapture(1)}>
-            Capture
+          <button
+            className="btn-capture"
+            onClick={() => handleCapture(1)}
+            disabled={capBusy[1]}           // 캡처 중에는 비활성화
+          >
+            사진 촬영
           </button>
         </div>
       </div>
@@ -186,17 +259,27 @@ export default function PlayerConfigurationView() {
         <button
           className="start-btn"
           onClick={handleStartGame}
-          disabled={!player1?.name || !player2?.name}
+          disabled={!safeTrim(nameP1) || !safeTrim(nameP2)}
         >
           Game Start
         </button>
 
-        {/* 가상 키보드: 원래 props 유지하되 controller에 직접 반영되도록 어댑터 전달 */}
+        {/* 가상 키보드 → 로컬/컨트롤러 동시 반영 (포커스 가드로 반대편 동시 수정 방지) */}
         <CustomKeyboard
           viewType="config"
           focusedInput={focusedInput}
-          setPlayer1={(txt) => onChangeName(0, txt)}
-          setPlayer2={(txt) => onChangeName(1, txt)}
+          setPlayer1={(txt) => {
+            if (focusedInput !== "p1") return;   // 포커스된 쪽만 반응
+            const v = txt ?? "";
+            setNameP1(v);
+            writeNameToController(0, v);
+          }}
+          setPlayer2={(txt) => {
+            if (focusedInput !== "p2") return;   // 포커스된 쪽만 반응
+            const v = txt ?? "";
+            setNameP2(v);
+            writeNameToController(1, v);
+          }}
         />
       </div>
     </div>
