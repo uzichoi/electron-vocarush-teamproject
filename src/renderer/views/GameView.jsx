@@ -1,340 +1,309 @@
+// views/GameView.jsx
 import React, { useRef, useEffect, useState } from "react";
-
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 import CustomKeyboard from "../components/CustomKeyboard";
-
 import ComboEffect from "../components/effects/ComboEffect";
 import BalloonEffect from "../components/effects/BalloonEffect";
+import ComboTextEffect from "../components/effects/ComboTextEffect";
 import SoundManager from "../models/SoundManager";
 
-import ComboTextEffect from "../components/effects/ComboTextEffect";
+export default function GameView() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const inputRef = useRef(null);
 
+  const { controller, state } = useGameController();
+  const { player1, player2 } = state || {};
 
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [focusedInput, setFocusedInput] = useState(null);
 
-export default function GameView({controller, state}) {
-
-    const navigate = useNavigate();
-    const location = useLocation();
-    const inputRef = useRef(null);
-    
-    const [showConfirm, setShowConfirm] = useState(false); // 확인창 상태
-    const [isClosing, setIsClosing] = useState(false);     // 애니메이션 상태
-
-    const [focusedInput, setFocusedInput] = useState(null);
-
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins}:${secs.toString().padStart(2, "0")}`;
-
-     };
-    
-// useEffect(() => {
-//     if (controller && !state.boardInitialized) {  // 🔹 boardInitialized가 false일 때만 초기화
-//         controller.startInitialGame();           // 🔹 0단계 보드 생성
-//     }
-// }, [controller, state.boardInitialized]);
-
-  // useEffect(() => {
-  //   if (!player1 || !player2) return;
-
-  //   // 🟢 받은 설정값으로 컨트롤러 초기화
-  //   controller.setPlayerInfo("player1", player1.name, player1.photo);
-  //   controller.setPlayerInfo("player2", player2.name, player2.photo);
-  //   controller.startInitialGame();
-  // }, [controller, player1, player2]);
-
-
-  //     // 🔹 게임 시작, NextRound 여부 확인
-  // useEffect(() => {
-  //   if (location.state?.nextRound) {
-  //     controller.restartGame({ difficulty: location.state.difficulty });
-  //     navigate(location.pathname, { replace: true, state: {} }); // 중복 실행 방지
-  //   }
-  // }, [controller, location]);
-  useEffect(() => {
-  if (!player1 || !player2) return;
-
-  if (location.state?.nextRound) {
-    // 🔹 Next Round: 기존 점수 유지하면서 게임 재시작
-    controller.restartGame({
-      difficulty: location.state.difficulty,
-      player1: location.state.player1,
-      player2: location.state.player2,
-    });
-    // 🔹 중복 실행 방지
-    navigate(location.pathname, { replace: true, state: {} });
-  } else {
-    // 🔹 처음 게임 시작
-    controller.setPlayerInfo("player1", player1.name, player1.photo);
-    controller.setPlayerInfo("player2", player2.name, player2.photo);
-    controller.startInitialGame();
-  }
-}, [controller, player1, player2, location]);
-
-    
-useEffect(() => {
-  SoundManager.playBgm("gameBgm"); // 마운트 시 BGM 재생
-
-  return () => {
-    SoundManager.stopBgm(); // 언마운트 시 정지
+  const formatTime = (seconds = 0) => {
+    const s = Number.isFinite(seconds) ? seconds : 0;
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m}:${String(r).padStart(2, "0")}`;
   };
-}, []);
 
-    // 게임 오버 시 결과 화면으로 이동
-
+  // BGM
   useEffect(() => {
-    if (!state) return;
-    if (state.gameOver) {
-      navigate("/result", {
-        state: {
-          player1: state.player1,
-          player2: state.player2,
-          gameTime: state.timeIncreased,
-          grid: state.grid,
-          highlight: state.highlight,
-          placedWordCheck: state.placedWordCheck,
-          difficulty: state.difficulty,
-        },
-      });
-    }
-  }, [state?.gameOver, navigate]);
+    SoundManager.playBgm("gameBgm");
+    return () => SoundManager.stopBgm();
+  }, []);
 
-    useEffect(() => {
-    if (!state) return;
-    if (state.turnActive && inputRef.current) {
-      inputRef.current.focus();
-    }
+  // 🔹 보드만 초기화 (플레이어 객체/사진은 유지!)
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      if (!mounted || !controller) return;
+
+      // 이미 시작되어 있고 다음 라운드가 아니면 중복 초기화 금지
+      if (controller.gameStarted && !location.state?.nextRound) return;
+
+      if (location.state?.nextRound) {
+        await controller.restartGame({
+          difficulty: location.state.difficulty ?? state?.difficulty ?? 0,
+          // 플레이어는 controller의 state를 그대로 사용하므로 별도 setPlayerInfo 호출 X
+        });
+      } else {
+        await controller.startInitialGame(); // ← 여기서도 플레이어 재생성/초기화하지 않도록 컨트롤러 구현이 중요
+      }
+
+      // 중복 실행 방지
+      navigate(location.pathname, { replace: true, state: {} });
+    })();
+
+    return () => { mounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [controller, location.key]);
+
+  // 턴 시작 시 입력 포커스
+  useEffect(() => {
+    if (state?.turnActive && inputRef.current) inputRef.current.focus();
   }, [state?.turnActive]);
 
-        useEffect(() => {
-            let mounted = true;
-
-            async function startGame() {
-                if (!mounted) return;
-                if (!controller) return; // 컨트롤러 준비 전 호출 방지
-
-                // 이미 시작된 상태에서 nextRound가 아닌 경우 중복 초기화 방지
-                if (controller.gameStarted && !location.state?.nextRound) return;
-
-                if (location.state?.nextRound) {
-                    await controller.restartGame({difficulty: (location.state.difficulty ?? 0) + 1, });
-                } else {
-                    await controller.startInitialGame();
-                }
-
-                // 초기화 직후 라우팅 상태 정리로 중복 실행 방지
-                navigate(location.pathname, { replace: true, state: {} });
-            }
-
-            startGame();
-
-            return () => { mounted = false; };
-        }, [controller, location.key]); // location.key가 바뀌면 useEffect 재실행
-
-
-    const handleSubmit = (e) => {
-      //SoundManager.play("clickPop");
-        e.preventDefault();
-        if (!controller || !state) return;
-        controller.submitInput(state.inputValue);
-    };
-
-    const handleQuitToResult = () => { // 진행된 보드 상태를 ResultView로 전달
-      SoundManager.play("clickPop");
+  // 게임 종료 → 결과 화면
+  useEffect(() => {
+    if (!state?.gameOver) return;
     navigate("/result", {
-    state: {
+      state: {
+        player1: state.player1,
+        player2: state.player2,
+        gameTime: state.timeIncreased,
+        grid: state.grid,
+        highlight: state.highlight,
+        placedWordCheck: state.placedWordCheck,
+        difficulty: state.difficulty,
+      },
+    });
+  }, [state?.gameOver, navigate]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!controller || !state) return;
+    controller.submitInput(state.inputValue);
+  };
+
+  const handleQuitToResult = () => {
+    SoundManager.play("clickPop");
+    navigate("/result", {
+      state: {
         player1: state?.player1,
         player2: state?.player2,
         gameTime: state?.timeIncreased,
-        grid: state?.grid,                    // 진행된 보드
-        highlight: controller?.board?.highlight,          // 정답 하이라이트
-        placedWordCheck: controller?.board?.placedWordCheck, // 배치된 단어들
-        difficulty: controller?.currentGameDifficulty // 현재 난이도 같이 전달
-    },
-  });
-};
-  
-    const handleQuit = () => {
-    if (controller) controller.unmount(); // 게임 타이머, 이벤트 정리
-    navigate("/start", { replace: true }); // 첫 화면으로 이동
+        grid: state?.grid,
+        highlight: controller?.board?.highlight,
+        placedWordCheck: controller?.board?.placedWordCheck,
+        difficulty: controller?.currentGameDifficulty,
+      },
+    });
   };
 
+  const handleQuit = () => {
+    controller?.unmount?.();
+    navigate("/start", { replace: true });
+  };
 
-    return (
-        <div className="game-view">
-            <header className="game-header">
-                <div className="header-left">
-                    <div className="game-title">VOCARUSH</div>
-                </div>
-                <div className="header-center">
-                    <div className="game-timer">{formatTime(state?.timeIncreased ?? 0)}</div>
-                </div>
-                <div className="header-right">
-                    <button className="btn-small" onClick={handleQuitToResult}>
-                    Quit
-                    </button>
-                </div>
-            </header>
-        <main className="game-main">
+  // ✅ 안전 아바타: photoPath가 있으면 image, 아니면 "👤"
+  const Avatar = ({ photoPath, alt, className }) =>
+    photoPath ? (
+      <img
+        key={photoPath}
+        src={photoPath}
+        alt={alt}
+        className={className}
+        onError={(e) => {
+          const [base] = (photoPath || "").split("?");
+          e.currentTarget.src = `${base}?t=${Date.now()}`;
+        }}
+      />
+    ) : (
+      "👤"
+    );
+
+  return (
+    <div className="game-view">
+      <header className="game-header">
+        <div className="header-left">
+          <div className="game-title">VOCARUSH</div>
+        </div>
+        <div className="header-center">
+          <div className="game-timer">{formatTime(state?.timeIncreased)}</div>
+        </div>
+        <div className="header-right">
+          <button className="btn-small" onClick={handleQuitToResult}>
+            Quit
+          </button>
+        </div>
+      </header>
+
+      <main className="game-main">
         {/* Player 1 */}
         <div className="player-info">
-          {/* 사진 박스 */}
           <div className="avatar-large player1-avatar">
-            {state?.player1?.photo || "👤"}
+            <Avatar photoPath={player1?.photoPath} alt="player1" className="avatar-img" />
           </div>
 
-          {/* 정보 카드 */}
           <div className="player-card player1-card">
-            <h3>{state?.player1?.name || "Player 1"}</h3>
-            <div className="stat"><span>Score:</span> {state?.player1?.score ?? 0}</div>
-            <div className="stat"><span>Combo:</span> {state?.player1?.combo ?? 0}</div>
-            <div className="stat"><span>HP:</span>
+            <h3>{player1?.name || "Player 1"}</h3>
+            <div className="stat"><span>Score:</span> {player1?.score ?? 0}</div>
+            <div className="stat"><span>Combo:</span> {player1?.combo ?? 0}</div>
+            <div className="stat">
+              <span>HP:</span>
               <div className="hp-bar">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className={`hp-heart ${i < (state?.player1?.hp ?? 0) ? "active" : ""}`}>♥</div>
+                  <div
+                    key={i}
+                    className={`hp-heart ${i < (player1?.hp ?? 0) ? "active" : ""}`}
+                  >
+                    ♥
+                  </div>
                 ))}
               </div>
             </div>
             <button
-
-              className={`turn-btn ${state.currentTurn === "player1" && state.turnActive ? "active" : ""}`}
-              onClick={() => {SoundManager.play("clickTurn"); controller.startTurn("player1")}}
-              disabled={state.turnActive || state.player1.hp <= 0}
-// =======
-//               className={`turn-btn ${state?.currentTurn === "player1" && state?.turnActive ? "active" : ""}`}
-//               onClick={() => controller?.startTurn("player1")}
-//               disabled={state?.turnActive || (state?.player1?.hp ?? 0) <= 0}
-// >>>>>>> feature/ipc-refactor
+              className={`turn-btn ${
+                state?.currentTurn === "player1" && state?.turnActive ? "active" : ""
+              }`}
+              onClick={() => {
+                SoundManager.play("clickTurn");
+                controller?.startTurn?.("player1");
+              }}
+              disabled={!!state?.turnActive || (player1?.hp ?? 0) <= 0}
             >
               My Turn
             </button>
           </div>
-      
         </div>
-                {/* Board */}
-                <div className="game-board">
-                    <div className="word-grid">
-                        {(state?.grid ?? []).map((row, i) => (
-                        <div key={i} className="grid-row">
-                            {row.map((cell, j) => {
-                            let cellClass = "grid-cell";
 
-                            // 글자가 있는지 여부
-                            cellClass += cell !== "*" ? " letter" : " empty";
+        {/* Board */}
+        <div className="game-board">
+          <div className="word-grid">
+            {(state?.grid ?? []).map((row, i) => (
+              <div key={i} className="grid-row">
+                {row.map((cell, j) => {
+                  let cellClass = "grid-cell";
+                  cellClass += cell !== "*" ? " letter" : " empty";
 
-                            // 플레이어별 하이라이트
+                  const h = state?.highlight?.[i]?.[j];
+                  if (h === "wrong") cellClass += " wrong-word";
+                  else if (h === 0) cellClass += " found-by-player1";
+                  else if (h === 1) cellClass += " found-by-player2";
 
-                            const player = state.highlight?.[i]?.[j];
-
-                            if(player === "wrong"){
-                              cellClass += "wrong-word";
-                            }
-                            else if (player === 0) cellClass += " found-by-player1";
-
-                            else if (player === 1) cellClass += " found-by-player2";
-
-                            return (
-                                <div key={j} className={cellClass}>
-                                {cell}
-                                </div>
-                            );
-                            })}
-                        </div>
-                        ))}
+                  return (
+                    <div key={j} className={cellClass}>
+                      {cell}
                     </div>
-                </div>
-      {/* Player 2 */}
-      <div className="player-info">
-        {/* 사진 박스 */}
-        <div className="avatar-large player2-avatar">
-          {state?.player2?.photo || "👤"}
-        </div>
-
-        {/* 정보 카드 */}
-        <div className="player-card player2-card">
-          <h3>{state?.player2?.name || "Player 2"}</h3>
-          <div className="stat"><span>Score:</span> {state?.player2?.score ?? 0}</div>
-          <div className="stat"><span>Combo:</span> {state?.player2?.combo ?? 0}</div>
-          <div className="stat"><span>HP:</span>
-            <div className="hp-bar">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className={`hp-heart ${i < (state?.player2?.hp ?? 0) ? "active" : ""}`}>♥</div>
-              ))}
-            </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
-          <button
-
-            className={`turn-btn ${state.currentTurn === "player2" && state.turnActive ? "active" : ""}`}
-            onClick={() => {SoundManager.play("clickTurn"); controller.startTurn("player2")}}
-            disabled={state.turnActive || state.player2.hp <= 0}
-
-          >
-            My Turn
-          </button>
         </div>
-      </div>          
+
+        {/* Player 2 */}
+        <div className="player-info">
+          <div className="avatar-large player2-avatar">
+            <Avatar photoPath={player2?.photoPath} alt="player2" className="avatar-img" />
+          </div>
+
+          <div className="player-card player2-card">
+            <h3>{player2?.name || "Player 2"}</h3>
+            <div className="stat"><span>Score:</span> {player2?.score ?? 0}</div>
+            <div className="stat"><span>Combo:</span> {player2?.combo ?? 0}</div>
+            <div className="stat">
+              <span>HP:</span>
+              <div className="hp-bar">
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`hp-heart ${i < (player2?.hp ?? 0) ? "active" : ""}`}
+                  >
+                    ♥
+                  </div>
+                ))}
+              </div>
+            </div>
+            <button
+              className={`turn-btn ${
+                state?.currentTurn === "player2" && state?.turnActive ? "active" : ""
+              }`}
+              onClick={() => {
+                SoundManager.play("clickTurn");
+                controller?.startTurn?.("player2");
+              }}
+              disabled={!!state?.turnActive || (player2?.hp ?? 0) <= 0}
+            >
+              My Turn
+            </button>
+          </div>
+        </div>
       </main>
+
       {/* Input + 턴 타이머 */}
       <footer className="game-input">
         {state?.turnActive && (
           <div className="turn-timer">
-            <div className="turn-timer-fill" style={{ width: `${((state?.turnTime ?? 0) / 10) * 100}%` }} />
+            <div
+              className="turn-timer-fill"
+              style={{ width: `${((state?.turnTime ?? 0) / 10) * 100}%` }}
+            />
           </div>
         )}
+
         <form onSubmit={handleSubmit} className="input-form">
           <div className="input-container">
             <span className="input-label">Input &gt;&gt;</span>
             <input
               ref={inputRef}
               type="text"
-              value={state.inputValue}
-              onChange={(e) => controller.setInputValue(e.target.value)}
+              value={state?.inputValue ?? ""}
+              onChange={(e) => controller?.setInputValue?.(e.target.value)}
               onFocus={() => setFocusedInput("game")}
-              disabled={!state.turnActive}
-
+              disabled={!state?.turnActive}
               className="word-input"
               placeholder="Type your word..."
             />
-            <button type="submit" className="btn btn-primary submit-btn">SUBMIT</button>
+            <button type="submit" className="btn btn-primary submit-btn">
+              SUBMIT
+            </button>
           </div>
         </form>
 
-        {/*콤보 효과 멋찌게 등장 */}
-        {state.player1.combo >= 2 && <ComboEffect combo={state.player1.combo} />}
-        {state.player1.combo >= 4 && <BalloonEffect combo={state.player1.combo} />}
-        {state.player2.combo >= 2 && <ComboEffect combo={state.player2.combo} />}
-        {state.player2.combo >= 4 && <BalloonEffect combo={state.player2.combo} />}
-        
-        {/*멋찐 키보드님 등장*/}
+        {/* 이펙트 */}
+        {(player1?.combo ?? 0) >= 2 && <ComboEffect combo={player1.combo} />}
+        {(player1?.combo ?? 0) >= 4 && <BalloonEffect combo={player1.combo} />}
+        {(player2?.combo ?? 0) >= 2 && <ComboEffect combo={player2.combo} />}
+        {(player2?.combo ?? 0) >= 4 && <BalloonEffect combo={player2.combo} />}
+
+        {/* 가상 키보드 */}
         <CustomKeyboard
           viewType="game"
           focusedInput={focusedInput}
-          setGameText={(val) =>controller.setInputValue(val)}
-          gameValue={state.inputValue}
-          onEnter={() => controller.submitInput(state.inputValue)}
+          setGameText={(val) => controller?.setInputValue?.(val)}
+          gameValue={state?.inputValue ?? ""}
+          onEnter={() => controller?.submitInput?.(state?.inputValue ?? "")}
         />
       </footer>
-        {/*콤보글씨효과 멋찌게등장*/}
-        <ComboTextEffect combo={state.player1.combo} player="player1" />
-        <ComboTextEffect combo={state.player2.combo} player="player2" />  
-      
+
+      {/* 콤보 텍스트 */}
+      <ComboTextEffect combo={player1?.combo ?? 0} player="player1" />
+      <ComboTextEffect combo={player2?.combo ?? 0} player="player2" />
+
       {/* Quit 확인 모달 */}
-        {showConfirm && (
+      {showConfirm && (
         <div className="confirm-overlay">
-            <div className={`confirm-box ${isClosing ? "hide" : ""}`}>
+          <div className={`confirm-box ${isClosing ? "hide" : ""}`}>
             <p className="confirm-message">정말 종료하시겠습니까?</p>
             <div className="btn-row">
-            <button className="btn-confirm ok" onClick={handleQuit}>확인</button>
-            <button className="btn-confirm cancel" onClick={() => setShowConfirm(false)}>취소</button>
+              <button className="btn-confirm ok" onClick={handleQuit}>확인</button>
+              <button className="btn-confirm cancel" onClick={() => setShowConfirm(false)}>취소</button>
             </div>
-            </div>
+          </div>
         </div>
-        )}
+      )}
     </div>
   );
-
 }
