@@ -81,10 +81,10 @@ export default function GameView() {
 
     
 useEffect(() => {
-  SoundManager.playBgm("gameBgm"); // 마운트 시 BGM 재생
+  //SoundManager.playBgm("gameBgm"); // 마운트 시 BGM 재생
 
   return () => {
-    SoundManager.stopBgm(); // 언마운트 시 정지
+    //SoundManager.stopBgm(); // 언마운트 시 정지
   };
 }, []);
 

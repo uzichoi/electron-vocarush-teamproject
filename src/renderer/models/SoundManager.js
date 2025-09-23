@@ -21,17 +21,17 @@ this.sounds = {
     combo2: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo2.mp3"),
     combo1: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo1.mp3"),
     timeOver: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/timeOver.mp3"),
-    funnyGasp: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/funnyGasp.mp3"),
-    funnyScream: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/funnyScream.mp3"),
-    gameBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameBgm.mp3"),
+    //funnyGasp: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/funnyGasp.mp3"),
+    //funnyScream: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/funnyScream.mp3"),
+    //gameBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameBgm.mp3"),
     startBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/startBgm.mp3"),
     clickTurn: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickTurn.mp3"),
     clickGameStart: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickGameStart.mp3"),
     bonusWord: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/bonusWord.mp3"),
     gameClock: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameClock.mp3"),
     gameWrong: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameWrong.mp3"),
-    resultBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/resultBgm.mp3"),
-    rankingBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/rankingBgm.mp3"),
+    //resultBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/resultBgm.mp3"),
+    //rankingBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/rankingBgm.mp3"),
   };
 
 
@@ -48,30 +48,30 @@ this.sounds = {
     }
   }
 
-  // ✅ BGM 재생 전용
-  playBgm(name) {
-    if (this.currentBgm) {
-      this.currentBgm.pause();
-      this.currentBgm.currentTime = 0;
-    }
-    const bgm = this.sounds[name];
-    if (bgm) {
-      bgm.loop = true;   // 무한 반복
-      bgm.volume = 0.3;  // 필요 시 볼륨 조절
-      bgm.play();
-      this.currentBgm = bgm;
-    } else {
-      console.warn(`[SoundManager] BGM '${name}'을(를) 찾을 수 없습니다.`);
-    }
-  }
+  // // ✅ BGM 재생 전용
+  // playBgm(name) {
+  //   if (this.currentBgm) {
+  //     this.currentBgm.pause();
+  //     this.currentBgm.currentTime = 0;
+  //   }
+  //   const bgm = this.sounds[name];
+  //   if (bgm) {
+  //     bgm.loop = true;   // 무한 반복
+  //     bgm.volume = 0.3;  // 필요 시 볼륨 조절
+  //     bgm.play();
+  //     this.currentBgm = bgm;
+  //   } else {
+  //     console.warn(`[SoundManager] BGM '${name}'을(를) 찾을 수 없습니다.`);
+  //   }
+  // }
 
-  stopBgm() {
-    if (this.currentBgm) {
-      this.currentBgm.pause();
-      this.currentBgm.currentTime = 0;
-      this.currentBgm = null;
-    }
-  }
+  // stopBgm() {
+  //   if (this.currentBgm) {
+  //     this.currentBgm.pause();
+  //     this.currentBgm.currentTime = 0;
+  //     this.currentBgm = null;
+  //   }
+  // }
 
 
   playComboSound(combo) {

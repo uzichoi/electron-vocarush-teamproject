@@ -36,13 +36,13 @@ export default function ResultView() {
 
 
   useEffect(() => {
-    SoundManager.playBgm("resultBgm"); // 마운트 시 BGM 재생
+    //SoundManager.playBgm("resultBgm"); // 마운트 시 BGM 재생
   
     return () => {
     // 👇 Ranking 페이지로 이동할 때는 끊지 않음
     // 👇 결과뷰에서 다른 곳으로 이동할 때만 정지
     if (location.pathname !== "/ranking") {
-      SoundManager.stopBgm();
+      //SoundManager.stopBgm();
     }
     };
   }, []);
