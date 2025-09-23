@@ -136,10 +136,7 @@ const triggerEasterEgg = () => {
                         justifyContent: "center"
                     }}>
                         ⏱ {formatTime(gameResult.gameTime)}
-                        <span className="time-secret"
-                        onClick={triggerEasterEgg}
-                        style={{ cursor: "poniter", marginLeft: "10px"}}
-                        ></span>
+                        
                     </div>
                 </div>
                 

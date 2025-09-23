@@ -2579,26 +2579,3 @@ body, .game-view {
   color: var(--accent);
 }
 
-.grid-cell.easterEgg {
-  background: #ff0000 !important;
-  color: #fff !important;
-  font-weight: 900;
-  transition: background 0.1s ease;
-}
-
-.timer-clickable {
-  cursor: pointer;
-  font-weight: bold;
-  color: var(--accent);
-}
-
-.timer-clickable:hover {
-  color: #ff4444;
-}
-
-.grid-cell.easter-egg {
-  background-color: #ff0000; /* 진한 빨강 */
-  color: #fff;
-  font-weight: bold;
-  transition: background-color 0.1s ease;
-}

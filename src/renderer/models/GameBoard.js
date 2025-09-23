@@ -93,12 +93,18 @@ export class GameBoard {
   placeWord(text, x, y, direction, order) {
     if (/^[A-Z]/.test(text[0])) text = text[0].toLowerCase() + text.slice(1); // if 첫글자 대문자면 -> 소문자
     if (order === Order.BACKWARD) text = Word.reverseWord(text); // 단어 역방향 배치시
+    
+    const coords = [];
+
     for (let i = 0; i < text.length; i++) {
       const wordX = x + DX[direction] * i;
       const wordY = y + DY[direction] * i;
       this.grid[wordY][wordX] = text[i];
       this.placedWordCheck[wordY][wordX] = true; // 단어가 배치된 위치 체크
+      
+      coords.push([wordY, wordX]);
     }
+    this.placedWords.push({ text, coords, direction, order });
   }
 
   highlightWord(word, playerIndex) {
