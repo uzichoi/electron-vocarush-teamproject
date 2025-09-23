@@ -3,6 +3,9 @@
 const { BrowserWindow } = require("electron");
 const path = require("path");
 
+require("./ipc/face");
+require("./ipc/words");
+
 let win;
 
 function createWindow() {
@@ -13,7 +16,7 @@ function createWindow() {
     alwaysOnTop: false,    // 윈도우를 항상 다른 창들 위에 표시하지 않음
     webPreferences: {
       preload: path.join(__dirname, "preload.js"), // main 프로세스가 창 생성할 때 preload 지정. 렌더러 안에서 preload.js가 가장 먼저 실행된다.
-      //nodeIntegration: false, // Node resuires 금지
+      nodeIntegration: false, // Node resuires 금지
       contextIsolation: true, // contextBridge 강제
       enableRemoteModule: false
     }

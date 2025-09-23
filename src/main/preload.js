@@ -13,9 +13,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     const busted = `${fileUrl}?t=${Date.now()}`;
 
     return { ...result, fileUrl: busted };
-  }/*
+  },
 
-  readWordList: (fileName) => ipcRenderer.invoke("words:read", fileName),
-  readRanking: () => ipcRenderer.invoke("ranking:read"),
-  writeRanking: (data) => ipcRenderer.invoke("ranking:write", data)*/
+  readWordList: (name) => ipcRenderer.invoke("words:read", name),
+  readRanking: () => ipcRenderer.invoke("ranking:read")
 });

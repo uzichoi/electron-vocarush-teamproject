@@ -112,6 +112,8 @@ export class GameController {
 
   // 보드 초기화 및 새 게임
   async startInitialGame() {
+    console.log("[GC] startInitialGame");
+
     if (this.gameStarted) return;
     this.gameStarted = true;
 
@@ -189,28 +191,33 @@ export class GameController {
 
   async _pickWordsForSize() {
     let fileName;
-    switch (this.currentGameDifficulty) {
-      case Difficulty.VERYEASY:
-      case Difficulty.EASY: fileName = "easy.txt"; break;
-      case Difficulty.NORMAL: fileName = "normal.txt"; break;
-      case Difficulty.HARD:
-      case Difficulty.VERYHARD: fileName = "hard.txt"; break;
-      default: fileName = "easy.txt";
-    }
-
-    let words = [];
-
-    try {
-      const lines = await window.electronAPI.readWordList(fileName);
-      const shuffled = lines.sort(() => Math.random() - 0.5);
-      words = shuffled.slice(0, 5);
-    } catch (e) {
-      console.error("readWordList 실패: ", e);
-    }
-    return words;
+  switch (this.currentGameDifficulty) {
+    case Difficulty.VERYEASY:
+    case Difficulty.EASY:    fileName = "easy.txt"; break;
+    case Difficulty.NORMAL:  fileName = "normal.txt"; break;
+    case Difficulty.HARD:
+    case Difficulty.VERYHARD:fileName = "hard.txt"; break;
+    default:                 fileName = "easy.txt";
   }
 
+  try {
+    const res = await window.electronAPI.readWordList(fileName); // ← 객체 반환
+    if (!res?.ok) {
+      console.error("readWordList 실패:", res?.error);
+      return []; // 안전 탈출
+    }
+    const lines = res.words;                      // ← 배열만 추출
+    const shuffled = [...lines].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 5);
+  } catch (e) {
+    console.error("readWordList 예외:", e);
+    return [];
+  }
+}
+
   async newGame({ rows, cols, words }) {
+    console.log("[GC] newGame rows, cols, words=", rows, cols, words);
+    
     this.board.resetBoard(rows, cols);
     this.words = this.board.placeWordsRandomly(words, Object.values(Direction), Object.values(Order), 1000);
     this.board.fillEmptyWithRandomLetters();

@@ -1,37 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Ranking from "../models/Ranking";  // 모델 불러오기
-
 
 export default function RankingView() {
   const navigate = useNavigate();
   const [rankingData, setRankingData] = useState([]);
 
   useEffect(() => {
-    Ranking.load(); // 파일에서 불러오기
-    const entries = Ranking.getTopEntries(20);
-
-    let lastScore = null;
-    let lastRank = 0;
-
-    const ranked = entries.map((entry,idx) => {
-
-      if(entry.score === lastScore) {
-        return{...entry, rank: lastRank};
-      }else{
-        lastScore = entry.score;
-        lastRank = idx+1;
-        return{...entry, rank:lastRank};
+    async function fetchRanking() {
+      const result = await window.electronAPI.readRanking();
+      if (!result.ok) {
+        console.error("랭킹 파일 읽기 실패:", result.error.message);
+        console.error("파일 경로:", result.error.pathTried);
+        return;
       }
-    });
-    setRankingData(ranked);
+
+      const entries = result.rankings || [];
+      let lastScore = null;
+      let lastRank = 0;
+
+      const ranked = entries
+        .sort((a, b) => b.score - a.score)
+        .map((entry, idx) => {
+          if (entry.score === lastScore) {
+            return { ...entry, rank: lastRank };
+          } else {
+            lastScore = entry.score;
+            lastRank = idx + 1;
+            return { ...entry, rank: lastRank };
+          }
+        });
+
+      setRankingData(ranked);
+    }
+
+    fetchRanking();
   }, []);
 
-
   const formatDate = (dateString) => {
-    if(!dateString) return "";
+    if (!dateString) return "";
     const [year, month, day] = dateString.split("-");
     return `${year.slice(2)}-${month}-${day}`;
+  };
+
+  const handleClearRanking = async () => {
+    const result = await window.electronAPI.writeRanking([]);
+    if (!result.ok) {
+      console.error("랭킹 초기화 실패:", result.error.message);
+    } else {
+      setRankingData([]);
+    }
   };
 
   return (
@@ -42,11 +59,7 @@ export default function RankingView() {
           <div className="ranking-title">RANKING</div>
         </div>
         <div className="header-right">
-          <button
-            className="btn-small"
-            onClick={() => navigate(-1)}
-            aria-label="close"
-          >
+          <button className="btn-small" onClick={() => navigate(-1)} aria-label="close">
             ×
           </button>
         </div>
@@ -58,12 +71,11 @@ export default function RankingView() {
             {rankingData.map((player, idx) => (
               <div key={`${player.name}-${player.score}-${idx}`} className="ranking-item">
                 <div className="rank-number">#{player.rank}</div>
-                <div className="player-name">{player.name}
+                <div className="player-name">
+                  {player.name}
                   <span className="player-date">{formatDate(player.date)}</span>
                 </div>
-                <div className="player-score">
-                  {player.score.toLocaleString()}
-                </div>
+                <div className="player-score">{player.score.toLocaleString()}</div>
               </div>
             ))}
           </div>
