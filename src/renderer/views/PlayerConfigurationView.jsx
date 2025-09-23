@@ -24,7 +24,7 @@ export default function PlayerConfigurationView() {
 
     return () => {
       // ✅ 언마운트 시 BGM 정지
-      //SoundManager.stopBgm();
+      SoundManager.stopBgm();
     };
   }, []); // 빈 deps → 마운트 시 1회, 언마운트 시 cleanup 실행
 

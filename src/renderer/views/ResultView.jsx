@@ -36,7 +36,7 @@ export default function ResultView() {
 
 
   useEffect(() => {
-    //SoundManager.playBgm("resultBgm"); // 마운트 시 BGM 재생
+    SoundManager.playBgm("resultBgm"); // 마운트 시 BGM 재생
   
     return () => {
     // 👇 Ranking 페이지로 이동할 때는 끊지 않음
