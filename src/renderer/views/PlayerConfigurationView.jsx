@@ -20,7 +20,10 @@ export default function PlayerConfigurationView() {
   const navigate = useNavigate();
   const { state, controller } = useGameController();
   const { player1, player2 } = state || {};
+    const gameController = new GameController(nameP1, nameP2); 
 
+
+    
   let difficulty = state?.difficulty ?? 0;  // `state.difficulty` 값이 전달되지 않으면 기본값 0을 사용
 
   useEffect(() => {
@@ -148,6 +151,9 @@ const handleStartGame = () => {
 
   // GameController에 이름을 전달하며 생성
   const gameController = new GameController(player1Name, player2Name);
+
+ // 게임 시작 전에 이름을 업데이트
+    gameController.updatePlayerNames(nameP1, nameP2);
 
   // controller에서 player 데이터를 가져옵니다.
   const player1Data = gameController.players[0].getData();

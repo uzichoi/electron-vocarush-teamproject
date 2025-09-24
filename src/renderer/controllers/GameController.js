@@ -66,7 +66,13 @@ export class GameController {
     this.gameStarted = false;
   }
 
-
+  // 게임 초기화 시, 플레이어 이름을 업데이트하는 함수
+  updatePlayerNames(player1Name, player2Name) {
+    this.players[0].setName(player1Name);
+    this.players[1].setName(player2Name);
+    this.state.player1 = this.players[0].getData();
+    this.state.player2 = this.players[1].getData();
+  }
 
   // React 구독 / 상태 업데이트
   subscribe(listener) {
