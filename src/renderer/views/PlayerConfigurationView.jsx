@@ -1,7 +1,7 @@
 // views/PlayerConfigurationView.jsx
 
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 import CustomKeyboard from "../components/CustomKeyboard";
 import SoundManager from "../models/SoundManager";
@@ -15,10 +15,9 @@ export default function PlayerConfigurationView() {
   // 입력 로컬 미러(입력창은 로컬을 단일 소스로 유지)
   const [nameP1, setNameP1] = useState("");
   const [nameP2, setNameP2] = useState("");
+  const [capBusy, setCapBusy] = useState([false, false]); // 캡처 중복 방지 락 (per player)
 
-  // 캡처 중복 방지 락 (per player)
-  const [capBusy, setCapBusy] = useState([false, false]);
-
+  const location = useLocation();
   const navigate = useNavigate();
   const { state, controller } = useGameController();
   const { player1, player2 } = state || {};
@@ -30,7 +29,24 @@ export default function PlayerConfigurationView() {
     };
   }, []);
 
-  if (!controller) return <div>Error: Controller not found</div>;
+  useEffect(() => {
+  if (location.state?.reset) {
+    // 로컬 미러 초기화
+    setNameP1(""); setNameP2("");
+    setFocusedInput(null);
+
+    // 컨트롤러 상태 초기화
+    controller.setPlayerName?.(0, "");
+    controller.setPlayerName?.(1, "");
+    controller.setPlayerPhoto?.(0, "");
+    controller.setPlayerPhoto?.(1, "");
+    
+    // 플래그 제거(중복 방지)
+    navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state?.reset]);
+
+  //if (!controller) return <div>Error: Controller not found</div>;
 
   // 안전 문자열/기본명 판별
   const safeTrim = (s) => {
@@ -43,7 +59,7 @@ export default function PlayerConfigurationView() {
     return v === "Player 1" || v === "Player 2";
   };
 
-  // ✅ 초기 1회만 컨트롤러의 이름을 로컬에 반영 (이후엔 로컬만 신뢰)
+  // 초기 1회만 컨트롤러의 이름을 로컬에 반영 (이후엔 로컬만 신뢰)
   const initRef = useRef(false);
   useEffect(() => {
     if (initRef.current) return;
@@ -76,7 +92,7 @@ export default function PlayerConfigurationView() {
   const handleCapture = async (idx) => {
     if (capBusy[idx]) return; // 이미 캡처 중이면 무시
 
-    const localName = idx === 0 ? nameP1 : nameP2;          // 👈 로컬 이름 신뢰
+    const localName = idx === 0 ? nameP1 : nameP2;          // 로컬 이름 신뢰
     const name = safeTrim(localName);
     if (!name) {
       alert("먼저 플레이어 이름을 입력해주세요.");

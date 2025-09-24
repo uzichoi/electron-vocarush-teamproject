@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate, useLocation } from "react-router-dom";
-import { gameController } from "../controllers/GameController"; // ✅ 인스턴스 import
+import { gameController } from "../controllers/GameController"; 
 import { useGameController } from "../hooks/useGameController";
 import SoundManager from "../models/SoundManager";
+
 export default function ResultView() {
     const navigate = useNavigate();
-    const { state, startNewGame } = useGameController(); // state 정의
+    const { state, controller } = useGameController(); // state 정의
     const location = useLocation();
     const locState = location.state; // 여기서 locState 정의
 
@@ -49,28 +50,33 @@ export default function ResultView() {
 
     // ✅ 컴포넌트 마운트 시 0.5초 후 사운드 재생
 useEffect(() => {
-  if (!gameResult) return;
+    if (!gameResult) return;
 
-  // ✅ 뒤로 온 경우라면 소리 막기
-  if (sessionStorage.getItem("fromBack") === "true") {
-    sessionStorage.removeItem("fromBack"); // 플래그 제거
-    return;
-  }
+    // ✅ 뒤로 온 경우라면 소리 막기
+    if (sessionStorage.getItem("fromBack") === "true") {
+        sessionStorage.removeItem("fromBack"); // 플래그 제거
+        return;
+    }
 
-  const timer = setTimeout(() => {
-    SoundManager.play("tada");
-  }, 500);
+    const timer = setTimeout(() => {
+        SoundManager.play("tada");
+    }, 500);
 
-
-
-  return () => clearTimeout(timer);
+    return () => clearTimeout(timer);
 }, [gameResult]);
-  const { grid, highlight, placedWordCheck } = gameResult;
 
-  const handleRestart = () => {
-  //startNewGame();      // 새 게임 컨트롤러 생성
-  SoundManager.play("clickPop");
-  navigate("/start");  // 시작화면으로 이동
+const { grid, highlight, placedWordCheck } = gameResult;
+
+const handleRestart = () => {
+    // 1) 클릭 효과음
+    SoundManager.play("clickPop");
+
+    // 2) 컨트롤러 상태 완전 초기화 (플레이어도 리셋)
+    controller.hardResetPlayers?.();
+    controller.resetForNewGame?.({ difficulty: 0, reseed: Date.now() });
+
+    // 3) 시작 화면으로 이동 + reset 플래그 전달
+    navigate("/start", { replace: true, state: { reset: true } });
 };
 
 

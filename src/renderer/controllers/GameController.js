@@ -5,9 +5,7 @@ import { Difficulty, BoardSize, PlaceWordLength } from "../models/GameConfigurat
 import { Word } from "../models/Word";
 import Player from "../models/Player";
 import Ranking from "../models/Ranking";
-
 import SoundManager from "../models/SoundManager";
-// =====================
 
 // 이벤트 emitter
 class Emitter {
@@ -85,6 +83,28 @@ export class GameController {
       }
     }, 1000);
   }
+
+  hardResetPlayers() {
+    this.state.player1.name = "";
+    this.state.player1.photoPath = "";
+    this.state.player2.name = "";
+    this.state.player2.photoPath = "";
+    this.emitter();
+
+    // Player 객체 리셋
+    this.players[0].setName("");
+    this.players[0].setPhoto("");
+    this.players[1].setName("");
+    this.players[1].setPhoto("");
+
+    // React state 동기화
+    this.setState({
+      player1: this.players[0].getData(),     player2: this.players[1].getData(),
+     });
+  }
+
+  
+
 
   setPlayerName(idx, name) {
     const player = this.players[idx];

@@ -1,8 +1,38 @@
-// hooks/useGameController.js
-import { useEffect, useRef, useState } from "react";
-import { GameController}  from "../controllers/GameController";
+// src/renderer/hooks/useGameController.js
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { GameController } from "../controllers/GameController";
 
-export function useGameController(initialController = null) {
+const Ctx = createContext(null);
+
+export function GameControllerProvider({ children }) {
+  // 1) 컨트롤러는 Provider 생애주기 동안 단 1회 생성
+  const controllerRef = useRef(null);
+  if (!controllerRef.current) {
+    controllerRef.current = new GameController();
+  }
+  const controller = controllerRef.current;
+
+  // 2) 컨트롤러 state를 React state로 브리지
+  const [state, setState] = useState(controller.state);
+
+  useEffect(() => {
+    // subscribe가 없다면 아래 3번 참고해 메서드 추가
+    const unsubscribe = controller.subscribe((next) => {
+      // next가 통짜 state면 그대로, partial이면 머지
+      setState(next);
+    });
+    controller.mount?.();               // ❗ Provider가 마운트될 때 한 번만
+    return () => {
+      controller.unmount?.();           // ❗ Provider가 언마운트될 때 한 번만
+      unsubscribe?.();
+    };
+  }, [controller]);
+
+  const value = useMemo(() => ({ controller, state }), [controller, state]);
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
+
+/*export function useGameController(initialController = null) {
   // // 1) 컨트롤러를 한 번만 생성
   // const controllerRef = useRef(null);
   // if (!controllerRef.current) {
@@ -53,4 +83,4 @@ export function useGameController(initialController = null) {
     nextRound,
     startNewGame: () => controller.startInitialGame(),
   };
-}
+}*/
