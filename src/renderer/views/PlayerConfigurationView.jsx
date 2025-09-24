@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 
 //import { useNavigate } from "react-router-dom";
-import CustomKeyboard from "../components/Customkeyboard";
+import CustomKeyboard from "../components/CustomKeyboard";
 
 export default function PlayerConfigurationView() {
   const [player1Name, setPlayer1Name] = useState("");
