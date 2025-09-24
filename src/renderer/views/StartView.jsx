@@ -6,20 +6,23 @@ import SoundManager from "../models/SoundManager";
 export default function StartView() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { player1, player2, difficulty } = location.state || {};
+  const { state } = location;
   
   // const { startNewGame } = useGameController();
     
   useEffect(() => {
     SoundManager.playBgm("startBgm"); // 마운트 시 BGM 재생
-
-    return () => {};  //SoundManager.stopBgm(); // 언마운트 시 정지
+    return () => {};  
   }, []);
 
   const handleStart = () => {
     //startNewGame();        // 새 GameController 생성
     SoundManager.play("clickPop");   // 효과음 재생
-    navigate("/config");   // 설정 화면으로 이동
+    navigate("/config", {   // 설정 화면으로 이동
+      state: state,  // 받은 state 그대로 전달
+      replace: false, 
+      key: Date.now(),  // 강제로 location.key 변경
+    });   
   };
 
   return (
