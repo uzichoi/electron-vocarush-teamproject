@@ -59,6 +59,7 @@ body {
 
 .header-right {
     justify-self: end;
+    z-index: 1000;
 }
 
 .game-title {
