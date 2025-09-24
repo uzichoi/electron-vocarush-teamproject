@@ -7,9 +7,7 @@ import CustomKeyboard from "../components/CustomKeyboard";
 import SoundManager from "../models/SoundManager";
 
 export default function PlayerConfigurationView() {
-  // UI-only states
-  const [countdown, setCountdown] = useState(null);
-  const [countTarget, setCountTarget] = useState(null);   // 0 or 1
+  // UI-only states (countdown 제거)
   const [focusedInput, setFocusedInput] = useState(null); // "p1" | "p2" | null
 
   // 입력 로컬 미러(입력창은 로컬을 단일 소스로 유지)
@@ -76,7 +74,7 @@ export default function PlayerConfigurationView() {
   const handleCapture = async (idx) => {
     if (capBusy[idx]) return; // 이미 캡처 중이면 무시
 
-    const localName = idx === 0 ? nameP1 : nameP2;          // 👈 로컬 이름 신뢰
+    const localName = idx === 0 ? nameP1 : nameP2; // 👈 로컬 이름 신뢰
     const name = safeTrim(localName);
     if (!name) {
       alert("먼저 플레이어 이름을 입력해주세요.");
@@ -91,25 +89,8 @@ export default function PlayerConfigurationView() {
     });
 
     try {
-      // 3-2-1 카운트다운
-      let count = 3;
-      setCountTarget(idx);
-      setCountdown(count);
-      SoundManager.play("clickTurn");
-
-      await new Promise((resolve) => {
-        const timer = setInterval(() => {
-          count -= 1;
-          if (count > 0) setCountdown(count);
-          else {
-            clearInterval(timer);
-            setCountdown(null);
-            setCountTarget(null);
-            SoundManager.play("kamera");
-            resolve();
-          }
-        }, 1000);
-      });
+      // 카운트다운 제거 → 바로 카메라 사운드
+      SoundManager.play("kamera");
 
       if (!window?.electronAPI?.captureFace) {
         console.error("electronAPI.captureFace not available (check preload expose)");
@@ -136,7 +117,7 @@ export default function PlayerConfigurationView() {
         const fileSrc = toFileURL(fileUrl);
         controller.setPlayerPhoto?.(idx, fileSrc); // 내부에서 photoPath로 저장되도록
       } catch (e) {
-        console.error("setPlayerPhoto error: ", e);
+        console.error("setPlayerPhoto error:", e);
       }
     } finally {
       // 락 해제
@@ -155,16 +136,6 @@ export default function PlayerConfigurationView() {
 
   return (
     <div className="config-view">
-      {/* 중앙 카운트다운 */}
-      {countdown !== null && (
-        <div
-          className="global-countdown"
-          style={{ color: countTarget === 0 ? "#42a5f5" : "#ffb3d1" }}
-        >
-          {countdown}
-        </div>
-      )}
-
       <div className="config-players">
         {/* Player 1 */}
         <div className="player-config player1-config">
@@ -179,8 +150,8 @@ export default function PlayerConfigurationView() {
             }}
             onChange={(e) => {
               const v = e.target.value;
-              setNameP1(v);                 // 로컬 즉시 반응
-              writeNameToController(0, v);  // 컨트롤러에도 반영
+              setNameP1(v);                // 로컬 즉시 반응
+              writeNameToController(0, v); // 컨트롤러에도 반영
             }}
           />
           <div className="photo-box">
@@ -192,7 +163,7 @@ export default function PlayerConfigurationView() {
                 onError={(e) => {
                   const [base] = (player1.photoPath || "").split("?");
                   e.currentTarget.src = `${base}?t=${Date.now()}`;
-                  console.warn("Image reload attempted: ", e);
+                  console.warn("Image reload attempted:", e);
                 }}
               />
             ) : (
@@ -202,7 +173,7 @@ export default function PlayerConfigurationView() {
           <button
             className="btn-capture"
             onClick={() => handleCapture(0)}
-            disabled={capBusy[0]}           // 캡처 중에는 비활성화
+            disabled={capBusy[0]} // 캡처 중에는 비활성화
           >
             사진 촬영
           </button>
@@ -237,7 +208,7 @@ export default function PlayerConfigurationView() {
                 onError={(e) => {
                   const [base] = (player2.photoPath || "").split("?");
                   e.currentTarget.src = `${base}?t=${Date.now()}`;
-                  console.warn("Image reload attempted: ", e);
+                  console.warn("Image reload attempted:", e);
                 }}
               />
             ) : (
@@ -247,7 +218,7 @@ export default function PlayerConfigurationView() {
           <button
             className="btn-capture"
             onClick={() => handleCapture(1)}
-            disabled={capBusy[1]}           // 캡처 중에는 비활성화
+            disabled={capBusy[1]} // 캡처 중에는 비활성화
           >
             사진 촬영
           </button>
@@ -269,13 +240,13 @@ export default function PlayerConfigurationView() {
           viewType="config"
           focusedInput={focusedInput}
           setPlayer1={(txt) => {
-            if (focusedInput !== "p1") return;   // 포커스된 쪽만 반응
+            if (focusedInput !== "p1") return; // 포커스된 쪽만 반응
             const v = txt ?? "";
             setNameP1(v);
             writeNameToController(0, v);
           }}
           setPlayer2={(txt) => {
-            if (focusedInput !== "p2") return;   // 포커스된 쪽만 반응
+            if (focusedInput !== "p2") return; // 포커스된 쪽만 반응
             const v = txt ?? "";
             setNameP2(v);
             writeNameToController(1, v);

@@ -240,7 +240,9 @@ const handleNextRound = () => {
                             {gameResult.player2.isWinner && (
                                 <div className="winner-crown" aria-label="승자">👑</div>
                             )}
-                            <div className="player-avatar">📷</div>
+                            <div className="avatar-large player-avatar">
+                                <Avatar photoPath={gameResult.player2.photoPath} alt="player2" className="avatar-img" />
+                            </div>
                             <h3 className="player-name">{gameResult.player2.name}</h3>
                             <div className={`final-score ${gameResult.player2.isWinner ? 'winner' : ''}`}>
                                 {gameResult.player2.score.toLocaleString()}
