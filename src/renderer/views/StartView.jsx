@@ -12,14 +12,25 @@ export default function StartView() {
     
   useEffect(() => {
     SoundManager.playBgm("startBgm"); // 마운트 시 BGM 재생
+    if (player1 && player2) {
+      console.log(`${player1} vs ${player2} ready!`);
+    }
 
     return () => {};  //SoundManager.stopBgm(); // 언마운트 시 정지
   }, []);
 
   const handleStart = () => {
     //startNewGame();        // 새 GameController 생성
+
     SoundManager.play("clickPop");   // 효과음 재생
-    navigate("/config");   // 설정 화면으로 이동
+    navigate("/config", { 
+      state: { 
+        player1Name: player1?.name || "",
+        player2Name: player2?.name || "",
+        difficulty,
+        fromStart: true
+      } 
+    });
   };
 
   return (
