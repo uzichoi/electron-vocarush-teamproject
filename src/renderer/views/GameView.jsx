@@ -1,4 +1,3 @@
-// views/GameView.jsx
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
@@ -15,7 +14,6 @@ export default function GameView() {
   const inputRef = useRef(null);
 
   const { controller, state } = useGameController();
-  //const { player1, player2 } = state || {};
 
   const { player1, player2, difficulty } = state;
 
@@ -23,23 +21,22 @@ export default function GameView() {
   const [isClosing, setIsClosing] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
 
-  // Player 인스턴스로 복원
-  const p1 = new Player(player1.name);
-  p1.score = player1.score;
-  p1.combo = player1.combo;
-  p1.maxCombo = player1.maxCombo;
-  p1.hp = player1.hp;
-  p1.wordsFound = player1.wordsFound;
-  p1.photoPath = player1.photoPath;
+  // Player 인스턴스로 복원 (player1과 player2에 전달된 name을 반영)
+  const p1 = new Player(player1?.name || "Player 1");
+  p1.score = player1?.score ?? 0;
+  p1.combo = player1?.combo ?? 0;
+  p1.maxCombo = player1?.maxCombo ?? 0;
+  p1.hp = player1?.hp ?? 5;
+  p1.wordsFound = player1?.wordsFound ?? 0;
+  p1.photoPath = player1?.photoPath ?? null;
 
-  const p2 = new Player(player2.name);
-  p2.score = player2.score;
-  p2.combo = player2.combo;
-  p2.maxCombo = player2.maxCombo;
-  p2.hp = player2.hp;
-  p2.wordsFound = player2.wordsFound;
-  p2.photoPath = player2.photoPath;
-
+  const p2 = new Player(player2?.name || "Player 2");
+  p2.score = player2?.score ?? 0;
+  p2.combo = player2?.combo ?? 0;
+  p2.maxCombo = player2?.maxCombo ?? 0;
+  p2.hp = player2?.hp ?? 5;
+  p2.wordsFound = player2?.wordsFound ?? 0;
+  p2.photoPath = player2?.photoPath ?? null;
 
   const formatTime = (seconds = 0) => {
     const s = Number.isFinite(seconds) ? seconds : 0;
@@ -48,31 +45,34 @@ export default function GameView() {
     return `${m}:${String(r).padStart(2, "0")}`;
   };
 
+useEffect(() => {
+  console.log('Received player1 name:', location.state?.player1?.name);  // player1의 이름 확인
+  console.log('Received player2 name:', location.state?.player2?.name);  // player2의 이름 확인
+}, [location.state]);
+
+
   // BGM
   useEffect(() => {
     SoundManager.playBgm("gameBgm");
     return () => SoundManager.stopBgm();
   }, []);
 
-  // 🔹 보드만 초기화 (플레이어 객체/사진은 유지!)
+  // 🔹 보드만 초기화 (플레이어 객체/사진은 유지! - state에서 전달된 값 사용)
   useEffect(() => {
     let mounted = true;
     (async () => {
       if (!mounted || !controller) return;
 
-      // 이미 시작되어 있고 다음 라운드가 아니면 중복 초기화 금지
       if (controller.gameStarted && !location.state?.nextRound) return;
 
-      if (location.state?.nextRound) {  // 기존 점수 유지하면서 게임 재시작
+      if (location.state?.nextRound) {
         await controller.restartGame({
           difficulty: location.state.difficulty ?? state?.difficulty ?? 0,
-          // 플레이어는 controller의 state를 그대로 사용하므로 별도 setPlayerInfo 호출 X
         });
       } else {
-        await controller.startInitialGame(); // ← 여기서도 플레이어 재생성/초기화하지 않도록 컨트롤러 구현이 중요
+        await controller.startInitialGame(); // ← 여기서도 플레이어 재생성/초기화하지 않도록
       }
 
-      // 중복 실행 방지
       navigate(location.pathname, { replace: true, state: {} });
     })();
 
@@ -135,10 +135,6 @@ export default function GameView() {
         src={photoPath}
         alt={alt}
         className={className}
-        //onError={(e) => {
-          ///const [base] = (photoPath || "").split("?");
-          //e.currentTarget.src = `${base}?t=${Date.now()}`;
-        //}}
       />
     ) : (
       "👤"
@@ -168,7 +164,7 @@ export default function GameView() {
           </div>
 
           <div className="player-card player1-card">
-            <h3>{p1.name || "Player 1"}</h3>
+            <h3>{ location.state?.player1?.name || "Player 1"}</h3>
             <div className="stat"><span>Score:</span> {player1?.score ?? 0}</div>
             <div className="stat"><span>Combo:</span> {player1?.combo ?? 0}</div>
             <div className="stat">
@@ -231,7 +227,7 @@ export default function GameView() {
           </div>
 
           <div className="player-card player2-card">
-            <h3>{p2.name || "Player 2"}</h3>
+            <h3>{ location.state?.player2?.name || "Player 2"}</h3>
             <div className="stat"><span>Score:</span> {player2?.score ?? 0}</div>
             <div className="stat"><span>Combo:</span> {player2?.combo ?? 0}</div>
             <div className="stat">

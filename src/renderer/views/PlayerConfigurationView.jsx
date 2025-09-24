@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 import CustomKeyboard from "../components/CustomKeyboard";
 import SoundManager from "../models/SoundManager";
+import { GameController } from "../controllers/GameController"; // GameController 클래스 임포트
+
 
 export default function PlayerConfigurationView() {
   // UI-only states (countdown 제거)
@@ -58,11 +60,12 @@ export default function PlayerConfigurationView() {
   };
 
   // 컨트롤러에 이름 쓰기
-const writeNameToController = (idx, value) => {
-  const safeValue = typeof value === "string" ? value : "";
-  controller.setPlayerName?.(idx, safeValue);
-};
-
+  const writeNameToController = (idx, value) => {
+    const safeValue = typeof value === "string" ? value : "";
+    // Controller에만 반영
+    controller.players[idx].setName(safeValue);
+    controller.state[`player${idx + 1}`] = controller.players[idx].getData();
+  };
 
   // file:// 스킴 보장 (toFileURL 함수 정의)
   const toFileURL = (p) => {
@@ -136,37 +139,33 @@ const writeNameToController = (idx, value) => {
     }
   };
 
-// const handleStartGame = () => {
-//   SoundManager.play("clickGameStart");
-//   navigate("/game", {
-//     state: {
-//       // state에서 필요한 값만 전달하고 함수는 제외
-//       player1: state.player1,
-//       player2: state.player2,
-//       difficulty: 0,
-//     },
-//     replace: false,
-//     key: Date.now(),
-//   });
-// };
-
 const handleStartGame = () => {
   SoundManager.play("clickGameStart");
 
-  // JSON 직렬화로 함수 제거
-  const safePlayer1 = JSON.parse(JSON.stringify(state.player1));
-  const safePlayer2 = JSON.parse(JSON.stringify(state.player2));
+  // controller 인스턴스를 생성할 때 이름을 전달
+  const player1Name = nameP1;  // Player 1 이름
+  const player2Name = nameP2;  // Player 2 이름
 
+  // GameController에 이름을 전달하며 생성
+  const gameController = new GameController(player1Name, player2Name);
+
+  // controller에서 player 데이터를 가져옵니다.
+  const player1Data = gameController.players[0].getData();
+  const player2Data = gameController.players[1].getData();
+
+  // 게임 시작을 위해 navigate로 데이터를 전달합니다.
   navigate("/game", {
     state: {
-      player1: safePlayer1,
-      player2: safePlayer2,
+      player1: player1Data,
+      player2: player2Data,
       difficulty: 0,
     },
-   replace: false,
+    replace: false,
     key: Date.now(),
   });
 };
+
+
 
 
   return (
@@ -187,6 +186,7 @@ const handleStartGame = () => {
               const v = e.target.value;
               setNameP1(v);                // 로컬 즉시 반응
               writeNameToController(0, v); // 컨트롤러에도 반영
+              controller.players[0].setName(v);
             }}
           />
           <div className="photo-box">

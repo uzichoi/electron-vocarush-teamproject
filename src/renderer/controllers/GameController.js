@@ -20,8 +20,9 @@ class Emitter {
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 // GameController
+// GameController 수정
 export class GameController {
-  constructor() {
+  constructor(player1Name = "Player 1", player2Name = "Player 2") {
     this.board = new GameBoard();
     this.words = [];
     this.emitter = new Emitter();
@@ -42,12 +43,10 @@ export class GameController {
     this.initialWordLength = PlaceWordLength[this.initialGameDifficulty];
     this.currentWordLength = PlaceWordLength[this.currentGameDifficulty];
 
-    // Player 인스턴스
-    this.players = [new Player("Player 1"), new Player("Player 2")];  // 배열 기반으로 수정
+    // Player 인스턴스 - 외부에서 전달된 이름을 사용
+    this.players = [new Player(player1Name), new Player(player2Name)];  // 이름을 외부에서 설정
     this.players[0].setHP(5);
     this.players[1].setHP(5);
-    this.players[0].photo;
-    this.players[1].photo;
 
     // UI state
     this.state = {
@@ -66,6 +65,8 @@ export class GameController {
 
     this.gameStarted = false;
   }
+
+
 
   // React 구독 / 상태 업데이트
   subscribe(listener) {
@@ -87,15 +88,23 @@ export class GameController {
     }, 1000);
   }
 
+  // setPlayerName(idx, name) {
+  //   const player = this.players[idx];
+  //   if (!player) return;
+  //   if (name) player.setName(name);
+  //   this.setState({
+  //     player1: this.players[0].getData(),
+  //     player2: this.players[1].getData(),
+  //   });
+  // }
+
   setPlayerName(idx, name) {
-    const player = this.players[idx];
-    if (!player) return;
-    if (name) player.setName(name);
-    this.setState({
-      player1: this.players[0].getData(),
-      player2: this.players[1].getData(),
-    });
-  }
+  this.players[idx].setName(name);
+  // state 즉시 최신화
+  this.state[`player${idx + 1}`] = this.players[idx].getData();
+  this.emitter.emit(this.state);
+}
+
 
   setPlayerPhoto(idx, urlFromPreload) {
     const player = this.players[idx];
