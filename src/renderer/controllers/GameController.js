@@ -418,7 +418,7 @@ export class GameController {
   }
 
   setInputValue(value) {
-    this.setState({ ...this.state, inputValue: value.toUpperCase() });
+    this.setState({ ...this.state, inputValue: value.toLowerCase() });
   }
 
   

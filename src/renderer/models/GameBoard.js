@@ -119,7 +119,7 @@ export class GameBoard {
   for (let i = 0; i < text.length; i++) {
     const wordX = x + DX[dir] * i;
     const wordY = y + DY[dir] * i;
-    this.grid[wordY][wordX] = text[i].toUpperCase();
+    this.grid[wordY][wordX] = text[i];
     this.highlight[wordY][wordX] = playerIndex;
   }
   }

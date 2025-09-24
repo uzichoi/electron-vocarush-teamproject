@@ -398,7 +398,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    transform: scale(1.2); /* 기존 1.2에서 증가 */
+    transform: scale(1); /* 기존 1.2에서 증가 */
     transform-origin: top center;
     transform: translateY(-220px); /* 기존 -200px에서 조정 */
 }
@@ -515,7 +515,7 @@ body {
     color: var(--text);
     font-weight: 600; /* 기존 500에서 증가 */
     outline: none;
-    text-transform: uppercase;
+    text-transform: none;
     letter-spacing: 1.5px; /* 기존 1px에서 증가 */
 }
 
@@ -631,6 +631,7 @@ body {
 /* 계속해서 기존 스타일들을 포함하되, 크기만 비례적으로 증가 */
 .manual-view {
     min-height: 90vh;
+    max-height:100%;
     background: var(--bg);
     color: var(--text);
     display: flex;
@@ -639,7 +640,7 @@ body {
     padding: 20px 40px; /* 기존 20px 40px에서 증가 */
     --manual-accent: #cde7ff;
     --manual-accent2: #9bbcf4;
-    overflow:hidden;
+    overflow:hidden !important;
 }
 
 .manual-title {
@@ -660,12 +661,11 @@ body {
     align-items: center;
     flex: 1;
     margin: 40px 0; /* 기존 40px에서 증가 */
-    overflow:hidden;
 }
 
 .description-board {
     width: 875px; /* 기존 700px에서 25% 증가 */
-    min-height: 563px; /* 기존 450px에서 25% 증가 */
+    min-height: 500px; /* 기존 450px에서 25% 증가 */
     max-width: 90%;
     padding: 50px; /* 기존 40px에서 증가 */
     display: flex;
