@@ -72,7 +72,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
-    padding: 30px 60px; /* 기존 20px 40px에서 증가 */
+    padding: 20px 40px; /* 기존 20px 40px에서 증가 */
     position: relative;
 }
 
@@ -106,8 +106,8 @@ body {
     padding: 12px 24px; /* 기존 12px 24px에서 증가 */
     background: rgba(236, 240, 241, 0.9);
     border: 3px solid rgba(255, 255, 255, 0.25);
-    border-radius: 26px; /* 기존 16px에서 증가 */
-    min-width: 140px; /* 기존 100px에서 증가 */
+    border-radius: 16px; /* 기존 16px에서 증가 */
+    min-width: 100px; /* 기존 100px에서 증가 */
     backdrop-filter: blur(25px);
     box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
     transition: all 0.3s ease;
@@ -117,12 +117,12 @@ body {
 .game-main {
     display: grid;
     grid-template-columns: 450px 1fr 450px; /* 기존 350px에서 증가 */
-    gap: 60px; /* 기존 40px에서 증가 */
+    gap: 40px; /* 기존 40px에서 증가 */
     flex: 1;
     align-items: center;
     justify-items: center;
-    padding: 0 60px; /* 기존 40px에서 증가 */
-    margin-top: 30px; /* 기존 20px에서 증가 */
+    padding: 0 40px; /* 기존 40px에서 증가 */
+    margin-top: 20px; /* 기존 20px에서 증가 */
 }
 
 /* player info area 크기 증가 */
@@ -400,7 +400,7 @@ body {
     align-items: center;
     transform: scale(1); /* 기존 1.2에서 증가 */
     transform-origin: top center;
-    transform: translateY(-220px); /* 기존 -200px에서 조정 */
+    transform: translateY(-190px); /* 기존 -200px에서 조정 */
 }
 
 .word-grid {
@@ -409,9 +409,9 @@ body {
     gap: var(--grid-gap);
     background: rgba(255, 255, 255, 0.35); /* 기존 0.3에서 증가 */
     backdrop-filter: blur(16px); /* 기존 12px에서 증가 */
-    padding: 28px; /* 기존 20px에서 증가 */
-    border-radius: 28px; /* 기존 20px에서 증가 */
-    border: 3px solid rgba(255,255,255,0.5); /* 기존 2px, 0.4에서 증가 */
+    padding: 20px; /* 기존 20px에서 증가 */
+    border-radius: 20px; /* 기존 20px에서 증가 */
+    border: 1px solid rgba(255,255,255,0.5); /* 기존 2px, 0.4에서 증가 */
 }
 
 .grid-row {
