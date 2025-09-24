@@ -132,6 +132,22 @@ const handleNextRound = () => {
     return `${mm}:${ss}`;
   };
 
+  const Avatar = ({ photoPath, alt, className }) =>
+    photoPath ? (
+      <img
+        key={photoPath}
+        src={photoPath}
+        alt={alt}
+        className={className}
+        //onError={(e) => {
+          ///const [base] = (photoPath || "").split("?");
+          //e.currentTarget.src = `${base}?t=${Date.now()}`;
+        //}}
+      />
+    ) : (
+      "👤"
+  );
+
     return (
         <div className="result-view">
             <header className="result-header">
@@ -154,7 +170,9 @@ const handleNextRound = () => {
                             {gameResult.player1.isWinner && (
                                 <div className="winner-crown" aria-label="승자">👑</div>
                             )}
-                            <div className="player-avatar">📷</div>
+                            <div className="avatar-large player-avatar">
+                                <Avatar photoPath={gameResult.player1.photoPath} alt="player1" className="avatar-img" />
+                            </div>
                             <h3 className="player-name">{gameResult.player1.name}</h3>
                             <div className={`final-score ${gameResult.player1.isWinner ? 'winner' : ''}`}>
                                 {gameResult.player1.score.toLocaleString()}
