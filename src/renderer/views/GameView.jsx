@@ -42,7 +42,7 @@ export default function GameView() {
       // 이미 시작되어 있고 다음 라운드가 아니면 중복 초기화 금지
       if (controller.gameStarted && !location.state?.nextRound) return;
 
-      if (location.state?.nextRound) {
+      if (location.state?.nextRound) {  // 기존 점수 유지하면서 게임 재시작
         await controller.restartGame({
           difficulty: location.state.difficulty ?? state?.difficulty ?? 0,
           // 플레이어는 controller의 state를 그대로 사용하므로 별도 setPlayerInfo 호출 X
@@ -106,7 +106,7 @@ export default function GameView() {
     navigate("/start", { replace: true });
   };
 
-  // ✅ 안전 아바타: photoPath가 있으면 image, 아니면 "👤"
+  // 안전 아바타: photoPath가 있으면 image, 아니면 "👤"
   const Avatar = ({ photoPath, alt, className }) =>
     photoPath ? (
       <img
@@ -114,14 +114,14 @@ export default function GameView() {
         src={photoPath}
         alt={alt}
         className={className}
-        onError={(e) => {
-          const [base] = (photoPath || "").split("?");
-          e.currentTarget.src = `${base}?t=${Date.now()}`;
-        }}
+        //onError={(e) => {
+          ///const [base] = (photoPath || "").split("?");
+          //e.currentTarget.src = `${base}?t=${Date.now()}`;
+        //}}
       />
     ) : (
       "👤"
-    );
+  );
 
   return (
     <div className="game-view">
@@ -169,7 +169,7 @@ export default function GameView() {
               }`}
               onClick={() => {
                 SoundManager.play("clickTurn");
-                controller?.startTurn?.("player1");
+                controller?.startTurn?.(0);
               }}
               disabled={!!state?.turnActive || (player1?.hp ?? 0) <= 0}
             >
@@ -232,7 +232,7 @@ export default function GameView() {
               }`}
               onClick={() => {
                 SoundManager.play("clickTurn");
-                controller?.startTurn?.("player2");
+                controller?.startTurn?.(1);
               }}
               disabled={!!state?.turnActive || (player2?.hp ?? 0) <= 0}
             >

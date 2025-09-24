@@ -324,12 +324,9 @@ export class GameController {
       player.addScore(100);
       opponent.subHP();
       opponent.setCombo(0);
-
       player.addWord(match);
-      const playerIndex = currentPlayerKey === "player1" ? 0 : 1;
-      SoundManager.playComboSound(player.getCombo())
-      this.board.highlightWord(match, playerIndex);
-
+      SoundManager.playComboSound(player.getCombo());
+      this.board.highlightWord(match, currentIdx);
       this.updateGridState();
       console.log("Correct word:", guess);
     } else {
