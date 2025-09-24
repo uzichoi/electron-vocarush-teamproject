@@ -65,19 +65,22 @@ useEffect(() => {
 
   return () => clearTimeout(timer);
 }, [gameResult]);
-  const { grid, highlight, placedWordCheck } = gameResult;
 
-  const handleRestart = () => {
-  //startNewGame();      // 새 게임 컨트롤러 생성
-  SoundManager.play("clickPop");
-  navigate("/start");  // 시작화면으로 이동
+const { grid, highlight, placedWordCheck } = gameResult;
+
+
+// Restart 클릭 시 호출할 함수
+const handleRestart = () => {
+    //startNewGame();      // 새 게임 컨트롤러 생성
+    SoundManager.play("clickPop");
+    navigate("/start");  // 시작화면으로 이동
 };
 
 
-  // Next Round 클릭 시 호출할 함수
+// Next Round 클릭 시 호출할 함수
 const handleNextRound = () => {
     // 임시 경로를 거쳐서 강제로 GameView 재마운트
-   // navigate("/start"); 
+    // navigate("/start"); 
     // 현재 난이도에 +1 해서 GameView로 전달
     SoundManager.play("clickPop");
     const nextDifficulty = (gameResult.difficulty ?? 0) + 1;
@@ -85,7 +88,7 @@ const handleNextRound = () => {
     setTimeout(() => {
         navigate("/game", { 
             state: { nextRound: true,
-                    difficulty: nextDifficulty, // 현재 난이도 같이 전달
+                        difficulty: nextDifficulty, // 현재 난이도 같이 전달
                         player1: gameResult.player1,
                         player2: gameResult.player2,
                     },
@@ -96,8 +99,7 @@ const handleNextRound = () => {
 };
 
   useEffect(() => {
-    
-      if (state.gameOver) {
+    if (state.gameOver) {
         setGameResult({
           gameTime: state.timeIncreased,
           player1: {
@@ -238,7 +240,7 @@ const handleNextRound = () => {
                     <section className="player-section">
                         <div className={`player-final ${gameResult.player2.isWinner ? 'winner' : ''} player2-final`}>
                             {gameResult.player2.isWinner && (
-                                <div className="winner-crown" aria-label="승자">👑</div>
+                                <div className="winner-crown" aria-label="winner">👑</div>
                             )}
                             <div className="avatar-large player-avatar">
                                 <Avatar photoPath={gameResult.player2.photoPath} alt="player2" className="avatar-img" />
@@ -271,16 +273,13 @@ const handleNextRound = () => {
                         <button className="btn-secondary" onClick={() => {SoundManager.play("clickPop"); navigate("/ranking");}}>
 
                         <button className="btn-secondary" onClick={() => navigate("/ranking", {
-                            state: {
-                                lastPlayers: [state.player1.name, state.player2.name]
-                            }
+                            state: {lastPlayers: [state.player1.name, state.player2.name]}
                             })
-                            }>
-
+                        }>
                         View Ranking
                         </button>
                     </button>
-                    <button className="btn-secondary" onClick={handleRestart}>Restart</button>
+                    <button className="btn-secondary" onClick={handleRestart}>New Game</button>
                     <button className="btn-secondary" onClick={handleNextRound}>Next Round</button>
                 </section>
             </main>

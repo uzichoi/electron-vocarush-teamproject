@@ -175,7 +175,7 @@ export default function PlayerConfigurationView() {
             onClick={() => handleCapture(0)}
             disabled={capBusy[0]} // 캡처 중에는 비활성화
           >
-            사진 촬영
+            Capture
           </button>
         </div>
 
@@ -220,7 +220,7 @@ export default function PlayerConfigurationView() {
             onClick={() => handleCapture(1)}
             disabled={capBusy[1]} // 캡처 중에는 비활성화
           >
-            사진 촬영
+            Capure
           </button>
         </div>
       </div>
