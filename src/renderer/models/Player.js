@@ -60,8 +60,14 @@ export default class Player {
 
   // Setter
   setName(name) {
-    this.name = name;
+    if (typeof name === "function") {
+      console.warn("Player.setName에 함수가 들어왔습니다!", name);
+      this.name = "";
+    } else {
+      this.name = name;
+    }
   }
+
 
   setScore(score) {
     this.score = score;

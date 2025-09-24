@@ -7,6 +7,7 @@ import ComboEffect from "../components/effects/ComboEffect";
 import BalloonEffect from "../components/effects/BalloonEffect";
 import ComboTextEffect from "../components/effects/ComboTextEffect";
 import SoundManager from "../models/SoundManager";
+import Player from "../models/Player"; 
 
 export default function GameView() {
   const navigate = useNavigate();
@@ -14,11 +15,31 @@ export default function GameView() {
   const inputRef = useRef(null);
 
   const { controller, state } = useGameController();
-  const { player1, player2 } = state || {};
+  //const { player1, player2 } = state || {};
+
+  const { player1, player2, difficulty } = state;
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
+
+  // Player 인스턴스로 복원
+  const p1 = new Player(player1.name);
+  p1.score = player1.score;
+  p1.combo = player1.combo;
+  p1.maxCombo = player1.maxCombo;
+  p1.hp = player1.hp;
+  p1.wordsFound = player1.wordsFound;
+  p1.photoPath = player1.photoPath;
+
+  const p2 = new Player(player2.name);
+  p2.score = player2.score;
+  p2.combo = player2.combo;
+  p2.maxCombo = player2.maxCombo;
+  p2.hp = player2.hp;
+  p2.wordsFound = player2.wordsFound;
+  p2.photoPath = player2.photoPath;
+
 
   const formatTime = (seconds = 0) => {
     const s = Number.isFinite(seconds) ? seconds : 0;
@@ -147,7 +168,7 @@ export default function GameView() {
           </div>
 
           <div className="player-card player1-card">
-            <h3>{player1?.name || "Player 1"}</h3>
+            <h3>{p1.name || "Player 1"}</h3>
             <div className="stat"><span>Score:</span> {player1?.score ?? 0}</div>
             <div className="stat"><span>Combo:</span> {player1?.combo ?? 0}</div>
             <div className="stat">
@@ -210,7 +231,7 @@ export default function GameView() {
           </div>
 
           <div className="player-card player2-card">
-            <h3>{player2?.name || "Player 2"}</h3>
+            <h3>{p2.name || "Player 2"}</h3>
             <div className="stat"><span>Score:</span> {player2?.score ?? 0}</div>
             <div className="stat"><span>Combo:</span> {player2?.combo ?? 0}</div>
             <div className="stat">

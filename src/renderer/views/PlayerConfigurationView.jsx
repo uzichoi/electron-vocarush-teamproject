@@ -58,13 +58,11 @@ export default function PlayerConfigurationView() {
   };
 
   // 컨트롤러에 이름 쓰기
-  const writeNameToController = (idx, value) => {
-    try {
-      controller.setPlayerName?.(idx, value ?? "");
-    } catch (e) {
-      console.error("setPlayerName error:", e);
-    }
-  };
+const writeNameToController = (idx, value) => {
+  const safeValue = typeof value === "string" ? value : "";
+  controller.setPlayerName?.(idx, safeValue);
+};
+
 
   // file:// 스킴 보장 (toFileURL 함수 정의)
   const toFileURL = (p) => {
@@ -138,16 +136,34 @@ export default function PlayerConfigurationView() {
     }
   };
 
+// const handleStartGame = () => {
+//   SoundManager.play("clickGameStart");
+//   navigate("/game", {
+//     state: {
+//       // state에서 필요한 값만 전달하고 함수는 제외
+//       player1: state.player1,
+//       player2: state.player2,
+//       difficulty: 0,
+//     },
+//     replace: false,
+//     key: Date.now(),
+//   });
+// };
+
 const handleStartGame = () => {
   SoundManager.play("clickGameStart");
+
+  // JSON 직렬화로 함수 제거
+  const safePlayer1 = JSON.parse(JSON.stringify(state.player1));
+  const safePlayer2 = JSON.parse(JSON.stringify(state.player2));
+
   navigate("/game", {
     state: {
-      // state에서 필요한 값만 전달하고 함수는 제외
-      player1: state.player1,
-      player2: state.player2,
+      player1: safePlayer1,
+      player2: safePlayer2,
       difficulty: 0,
     },
-    replace: false,
+   replace: false,
     key: Date.now(),
   });
 };
