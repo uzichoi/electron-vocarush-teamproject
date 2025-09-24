@@ -188,7 +188,13 @@ const handleNextRound = () => {
                 <div className="header-center">
                     <h1 className="result-title">GAME RESULT</h1>
                     {/*  게임 시간 표시 */}
-                    <div className="final-time">⏱ {formatTime(gameResult.gameTime)}</div>
+                    <div className="final-time" style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}>
+                        ⏱ {formatTime(gameResult.gameTime)}
+                    </div>
                 </div>
                 
             </header>
@@ -280,13 +286,13 @@ const handleNextRound = () => {
                             </div>
                             <div className="player-stats">
                                 <div className="stat-item">
-                                    <span>단어:</span> {gameResult.player2.wordsFound}개
+                                    <span>Words:</span> {gameResult.player2.wordsFound}
                                 </div>
                                 <div className="stat-item">
-                                    <span>콤보:</span> {gameResult.player2.maxCombo}
+                                    <span>Combo:</span> {gameResult.player2.maxCombo}
                                 </div>
                                 <div className="stat-item">
-                                    <span>정확도:</span> {gameResult.player2.accuracy}%
+                                    <span>Accuracy:</span> {gameResult.player2.accuracy}%
                                 </div>
                             </div>
                             {gameResult.player2.maxCombo >= 5 && (

@@ -174,7 +174,6 @@ body {
     justify-content: center;
     font-size: 72px;
     color: var(--text-light);
-    margin-bottom: 20px;
     border: 3px solid var(--glass-border);
     box-shadow: var(--shadow-glass);
     transition: all 0.3s ease;
@@ -460,7 +459,7 @@ body {
 }
 
 .word-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(96, 96, 96, 0.4);
     text-transform: none;
 }
 
@@ -1667,11 +1666,11 @@ body {
 /* === UI Scale Vars (배율 기반) === */
 :root {
   /* 전체 글꼴 스케일 */
-  --font-scale: 1.7;
+  --font-scale: 1.1;
 
   /* 보드 셀: (기준 px) × (배율) */
   --cell-base: 48;                 /* 기준 48px */
-  --cell-scale: 1.7;               /* 1.7배 → 48*1.7 ≈ 81.6px */
+  --cell-scale: 1.1;               /* 1.7배 → 48*1.7 ≈ 81.6px */
   --cell-size: calc(var(--cell-base) * var(--cell-scale) * 1px);
 
   --grid-gap: 8px;
@@ -1776,6 +1775,7 @@ body, .game-view {
   width: 100%;
   max-width:1000px;
   margin: 0 auto;
+  padding: 10px;
 }
 .game-input .input-label{
   flex: 0 0 auto;
@@ -1793,8 +1793,12 @@ body, .game-view {
   border-radius: 8px;
   box-sizing: border-box;
 }
+
+.btn.btn-primary.submit-btn {
+    margin-top: 0;
+}
+
 .btn.submit-btn,
-.btn.btn-primary.submit-btn,
 .submit-btn{
   height: var(--input-height);
   min-width: var(--btn-min-width);
@@ -1880,7 +1884,7 @@ body, .game-view {
   align-items: center;
   gap: 80px;
   margin-bottom: 40px;
-  margin-top:120px;
+  margin-top: 30px;
 }
 
 /* 플레이어 카드 공통 스타일 */
@@ -1888,10 +1892,10 @@ body, .game-view {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding: 30px 40px;
+  gap: 5px;
+  padding: 15px 15px;
   border-radius: 24px;
-  top: 40px;
+  top: 50px;
   background: var(--glass-bg);
   backdrop-filter: blur(25px);
   min-width: 280px;
@@ -2072,7 +2076,7 @@ body, .game-view {
 
 /* Game Start 버튼 */
 .start-container {
-  margin-top: 30px;
+  margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2568,4 +2572,44 @@ body, .game-view {
         padding: 12px 24px;
         font-size: 16px;
     }
+}
+
+
+/* 노트북 전용 미디어쿼리 (더 완전한 버전) */
+@media (max-width: 1366px) and (min-width: 1200px) {
+  :root {
+    --font-scale: 1.2;
+    --cell-scale: 1.2;
+    --cell-size: calc(48px * 1.2);  /* 셀 크기도 명시 */
+  }
+  
+  .start-title {
+    font-size: 50px;
+  }
+  
+  .config-players {
+    gap: 40px;
+    margin-top: 80px;  /* 상단 여백도 축소 */
+  }
+  
+  .player-config {
+    min-width: 240px;
+    padding: 25px 35px;
+  }
+  
+  .game-board {
+    transform: scale(1.0) translateY(-150px);  /* 스케일과 위치 조정 */
+  }
+  
+  .player-info {
+    transform: scale(1.0) translateY(-80px);
+  }
+  
+  .result-content {
+    transform: scale(1.0);
+  }
+  
+  .game-input {
+    bottom: 250px;  /* 입력창 위치도 조정 */
+  }
 }

@@ -140,6 +140,10 @@ export default function PlayerConfigurationView() {
 
 const handleStartGame = () => {
   SoundManager.play("clickGameStart");
+
+  console.log("player1", state.player1);
+  console.log("player2", state.player2);
+
   navigate("/game", {
     state: {
       // state에서 필요한 값만 전달하고 함수는 제외
@@ -161,7 +165,7 @@ const handleStartGame = () => {
           <h2>Player 1</h2>
           <input
             type="text"
-            placeholder="이름 입력"
+            placeholder="Input your name"
             value={nameP1}
             onFocus={() => {
               setFocusedInput("p1");
@@ -206,7 +210,7 @@ const handleStartGame = () => {
           <h2>Player 2</h2>
           <input
             type="text"
-            placeholder="이름 입력"
+            placeholder="Input your name"
             value={nameP2}
             onFocus={() => {
               setFocusedInput("p2");
