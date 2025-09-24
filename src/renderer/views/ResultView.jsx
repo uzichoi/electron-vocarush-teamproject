@@ -297,18 +297,15 @@ const handleNextRound = () => {
 
                 {/* 액션 버튼들 */}
                 <section className="result-actions">
-
-                        <button className="btn-secondary" onClick={() => {SoundManager.play("clickPop"); navigate("/ranking");}}>
-
-                        <button className="btn-secondary" onClick={() => navigate("/ranking", {
-                            state: {lastPlayers: [state.player1.name, state.player2.name]}
-                            })
-                        }>
+                    <button className="btn-secondary" onClick={() => {SoundManager.play("clickPop"); navigate("/ranking");}}>
                         View Ranking
-                        </button>
                     </button>
-                    <button className="btn-secondary" onClick={handleNewGame}>New Game</button>
-                    <button className="btn-secondary" onClick={handleNextRound}>Next Round</button>
+                    <button className="btn-secondary" onClick={handleNewGame}>
+                        New Game
+                    </button>
+                    <button className="btn-secondary" onClick={handleNextRound}>
+                        Next Round
+                    </button>
                 </section>
             </main>
 
