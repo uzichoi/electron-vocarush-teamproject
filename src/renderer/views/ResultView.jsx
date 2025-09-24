@@ -69,11 +69,39 @@ useEffect(() => {
 const { grid, highlight, placedWordCheck } = gameResult;
 
 
-// Restart 클릭 시 호출할 함수
-const handleRestart = () => {
+// New Game 클릭 시 호출할 함수
+const handleNewGame = () => {
     //startNewGame();      // 새 게임 컨트롤러 생성
     SoundManager.play("clickPop");
-    navigate("/start");  // 시작화면으로 이동
+
+    // 상태 초기화
+    const initialPlayer1 = {
+        name: null,
+        score: 0,
+        hp: 5,
+        photoPath: null,  
+        combo: 0,
+        maxCombo: 0,
+    };
+
+    const initialPlayer2 = {
+        name: null,
+        score: 0,
+        hp: 5,
+        photoPath: null,  
+        combo: 0,
+        maxCombo: 0,
+    };
+
+    navigate("/start", {
+        state: {
+            difficulty: 0,
+            player1: initialPlayer1,
+            player2: initialPlayer2,
+        },
+        replace: false, 
+        key: Date.now()  // 강제로 location.key 변경
+    });  
 };
 
 
@@ -91,10 +119,10 @@ const handleNextRound = () => {
                         difficulty: nextDifficulty, // 현재 난이도 같이 전달
                         player1: gameResult.player1,
                         player2: gameResult.player2,
-                    },
+            },
             replace: false,
             key: Date.now()  // 강제로 location.key 변경
-                  });
+        });
     }, 0);
 };
 
@@ -279,7 +307,7 @@ const handleNextRound = () => {
                         View Ranking
                         </button>
                     </button>
-                    <button className="btn-secondary" onClick={handleRestart}>New Game</button>
+                    <button className="btn-secondary" onClick={handleNewGame}>New Game</button>
                     <button className="btn-secondary" onClick={handleNextRound}>Next Round</button>
                 </section>
             </main>

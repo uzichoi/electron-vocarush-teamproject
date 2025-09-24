@@ -1,16 +1,19 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 import SoundManager from "../models/SoundManager";
 
 export default function StartView() {
   const navigate = useNavigate();
-  const { startNewGame } = useGameController();
+  const location = useLocation();
+  const { player1, player2, difficulty } = location.state || {};
+  
+  // const { startNewGame } = useGameController();
     
-useEffect(() => {
-  SoundManager.playBgm("startBgm"); // 마운트 시 BGM 재생
+  useEffect(() => {
+    SoundManager.playBgm("startBgm"); // 마운트 시 BGM 재생
 
-  return () => {};  //SoundManager.stopBgm(); // 언마운트 시 정지
+    return () => {};  //SoundManager.stopBgm(); // 언마운트 시 정지
   }, []);
 
   const handleStart = () => {
