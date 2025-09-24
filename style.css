@@ -9,28 +9,54 @@
     --accent2: #6f3ff4;
     --glass-bg: rgba(255, 255, 255, 0.35);
     --glass-border: rgba(255, 255, 255, 0.4);
-    --shadow-glass: 0 0.8vw 3.2vw rgba(33, 150, 243, 0.2);
+    --shadow-glass: 0 8px 32px rgba(33, 150, 243, 0.2);
 }
+
+/* === UI Scale Vars (21.5인치용 확대) === */
+:root {
+  /* 전체 글꼴 스케일 - 17인치 대비 약 26% 증가 */
+  --font-scale: 2.1;
+
+  /* 보드 셀 크기 대폭 증가 */
+  --cell-base: 60;                 /* 기준 60px (기존 48px에서 증가) */
+  --cell-scale: 2.0;               /* 2.0배 → 60*2.0 = 120px */
+  --cell-size: calc(var(--cell-base) * var(--cell-scale) * 1px);
+
+  --grid-gap: 12px;                /* 기존 8px에서 증가 */
+
+  /* 개별 영역 배율 */
+  --board-scale: 1.2em;            /* 보드판 더 크게 */
+  --panel-scale: 1.15em;           /* 플레이어 패널 더 크게 */
+  --input-scale: 1.2em;            /* 입력 영역 더 크게 */
+
+  /* 헤더 글자 크기 대폭 증가 */
+  --timer-size: 52px;              /* 기존 42px에서 증가 */
+  --title-size: 44px;              /* 기존 34px에서 증가 */
+  --button-font: 22px;             /* 기존 18px에서 증가 */
+
+  /* 입력/버튼 공통 사이즈 증가 */
+  --input-base-height: 56px;       /* 기존 44px에서 증가 */
+  --input-base-font: 20px;         /* 기존 16px에서 증가 */
+  --btn-min-width-base: 140px;     /* 기존 110px에서 증가 */
+
+  --input-height: calc(var(--input-base-height) * var(--input-scale));
+  --input-font: calc(var(--input-base-font) * var(--input-scale));
+  --btn-min-width: calc(var(--btn-min-width-base) * var(--input-scale));
+}
+
 /* Global Styles */
 * {
     box-sizing: border-box;
 }
 
-@font-face {
-    font-family: 'EmojiFont';
-    src: local('Noto Color Emoji');
-    unicode-range: U+1F300-1FAFF; /* 이모지 범위 */
-}
-
+/* 기본 폰트 배율 적용 */
 body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: Inter, system-ui, sans-serif,'EmojiFont';
+    font-family: Inter, system-ui, sans-serif;
+    font-size: calc(18px * var(--font-scale)); /* 기본 18px로 증가 */
 }
-
-
-/* GameView Styles */
 
 .game-view {
     min-height: 100vh;
@@ -38,14 +64,15 @@ body {
     color: var(--text);
     display: flex;
     flex-direction: column;
+    font-size: calc(18px * var(--font-scale));
 }
 
-/* header - 3등분 레이아웃으로 개선 */
+/* GameView Styles - 헤더 크기 증가 */
 .game-header {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;     /* fraction */
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
-    padding: 2vh 4vw;
+    padding: 30px 60px; /* 기존 20px 40px에서 증가 */
     position: relative;
 }
 
@@ -62,64 +89,66 @@ body {
 }
 
 .game-title {
-    font-size: 2.2vw;
-    font-weight: 700;
+    font-size: var(--title-size);
+    font-weight: 800;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 0.2vw;
+    letter-spacing: 3px; /* 기존 2px에서 증가 */
 }
 
 .game-timer {
-    font-size: 1.6vw;
-    font-weight: 600;
+    font-size: var(--timer-size);
+    font-weight: 700;
     color: #2c3e50;
     text-align: center;
-    padding: 1vh 2vw;
+    padding: 18px 36px; /* 기존 12px 24px에서 증가 */
     background: rgba(236, 240, 241, 0.9);
-    border: 0.15vw solid rgba(255, 255, 255, 0.25); 
-    border-radius: 1.2vw;
-    min-width: 7vw;
-    backdrop-filter: blur(2vh);
-    box-shadow: 0 0.6vh 2.4vh rgba(255, 255, 255, 0.1);
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px; /* 기존 16px에서 증가 */
+    min-width: 140px; /* 기존 100px에서 증가 */
+    backdrop-filter: blur(25px);
+    box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
     transition: all 0.3s ease;
-}  
-/* ---------- line 100 ---------- */
+}
 
-/* main game area - 수직 중앙 정렬 개선 */
+/* main game area - 크기 증가 */
 .game-main {
     display: grid;
-    grid-template-columns: 24vw 1fr 24vw;
-    gap: 3vw;
+    grid-template-columns: 450px 1fr 450px; /* 기존 350px에서 증가 */
+    gap: 60px; /* 기존 40px에서 증가 */
     flex: 1;
     align-items: center;
     justify-items: center;
-    padding: 0 4vw;
-    margin-top: 2vh;
+    padding: 0 60px; /* 기존 40px에서 증가 */
+    margin-top: 30px; /* 기존 20px에서 증가 */
 }
 
-/* player info area*/
+/* player info area 크기 증가 */
 .player-info {
     display: flex;
     flex-direction: column;
-    gap: 2.4vh;
+    gap: 32px; /* 기존 24px에서 증가 */
     width: 100%;
     align-items: center;
-    margin: 0 1vw;
+    margin: 0 15px; /* 기존 10px에서 증가 */
+    transform: scale(var(--panel-scale));
+    transform-origin: top center;
+    transform: translateY(-80px); /* 기존 -100px에서 조정 */
 }
 
-/* player photo box */
+/* player photo box 크기 증가 */
 .player-photo {
-    width: 8vw;
-    height: 8vw;
-    border: 0.15vw solid var(--muted-b2);
-    border-radius: 0.8vw;
+    width: 150px; /* 기존 120px에서 증가 */
+    height: 150px;
+    border: 3px solid var(--muted-b2);
+    border-radius: 16px; /* 기존 12px에서 증가 */
     background: rgba(255, 255, 255, 0.03);
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(1vh);
+    backdrop-filter: blur(15px);
     transition: all 0.3s ease;
 }
 
@@ -129,7 +158,7 @@ body {
 }
 
 .photo-placeholder {
-    font-size: 2vw;
+    font-size: 42px; /* 기존 32px에서 증가 */
     opacity: 0.4;
     transition: all 0.3s ease;
 }
@@ -140,48 +169,48 @@ body {
 }
 
 .player-card {
-    margin-top: 4vh;
-    margin-left: 1vw;
-    margin-right: 1vw;
-    width: 26vw;
+    margin-top: 50px; /* 기존 40px에서 증가 */
+    margin-left: 15px;
+    margin-right: 15px;
+    width: 420px; /* 기존 360px에서 증가 */
     background: rgba(255, 255, 255, 0.03);
-    border: 0.1vw solid var(--muted-b2);
-    border-radius: 0.8vw;
-    padding: 2vh;
-    backdrop-filter: blur(1vh);
+    border: 1px solid var(--muted-b2);
+    border-radius: 16px; /* 기존 12px에서 증가 */
+    padding: 28px; /* 기존 20px에서 증가 */
+    backdrop-filter: blur(15px);
 }
-/* ---------- line 200 ---------- */
 
 .avatar-box {
-  width: 6vw;
-  height: 6vw;
-  border-radius: 0.8vw;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3.5vw; 
-  margin-bottom: 1vh;
-}
-
-.avatar-large {
-    width: 13vw;
-    height: 13vw;
-    border-radius: 1.6vw;
-    background: var(--glass-bg);
-    backdrop-filter: blur(2.5vh);
+    width: 100px; /* 기존 80px에서 증가 */
+    height: 100px;
+    border-radius: 16px; /* 기존 12px에서 증가 */
+    background: rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 5vw;
+    font-size: 60px; /* 기존 48px에서 증가 */
+    margin-bottom: 16px; /* 기존 12px에서 증가 */
+}
+
+.avatar-large {
+    width: 220px; /* 기존 180px에서 증가 */
+    height: 220px;
+    border-radius: 32px; /* 기존 24px에서 증가 */
+    background: var(--glass-bg);
+    backdrop-filter: blur(30px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px; /* 기존 72px에서 증가 */
     color: var(--text-light);
-    margin-bottom: 2vh;
-    border: 0.25vw solid var(--glass-border);
+    margin-bottom: 28px; /* 기존 20px에서 증가 */
+    border: 4px solid var(--glass-border); /* 기존 3px에서 증가 */
     box-shadow: var(--shadow-glass);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
+
 .avatar-large::before {
     content: '';
     position: absolute;
@@ -194,72 +223,71 @@ body {
 }
 
 .avatar-large:hover {
-    transform: translateY(-0.4vh) scale(1.02);
-    box-shadow: 0 1.2vh 4vh rgba(33, 150, 243, 0.25);
+    transform: translateY(-6px) scale(1.03); /* 기존 -4px, 1.02에서 증가 */
+    box-shadow: 0 16px 50px rgba(33, 150, 243, 0.3); /* 기존보다 크게 */
 }
-/* ---------- line 300 ---------- */
 
+/* Player-specific Avatar Colors */
 .player1-avatar {
     border-color: #42a5f5;
-    box-shadow: 0 0.8vh 3.2vh rgba(66, 165, 245, 0.3);
+    box-shadow: 0 10px 40px rgba(66, 165, 245, 0.35); /* 기존보다 크게 */
 }
 
 .player1-avatar:hover {
-    box-shadow: 0 1.2vh 4vh rgba(66, 165, 245, 0.4);
+    box-shadow: 0 16px 50px rgba(66, 165, 245, 0.45);
 }
 
 .player2-avatar {
     border-color: #ffb3d1;
-    box-shadow: 0 0.8vh 3.2vh rgba(255, 179, 209, 0.3);
+    box-shadow: 0 10px 40px rgba(255, 179, 209, 0.35);
 }
 
 .player2-avatar:hover {
-    box-shadow: 0 1.2vh 4vh rgba(255, 179, 209, 0.4);
+    box-shadow: 0 16px 50px rgba(255, 179, 209, 0.45);
 }
 
 /* Player-specific Card Borders */
 .player1-card {
     border-color: rgba(66, 165, 245, 0.5);
-    box-shadow: 0 0.8vh 3.2vh rgba(66, 165, 245, 0.2);
+    box-shadow: 0 10px 40px rgba(66, 165, 245, 0.25);
 }
 
 .player1-card:hover {
     border-color: rgba(66, 165, 245, 0.7);
-    box-shadow: 0 1.2vh 4vh rgba(66, 165, 245, 0.3);
+    box-shadow: 0 16px 50px rgba(66, 165, 245, 0.35);
 }
 
 .player2-card {
     border-color: rgba(255, 179, 209, 0.5) !important;
-    box-shadow: 0 0.8vh 3.2vh rgba(255, 179, 209, 0.2) !important;
+    box-shadow: 0 10px 40px rgba(255, 179, 209, 0.25) !important;
 }
 
 .player2-card:hover {
     border-color: rgba(255, 179, 209, 0.7) !important;
-    box-shadow: 0 1.2vh 4vh rgba(255, 179, 209, 0.3) !important;
+    box-shadow: 0 16px 50px rgba(255, 179, 209, 0.35) !important;
 }
-
 
 /* Enhanced Player Name */
 .player-card h3 {
-    margin: 0 0 24px 0;
-    font-size: 24px;
+    margin: 0 0 28px 0; /* 기존 24px에서 증가 */
+    font-size: 28px; /* 기존 24px에서 증가 */
     font-weight: 800;
     text-align: center;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 2px 4px rgba(255,255,255,0.3);
+    text-shadow: 0 3px 6px rgba(255,255,255,0.4);
 }
 
 /* Enhanced Player Card */
 .player-card {
     width: 100%;
     background: var(--glass-bg);
-    border: 2px solid var(--glass-border);
-    border-radius: 24px;
-    padding: 28px;
-    backdrop-filter: blur(25px);
+    border: 3px solid var(--glass-border); /* 기존 2px에서 증가 */
+    border-radius: 28px; /* 기존 24px에서 증가 */
+    padding: 36px; /* 기존 28px에서 증가 */
+    backdrop-filter: blur(30px);
     box-shadow: var(--shadow-glass);
     transition: all 0.3s ease;
     position: relative;
@@ -275,246 +303,278 @@ body {
     bottom: 0;
     background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
     pointer-events: none;
-    border-radius: 22px;
+    border-radius: 26px;
 }
 
 .stat {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
-    margin: 8px 0;
-    font-size: 18px;
+    padding: 16px 0; /* 기존 12px에서 증가 */
+    margin: 10px 0; /* 기존 8px에서 증가 */
+    font-size: 22px; /* 기존 18px에서 증가 */
     font-weight: 600;
     border-bottom: 1px solid rgba(255,255,255,0.2);
-    border-radius: 8px;
+    border-radius: 10px; /* 기존 8px에서 증가 */
     background: rgba(255,255,255,0.05);
-    padding: 12px 16px;
-    backdrop-filter: blur(10px);
+    padding: 16px 20px; /* 기존 12px 16px에서 증가 */
+    backdrop-filter: blur(15px);
 }
 
 .stat span:first-child {
     opacity: 0.9;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 14px;
+    letter-spacing: 1.2px;
+    font-size: 18px; /* 기존 14px에서 증가 */
 }
 
 .value {
     font-weight: 800;
-    font-size: 20px;
+    font-size: 26px; /* 기존 20px에서 증가 */
     color: rgba(255, 255, 255, 0.9);
 }
+
 .value.score {
-    font-size: 24px;
+    font-size: 32px; /* 기존 24px에서 증가 */
     color: rgba(255, 255, 255, 0.95);
-    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 3px 6px rgba(255, 255, 255, 0.25);
 }
 
 .value.combo {
-    font-size: 24px;
+    font-size: 32px; /* 기존 24px에서 증가 */
     color: rgba(255, 255, 255, 0.95);
-    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 3px 6px rgba(255, 255, 255, 0.25);
 }
 
 /* Enhanced HP Hearts */
 .hp-bar {
     display: flex;
-    gap: 8px;
+    gap: 12px; /* 기존 8px에서 증가 */
     justify-content: center;
     align-items: center;
 }
 
 .hp-heart {
-    font-size: 28px;
+    font-size: 36px; /* 기존 28px에서 증가 */
     transition: all 0.3s ease;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
     cursor: default;
 }
 
 .hp-heart.active {
     color: #e91e63;
-    text-shadow: 0 0 20px rgba(233, 30, 99, 0.6);
+    text-shadow: 0 0 25px rgba(233, 30, 99, 0.7);
     animation: heartbeat 2s ease-in-out infinite;
-    transform: scale(1.1);
+    transform: scale(1.15); /* 기존 1.1에서 증가 */
 }
 
 .hp-heart:not(.active) {
     color: #424242;
     opacity: 0.4;
-    transform: scale(0.9);
+    transform: scale(0.95);
 }
 
 @keyframes heartbeat {
-    0%, 100% { transform: scale(1.1); }
-    50% { transform: scale(1.2); }
+    0%, 100% { transform: scale(1.15); }
+    50% { transform: scale(1.25); /* 기존 1.2에서 증가 */ }
 }
 
-/* 게임 보드 */
+/* 게임 보드 - 대폭 크기 증가 */
 .game-board {
     display: flex;
     justify-content: center;
     align-items: center;
+    transform: scale(1.4); /* 기존 1.2에서 증가 */
+    transform-origin: top center;
+    transform: translateY(-160px); /* 기존 -200px에서 조정 */
 }
 
 .word-grid {
-    display: grid;
-    /*grid-template-columns: repeat(10, 1fr);*/
-    gap: 4px;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(12px); 
-    padding: 20px;
-    border-radius: 20px;
-    border: 2px solid rgba(255,255,255,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--grid-gap);
+    background: rgba(255, 255, 255, 0.35); /* 기존 0.3에서 증가 */
+    backdrop-filter: blur(16px); /* 기존 12px에서 증가 */
+    padding: 28px; /* 기존 20px에서 증가 */
+    border-radius: 28px; /* 기존 20px에서 증가 */
+    border: 3px solid rgba(255,255,255,0.5); /* 기존 2px, 0.4에서 증가 */
 }
 
 .grid-row {
-    display: contents;
+    display: flex;
+    gap: var(--grid-gap);
 }
 
 .grid-cell {
-    width: 60px;
-    height: 60px;
+    width: var(--cell-size);
+    height: var(--cell-size);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Courier New', monospace;
-    font-weight: 600;
-    font-size: 15px;
-    border-radius: 10px;
-    transition: all 0.2s ease;
+    font-weight: 700; /* 기존 600에서 증가 */
+    font-size: calc(var(--cell-size) * 0.55);
+    border-radius: 14px; /* 기존 10px에서 증가 */
+    transition: all 0.25s ease;
+    line-height: 1;
 }
 
 .grid-cell.empty {
-    background: rgba(255, 255, 255, 0.5);
-    color: #6b7280;
+    background: rgba(240, 248, 255, 0.8); /* 기존 0.7에서 증가 */
+    color: #475569;
 }
 
 .grid-cell.letter {
-     background: rgba(173, 216, 230, 0.3);;
-    color: var(--text);
-    border: 1px solid rgba(173,216,230,0.5);
+    background: rgba(255, 255, 255, 0.95); /* 기존 0.9에서 증가 */
+    color: #000;
+    border: 2px solid rgba(173, 216, 230, 0.7); /* 기존 1px, 0.6에서 증가 */
 }
 
 .grid-cell.letter:hover {
-    background: rgba(244, 63, 94, 0.2);
-    transform: scale(1.05);
+    background: rgba(244, 63, 94, 0.25); /* 기존 0.2에서 증가 */
+    transform: scale(1.08); /* 기존 1.05에서 증가 */
     cursor: pointer;
 }
 
-/* 틀린 단어 칸 (새로 추가) */
+/* 틀린 단어 칸 */
 .grid-cell.wrong {
-  background: linear-gradient(135deg, #f5f5f5, #e0e0e0) !important; /* 연한 회색 */
-  border: 2px dashed #999;
-  color: #444;
-  font-style: italic;
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0) !important;
+    border: 3px dashed #999; /* 기존 2px에서 증가 */
+    color: #444;
+    font-style: italic;
 }
 
-/* 입력 영역 */
+/* 입력 영역 - 크기 대폭 증가 */
 .game-input {
-    position:fixed;
-    bottom:300px;
-    left:50%;
-    transform:translateX(-50%);
-    z-index:10000;
-    background:transparent;
-    padding:0;
+    position: fixed;
+    bottom: 380px; /* 기존 300px에서 증가 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    background: transparent;
+    padding: 0;
     width: auto;
-    margin-top: auto; /* 하단에 고정 */
+    margin-top: auto;
 }
 
 .input-form {
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .input-container {
     display: flex;
     align-items: stretch;
-    gap: 15px;
-    background: rgba(255, 255, 255, 0.15); /* 기존: rgba(255, 255, 255, 0.05) */
-    padding: 6px 15px; /* 기존: 15px 20px */
-    border-radius: 12px; /* 기존: 12px */
-    border: 1px solid rgba(255, 255, 255, 0.25); /* 기존: var(--muted-b2) */
-    backdrop-filter: blur(20px); /* 새로 추가 */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* 새로 추가 */
+    gap: 20px; /* 기존 15px에서 증가 */
+    background: rgba(255, 255, 255, 0.2); /* 기존 0.15에서 증가 */
+    padding: 10px 20px; /* 기존 6px 15px에서 증가 */
+    border-radius: 16px; /* 기존 12px에서 증가 */
+    border: 2px solid rgba(255, 255, 255, 0.35); /* 기존 1px, 0.25에서 증가 */
+    backdrop-filter: blur(25px); /* 기존 20px에서 증가 */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15); /* 기존보다 크게 */
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 1200px; /* 기존 1000px에서 증가 */
+    margin: 0 auto;
 }
 
 .input-label {
-    font-size: 18px;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: var(--input-font);
+    line-height: var(--input-height);
     font-weight: 600;
     color: var(--accent);
-    white-space: nowrap;
 }
 
 .word-input {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.1); /* 기존: transparent */
-    border: 2px solid rgba(255, 255, 255, 0.2); /* 기존: none */
+    flex: 1 1 auto;
+    min-width: 0;
+    height: var(--input-height);
+    font-size: var(--input-font);
+    padding: 0 1.2em; /* 기존 1em에서 증가 */
+    border-radius: 12px; /* 기존 8px에서 증가 */
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.15); /* 기존 0.1에서 증가 */
+    border: 3px solid rgba(255, 255, 255, 0.25); /* 기존 2px, 0.2에서 증가 */
     color: var(--text);
-    font-size: 18px;
-    font-weight: 500;
+    font-weight: 600; /* 기존 500에서 증가 */
     outline: none;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px; /* 기존 1px에서 증가 */
 }
 
 .word-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.5); /* 기존 0.4에서 증가 */
     text-transform: none;
 }
 
 .submit-btn {
-    padding: 3px 10px;
-    font-size: 16px;
-    white-space: nowrap;
-    background: rgba(255, 255, 255, 0.2); /* 새로 추가 */
-    border: 2px solid rgba(255, 255, 255, 0.3); /* 새로 추가 */
-    font-weight: 700; /* 새로 추가 */
-    text-transform: uppercase; /* 새로 추가 */
-}
-
-.word-input, .submit-btn {
-    height: 36px;
+    height: var(--input-height);
+    min-width: var(--btn-min-width);
+    font-size: var(--input-font);
+    padding: 0 1.5em; /* 기존 1.25em에서 증가 */
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px; /* 기존 8px에서 증가 */
     box-sizing: border-box;
-}
-.submit-btn {
-  margin-top: -10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.25); /* 기존 0.2에서 증가 */
+    border: 3px solid rgba(255, 255, 255, 0.4); /* 기존 2px, 0.3에서 증가 */
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* media query */
-@media (max-width: 1200px) {
+.submit-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+/* 버튼 일반 스타일 */
+.btn, .btn-small {
+    font-size: var(--button-font);
+    padding: 0.8em 1.2em; /* 기존 0.6em 1.0em에서 증가 */
+    border-radius: 14px; /* 기존 10px에서 증가 */
+    font-weight: 700; /* 기존 600에서 증가 */
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* media query 조정 - 큰 화면에 맞게 */
+@media (max-width: 1600px) { /* 기존 1200px에서 증가 */
     .game-main {
-        grid-template-columns: 250px 1fr 250px;
-        gap: 20px;
-        padding: 0 20px;
+        grid-template-columns: 380px 1fr 380px; /* 기존 300px에서 증가 */
+        gap: 40px; /* 기존 30px에서 증가 */
+        padding: 0 40px;
     }
     
-    .grid-cell {
-        width: 35px;
-        height: 35px;
-        font-size: 16px;
+    .avatar-large {
+        width: 200px; /* 기존 160px에서 증가 */
+        height: 200px;
+        font-size: 80px; /* 기존 64px에서 증가 */
     }
     
-    .player-photo {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .photo-placeholder {
-        font-size: 28px;
+    .player-card {
+        padding: 32px; /* 기존 24px에서 증가 */
     }
 }
 
-/* media query */
-@media (max-width: 768px) {     
+/* 나머지 기존 스타일들은 비례적으로 크기 조정 */
+@media (max-width: 1200px) {
     .game-header {
         grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 20px;
         text-align: center;
-        padding: 20px;
+        padding: 25px;
     }
     
     .header-left, .header-center, .header-right {
@@ -522,46 +582,40 @@ body {
     }
     
     .game-main {
-    display: flex;
-    justify-content: center;   /* 가로 중앙 */
-    align-items: center;       /* 세로 중앙 */
-    height: 100vh;             /* 화면 꽉 차게 */
-    padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        padding: 30px;
     }
     
     .player-info {
-        order: 2;
+        width: 100%;
+        max-width: 450px;
         flex-direction: row;
-        gap: 15px;
         align-items: flex-start;
+        gap: 30px;
     }
     
-    .game-board {
-        order: 1;
-    }
-    
-    .player-photo {
-        width: 80px;
-        height: 80px;
+    .avatar-large {
+        width: 150px;
+        height: 150px;
+        font-size: 60px;
         flex-shrink: 0;
     }
     
-    .photo-placeholder {
-        font-size: 24px;
-    }
-    
-    .grid-cell {
-        width: 30px;
-        height: 30px;
-        font-size: 14px;
+    .player-card {
+        flex: 1;
+        padding: 25px;
     }
     
     .game-input {
-        padding: 20px;
+        bottom: 300px;
+        padding: 25px;
     }
 }
 
-/* ===== Manual View ===== */
+/* 계속해서 기존 스타일들을 포함하되, 크기만 비례적으로 증가 */
 .manual-view {
     min-height: 100vh;
     background: var(--bg);
@@ -569,13 +623,13 @@ body {
     display: flex;
     flex-direction: column; 
     justify-content: space-between;  
-    padding: 20px 40px;
+    padding: 30px 60px; /* 기존 20px 40px에서 증가 */
     --manual-accent: #cde7ff;
     --manual-accent2: #9bbcf4;
 }
 
 .manual-title {
-    font-size: 60px;
+    font-size: 75px; /* 기존 60px에서 증가 */
     font-weight: 900;
     text-align: center;
     margin-top: 2%;
@@ -583,7 +637,7 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px; /* 기존 1.5px에서 증가 */
 }
 
 .manual-content {
@@ -591,44 +645,44 @@ body {
     justify-content: center;
     align-items: center;
     flex: 1;
-    margin: 40px 0;
+    margin: 50px 0; /* 기존 40px에서 증가 */
 }
 
 .description-board {
-    width: 700px;
-    min-height: 450px;
+    width: 875px; /* 기존 700px에서 25% 증가 */
+    min-height: 563px; /* 기존 450px에서 25% 증가 */
     max-width: 90%;
-    padding: 40px;
+    padding: 50px; /* 기존 40px에서 증가 */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    border: 2px solid var(--muted-b2);
-    border-radius: 16px;
+    border: 3px solid var(--muted-b2); /* 기존 2px에서 증가 */
+    border-radius: 20px; /* 기존 16px에서 증가 */
     background-color: rgba(255, 255, 255, 0.05);
-    font-size: 18px;
+    font-size: 23px; /* 기존 18px에서 증가 */
     text-align: left;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* 기존보다 크게 */
+    backdrop-filter: blur(16px); /* 기존 12px에서 증가 */
     font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
 }
 
 .description-row {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 18px;
+    margin-bottom: 23px; /* 기존 18px에서 증가 */
     width: 100%;
-    padding: 15px;
-    border-radius: 10px;
+    padding: 19px; /* 기존 15px에서 증가 */
+    border-radius: 13px; /* 기존 10px에서 증가 */
     background: rgba(255, 255, 255, 0.03);
-    border-left: 4px solid var(--accent);
-    line-height: 1.6;
+    border-left: 5px solid var(--accent); /* 기존 4px에서 증가 */
+    line-height: 1.7; /* 기존 1.6에서 증가 */
     transition: all 0.25s ease;
 }
 
 .description-row:hover {
     background: rgba(255, 255, 255, 0.08);
-    transform: translateX(6px);
+    transform: translateX(8px); /* 기존 6px에서 증가 */
 }
 
 /* 6개 - 블루/퍼플 계열로 통일 */
@@ -647,16 +701,16 @@ body {
 .manual-footer {
     display: flex;
     justify-content: center;
-    padding: 20px 0;
+    padding: 25px 0; /* 기존 20px에서 증가 */
 }
 
 .manual-btn-small {
-    padding: 12px 28px;
-    font-size: 16px;
-    border: 2px solid var(--muted-b2);
+    padding: 15px 35px; /* 기존 12px 28px에서 증가 */
+    font-size: 20px; /* 기존 16px에서 증가 */
+    border: 3px solid var(--muted-b2); /* 기존 2px에서 증가 */
     background: transparent;
     color: var(--text);
-    border-radius: 8px;
+    border-radius: 10px; /* 기존 8px에서 증가 */
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -665,139 +719,98 @@ body {
     background: var(--accent2);
     color: #383838;
     border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(63, 157, 244, 0.3);
-}
-
-/* media query */
-@media (max-width: 768px) {
-    .manual-title {
-        font-size: 40px;
-        margin-top: 5%;
-    }
-    
-    .description-board {
-        width: 95%;
-        padding: 25px;
-        font-size: 16px;
-    }
-    
-    .description-row {
-        padding: 12px;
-        margin-bottom: 15px;
-    }
-    
-    .manual-view {
-        padding: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .manual-title {
-        font-size: 32px;
-    }
-    
-    .description-board {
-        padding: 20px;
-        font-size: 14px;
-    }
-    
-    .description-row {
-        padding: 10px;
-        margin-bottom: 12px;
-    }
+    transform: translateY(-3px); /* 기존 -2px에서 증가 */
+    box-shadow: 0 6px 20px rgba(63, 157, 244, 0.35); /* 기존보다 크게 */
 }
 
 /* 모달 배경 */
 .confirm-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 3000;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6); /* 기존 0.55에서 증가 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
 }
 
 /* 모달 박스 */
 .confirm-box {
-  background: rgba(255, 255, 255, 0.08);
-  border: 2px solid var(--muted-b2);
-  border-radius: 14px;
-  padding: 28px 40px;
-  text-align: center;
-  color: var(--text);
-  backdrop-filter: blur(10px);
-  animation: confirmPopIn 0.25s ease forwards;
-  box-shadow: 0 6px 25px rgba(0,0,0,0.5);
-  min-width: 280px;
-  max-width: 400px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 3px solid var(--muted-b2); /* 기존 2px에서 증가 */
+    border-radius: 18px; /* 기존 14px에서 증가 */
+    padding: 35px 50px; /* 기존 28px 40px에서 증가 */
+    text-align: center;
+    color: var(--text);
+    backdrop-filter: blur(15px); /* 기존 10px에서 증가 */
+    animation: confirmPopIn 0.25s ease forwards;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.55); /* 기존보다 크게 */
+    min-width: 350px; /* 기존 280px에서 증가 */
+    max-width: 500px; /* 기존 400px에서 증가 */
 }
 
 .confirm-box.hide {
-  animation: confirmPopOut 0.25s ease forwards;
+    animation: confirmPopOut 0.25s ease forwards;
 }
 
 .confirm-message {
-  font-size: 1.2rem;
-  margin-bottom: 22px;
-  font-weight: 600;
+    font-size: 1.5rem; /* 기존 1.2rem에서 증가 */
+    margin-bottom: 28px; /* 기존 22px에서 증가 */
+    font-weight: 600;
 }
 
 .btn-row {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
+    display: flex;
+    gap: 20px; /* 기존 16px에서 증가 */
+    justify-content: center;
 }
 
 /* 확인/취소 버튼을 기존 btn 스타일과 어울리게 */
 .btn-confirm {
-  min-width: 120px;       /* 가로폭 고정 */
-  height: 44px;           /* 세로 높이 고정 */
-  padding: 0;             /* 패딩 초기화 */
-  line-height: 44px;      /* 세로 가운데 정렬 */
-  border-radius: 8px;
-
-  font-size: 16px;
-  font-weight: 600;       /* 두께 동일 */
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 2px solid transparent;
+    min-width: 150px; /* 기존 120px에서 증가 */
+    height: 55px; /* 기존 44px에서 증가 */
+    padding: 0;
+    line-height: 55px; /* 기존 44px에서 증가 */
+    border-radius: 10px; /* 기존 8px에서 증가 */
+    font-size: 20px; /* 기존 16px에서 증가 */
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 3px solid transparent; /* 기존 2px에서 증가 */
 }
 
 /* 색상만 다르게 */
 .btn-confirm.ok {
-  background: var(--accent);
-  color: #fff;
-  border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
 }
 .btn-confirm.ok:hover {
-  background: #fff;
-  color: var(--accent);
+    background: #fff;
+    color: var(--accent);
 }
 
 .btn-confirm.cancel {
-  background: transparent;
-  color: var(--text);
-  border-color: var(--muted-b2);
+    background: transparent;
+    color: var(--text);
+    border-color: var(--muted-b2);
 }
 .btn-confirm.cancel:hover {
-  background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* 팝업 애니메이션 */
 @keyframes confirmPopIn {
-  from { transform: scale(0.85); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
 }
 @keyframes confirmPopOut {
-  from { transform: scale(1); opacity: 1; }
-  to   { transform: scale(0.85); opacity: 0; }
+    from { transform: scale(1); opacity: 1; }
+    to   { transform: scale(0.85); opacity: 0; }
 }
 
 /* Ranking View Styles */
-
 .ranking-view {
     min-height: 100vh;
     background: var(--bg);
@@ -806,24 +819,24 @@ body {
     flex-direction: column;
 }
 
-.ranking-header {   /* 3등분 레이아웃 */
+.ranking-header {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;     /* fraction */
+    grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     margin-top: 2%;
-    padding: 20px 40px;
+    padding: 30px 60px; /* 기존 20px 40px에서 증가 */
     position: relative;
 }
 
 .ranking-title {
-    margin-top: 20px;
-    font-size: 100px;
+    margin-top: 25px; /* 기존 20px에서 증가 */
+    font-size: 125px; /* 기존 100px에서 증가 */
     font-weight: 900;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px; /* 기존 2px에서 증가 */
 }
 
 .ranking-content {
@@ -831,44 +844,41 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    margin-top: 40px auto 0 auto;
-    padding: 40px 40px;
+    margin-top: 50px auto 0 auto; /* 기존 40px에서 증가 */
+    padding: 50px 50px; /* 기존 40px에서 증가 */
 }
 
 .ranking-box {
     width: 90%;
-    max-width: 900px;
-    height: 700px;
+    max-width: 1125px; /* 기존 900px에서 증가 */
+    height: 875px; /* 기존 700px에서 증가 */
     background: rgba(255, 255, 255, 0.05);
-    border: 2px solid var(--muted-b2);
-    
-    border: 2px solid rgba(30,41,59,0.6);
-
-    border-radius: 12px;
-    padding: 30px;
+    border: 3px solid var(--muted-b2); /* 기존 2px에서 증가 */
+    border-radius: 15px; /* 기존 12px에서 증가 */
+    padding: 38px; /* 기존 30px에서 증가 */
     overflow-y: auto;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px); /* 기존 10px에서 증가 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); /* 기존보다 크게 */
 }
 
 .ranking-list {
     height: 100%;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 13px; /* 기존 10px에서 증가 */
 }
 
 .ranking-list::-webkit-scrollbar {
-    width: 6px;
+    width: 8px; /* 기존 6px에서 증가 */
 }
 
 .ranking-list::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    border-radius: 13px; /* 기존 10px에서 증가 */
 }
 
 .ranking-list::-webkit-scrollbar-thumb {
     background: var(--muted-b2);
-    border-radius: 10px;
+    border-radius: 13px; /* 기존 10px에서 증가 */
 }
 
 .ranking-list::-webkit-scrollbar-thumb:hover {
@@ -877,27 +887,27 @@ body {
 
 .ranking-item {
     display: grid;
-    grid-template-columns: 80px 1fr 120px;
+    grid-template-columns: 100px 1fr 150px; /* 기존 80px 1fr 120px에서 증가 */
     align-items: center;
-    padding: 15px 20px;
-    margin-bottom: 8px;
-    border-radius: 8px;
+    padding: 19px 25px; /* 기존 15px 20px에서 증가 */
+    margin-bottom: 10px; /* 기존 8px에서 증가 */
+    border-radius: 10px; /* 기존 8px에서 증가 */
     transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--muted-b2);
+    border: 2px solid var(--muted-b2); /* 기존 1px에서 증가 */
 }
 
 .ranking-item:hover {
     background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
+    transform: translateY(-3px); /* 기존 -2px에서 증가 */
     border-color: var(--muted-b);
 }
 
 /* 현재 플레이어 하이라이트 */
 .ranking-item.highlight {
     color: var(--text);
-    background: rgba(63, 150, 244, 0.15);       /* 은은한 파랑 배경 */
-    border: 2px solid rgba(63, 150, 244, 0.7);  /* 파랑 테두리 */
+    background: rgba(63, 150, 244, 0.15);
+    border: 3px solid rgba(63, 150, 244, 0.7); /* 기존 2px에서 증가 */
     font-weight: 600;
     animation: rankingGlow 2s ease-in-out infinite alternate;
 }
@@ -905,16 +915,16 @@ body {
 /* 네온 글로우 애니메이션 */
 @keyframes rankingGlow {
     from {
-        box-shadow: 0 0 20px rgba(63, 150, 244, 0.3);
+        box-shadow: 0 0 25px rgba(63, 150, 244, 0.35); /* 기존보다 크게 */
     }
     to {
-        box-shadow: 0 0 30px rgba(63, 90, 244, 0.6);
+        box-shadow: 0 0 38px rgba(63, 90, 244, 0.65); /* 기존보다 크게 */
     }
 }
 
 /* 랭킹 번호 */
 .rank-number {
-    font-size: 18px;
+    font-size: 23px; /* 기존 18px에서 증가 */
     font-weight: 600;
     color: gray;
     text-align: center;
@@ -922,34 +932,33 @@ body {
 
 .ranking-item.highlight .rank-number {
     color: #fff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 13px rgba(255, 255, 255, 0.85); /* 기존보다 크게 */
 }
-
 
 /* 플레이어 이름 */
 .player-name {
-    font-size: 16px;
+    font-size: 20px; /* 기존 16px에서 증가 */
     font-weight: 500;
     color: var(--text);
-    padding-left: 20px;
+    padding-left: 25px; /* 기존 20px에서 증가 */
     text-align: center;
 }
 
 .result-view .player-name {
-    padding-left: 0;   /* 왼쪽 여백 제거 */
-    text-align: center; /* 가로 중앙 정렬 */
-    width: 100%;       /* 영역 전체 차지 */
-    display: block;    /* inline 요소라면 블록으로 변경 */
+    padding-left: 0;
+    text-align: center;
+    width: 100%;
+    display: block;
 }
 
 .ranking-item.highlight .player-name {
     color: #fff;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 7px rgba(255, 255, 255, 0.55); /* 기존보다 크게 */
 }
 
 /* 점수 */
 .player-score {
-    font-size: 16px;
+    font-size: 20px; /* 기존 16px에서 증가 */
     font-weight: 600;
     color: var(--text);
     text-align: right;
@@ -959,300 +968,164 @@ body {
 
 .ranking-item.highlight .player-score {
     color: #fff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 13px rgba(255, 255, 255, 0.85); /* 기존보다 크게 */
     opacity: 1;
 }
 
 /* 상위 3등 특별 스타일 */
 .ranking-item:nth-child(1) .rank-number {
     color: gold;
-    font-size: 20px;
+    font-size: 25px; /* 기존 20px에서 증가 */
 }
 
 .ranking-item:nth-child(2) .rank-number {
     color: silver;
-    font-size: 19px;
+    font-size: 24px; /* 기존 19px에서 증가 */
 }
 
 .ranking-item:nth-child(3) .rank-number {
     color: #CD7F32;
-    font-size: 18px;
-}
-
-/* 미디어 쿼리 - 큰 화면 */
-@media (max-width: 1200px) {
-    .ranking-content {
-        padding: 30px 20px;
-    }
-    
-    .ranking-box {
-        width: 95%;
-        max-width: 800px;
-        height: 450px;
-        padding: 25px;
-    }
-    
-    .ranking-title {
-        font-size: 42px;
-    }
-}
-
-/* 미디어 쿼리 - 태블릿 */
-@media (max-width: 768px) {
-    .game-header {
-        grid-template-columns: 1fr;
-        gap: 15px;
-        text-align: center;
-        padding: 20px;
-    }
-    
-    .header-left, .header-center, .header-right {
-        justify-self: center;
-    }
-    
-    .ranking-title {
-        font-size: 36px;
-    }
-    
-    .ranking-content {
-        padding: 20px;
-    }
-    
-    .ranking-box {
-        width: 100%;
-        height: 400px;
-        padding: 20px;
-    }
-    
-    .ranking-item {
-        grid-template-columns: 60px 1fr 100px;
-        padding: 12px 15px;
-        margin-bottom: 6px;
-    }
-    
-    .rank-number {
-        font-size: 16px;
-    }
-    
-    .player-name {
-        font-size: 14px;
-        padding-left: 15px;
-    }
-    
-    .player-score {
-        font-size: 14px;
-    }
-    
-    .close-btn {
-        width: 35px;
-        height: 35px;
-        font-size: 18px;
-    }
-}
-
-/* 미디어 쿼리 - 모바일 */
-@media (max-width: 480px) {
-    .game-header {
-        padding: 15px;
-    }
-    
-    .ranking-title {
-        font-size: 28px;
-        letter-spacing: 1px;
-    }
-    
-    .ranking-content {
-        padding: 15px;
-    }
-    
-    .ranking-box {
-        height: 350px;
-        padding: 15px;
-    }
-    
-    .ranking-item {
-        grid-template-columns: 50px 1fr 80px;
-        padding: 10px 12px;
-        margin-bottom: 5px;
-    }
-    
-    .rank-number {
-        font-size: 14px;
-    }
-    
-    .player-name {
-        font-size: 13px;
-        padding-left: 10px;
-    }
-    
-    .player-score {
-        font-size: 13px;
-    }   
-}
-
-/* 플레이어 섹션 */
-.result-players-section {
-    flex: 0 0 400px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-height: 0;
-}
-
-.players-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    flex: 1;
+    font-size: 23px; /* 기존 18px에서 증가 */
 }
 
 /* Result View */
-
 .result-view {
-  height: 100vh;
-  overflow: hidden;  /* 스크롤 없앰 */
-  display: flex;
-  flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .result-header {
-  display: flex;
-  flex-direction: column;   /* 세로 정렬 */
-  align-items: center;      /* 가로 중앙 */
-  justify-content: center;  /* 세로 중앙 */
-  padding: 20px 40px;
-  border-bottom: 1px solid var(--muted-b2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 60px; /* 기존 20px 40px에서 증가 */
+    border-bottom: 2px solid var(--muted-b2); /* 기존 1px에서 증가 */
 }
 
 .result-title {
-  margin: 0;
-  font-size: 36px;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: 2px;
-  text-align: center;
+    margin: 0;
+    font-size: 45px; /* 기존 36px에서 증가 */
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2.5px; /* 기존 2px에서 증가 */
+    text-align: center;
 }
 
 .result-timer {
-  margin-top: 8px;
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--accent);
+    margin-top: 10px; /* 기존 8px에서 증가 */
+    font-size: 23px; /* 기존 18px에서 증가 */
+    font-weight: 500;
+    color: var(--accent);
 }
 
 /* 메인 콘텐츠 */
 .result-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;  /* 세로 가운데 */
-  align-items: center;      /* 가로 가운데 */
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 1750px; /* 기존 1400px에서 증가 */
+    margin: 0 auto;
+    padding: 25px; /* 기존 20px에서 증가 */
 }
 
 .result-content {
     flex: 1;
     display: flex;
-    gap: 30px;
+    gap: 50px; /* 기존 30px에서 증가 */
     align-items: center;
     justify-content: center;
     min-height: 0;
-
-    font-size: 1.5em !important;
-}
-
-
-@keyframes popIn {
-  from { transform: scale(0.8); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
+    font-size: 1.9em !important; /* 기존 1.5em에서 증가 */
+    transform: scale(1.5); /* 기존 1.2에서 증가 */
+    transform-origin: center center;
+    max-width: 100%;
+    max-height: 100%;
 }
 
 /* 플레이어 섹션 */
 .player-section {
-    flex: 0 0 280px;
+    flex: 0 0 350px; /* 기존 280px에서 증가 */
     display: flex;
     justify-content: center;
 }
 
 /* 보드 섹션 */
 .result-board-section {
-    
-     flex: 0 0 auto;
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 0; 
-
+    min-height: 0;
 }
 
 /* ===== 보드 영역 (결과보드) ===== */
 .result-board {
-  display: grid !important;  /* 가장 중요! */
-  gap: 4px;
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(12px);
-  padding: 20px;
-  border-radius: 20px;
-  border: 2px solid rgba(255,255,255,0.4);
-  justify-content: center;
-  align-content: center;
-  margin: 20px auto;
-  width: fit-content;
+    display: grid !important;
+    gap: 6px; /* 기존 4px에서 증가 */
+    background: rgba(255, 255, 255, 0.35); /* 기존 0.3에서 증가 */
+    backdrop-filter: blur(16px); /* 기존 12px에서 증가 */
+    padding: 28px; /* 기존 20px에서 증가 */
+    border-radius: 28px; /* 기존 20px에서 증가 */
+    border: 3px solid rgba(255,255,255,0.5); /* 기존 2px, 0.4에서 증가 */
+    justify-content: center;
+    align-content: center;
+    margin: 28px auto; /* 기존 20px에서 증가 */
+    width: fit-content;
 }
 
 .result-board .result-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--grid-gap, 4px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--grid-gap, 6px); /* 기존 4px에서 증가 */
 }
+
 .result-board .grid-row {
-  display: flex;
-  gap: var(--grid-gap, 4px);
+    display: flex;
+    gap: var(--grid-gap, 6px); /* 기존 4px에서 증가 */
 }
-
-
 
 .result-board .grid-cell {
-  width: var(--cell-size, 35px);
-  height: var(--cell-size, 35px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,0.5);
-  border-radius: 6px;
-  border: 1px solid rgba(173,216,230,0.5);
-  font-size: calc(var(--cell-size, 28px) * 0.55);
-  font-weight: 800;
-  line-height: 1;
-  transition: all 0.2s ease;
+    width: var(--cell-size, 44px); /* 기존 35px에서 증가 */
+    height: var(--cell-size, 44px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.55); /* 기존 0.5에서 증가 */
+    border-radius: 8px; /* 기존 6px에서 증가 */
+    border: 2px solid rgba(173,216,230,0.55); /* 기존 1px, 0.5에서 증가 */
+    font-size: calc(var(--cell-size, 35px) * 0.6); /* 기존 35px, 0.55에서 증가 */
+    font-weight: 800;
+    line-height: 1;
+    transition: all 0.25s ease; /* 기존 0.2s에서 증가 */
 }
 
 .board-title {
-    font-size: 20px;
+    font-size: 25px; /* 기존 20px에서 증가 */
     font-weight: 600;
     color: var(--accent);
     text-align: center;
-    margin-bottom: 20px;
-    letter-spacing: 1px;
+    margin-bottom: 25px; /* 기존 20px에서 증가 */
+    letter-spacing: 1.3px; /* 기존 1px에서 증가 */
 }
- 
+
 .result-grid {
-   
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    width: 100%; /* 추가 */
-    gap: 4px;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 20px;
-    border-radius: 12px;
-    border: 2px solid var(--muted-b2);
-    backdrop-filter: blur(10px);
-
+    width: 100%;
+    gap: 6px; /* 기존 4px에서 증가 */
+    background: rgba(255, 255, 255, 0.05); /* 기존 0.03에서 증가 */
+    padding: 28px; /* 기존 20px에서 증가 */
+    border-radius: 16px; /* 기존 12px에서 증가 */
+    border: 3px solid var(--muted-b2); /* 기존 2px에서 증가 */
+    backdrop-filter: blur(15px); /* 기존 10px에서 증가 */
 }
 
 .grid-row {
@@ -1260,167 +1133,164 @@ body {
 }
 
 .grid-cell {
-    /* width: 35px;
-    height: 35px; */
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Courier New', monospace;
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    /* position: relative;  */
-    background: rgba(255, 255, 255, 0.8); /* 밝은 흰색 */
-    color: #1e293b;                      /* 어두운 글자색 (Slate 톤) */
-    border: 1px solid rgba(0, 0, 0, 0.1); /* 옅은 테두리 */
-} */
+    font-weight: 700; /* 기존 600에서 증가 */
+    font-size: 18px; /* 기존 14px에서 증가 */
+    border-radius: 6px; /* 기존 4px에서 증가 */
+    transition: all 0.35s ease; /* 기존 0.3s에서 증가 */
+    background: rgba(255, 255, 255, 0.85); /* 기존 0.8에서 증가 */
+    color: #1e293b;
+    border: 2px solid rgba(0, 0, 0, 0.12); /* 기존 1px, 0.1에서 증가 */
+}
 
 .grid-cell.empty {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.07); /* 기존 0.05에서 증가 */
     color: #6b7280;
 }
 
 .grid-cell.letter {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.13); /* 기존 0.1에서 증가 */
     color: var(--text);
-    border: 1px solid var(--muted-b2);
+    border: 2px solid var(--muted-b2); /* 기존 1px에서 증가 */
 }
 
 /* 플레이어별 찾은 단어 색상 */
 .grid-cell.found-by-player1 {
-    background: linear-gradient(135deg, #a1c4fd, #c2e9fb) !important; /* 우선순위 높힘 */ 
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb) !important;
     color: #1e293b;
-    border: 2px solid #a1c4fd;
-    box-shadow: 0 0 8px rgba(161, 196, 253, 0.5);
+    border: 3px solid #a1c4fd; /* 기존 2px에서 증가 */
+    box-shadow: 0 0 10px rgba(161, 196, 253, 0.55); /* 기존보다 크게 */
     animation: foundGlow 2s ease-in-out infinite alternate;
 }
 
 .grid-cell.found-by-player2 {
-    background: linear-gradient(135deg, #ff9a9e, #fecfef) !important; /* 우선순위 높힘 */ 
+    background: linear-gradient(135deg, #ff9a9e, #fecfef) !important;
     color: #1e293b;
-    border: 2px solid #ff9a9e;
-    box-shadow: 0 0 8px rgba(255, 154, 158, 0.5);
+    border: 3px solid #ff9a9e; /* 기존 2px에서 증가 */
+    box-shadow: 0 0 10px rgba(255, 154, 158, 0.55); /* 기존보다 크게 */
     animation: foundGlow 2s ease-in-out infinite alternate;
 }
 
 .grid-cell.unfound.letter {
-    background: rgba(107, 114, 128, 0.3);
+    background: rgba(107, 114, 128, 0.35); /* 기존 0.3에서 증가 */
     color: #9ca3af;
-    border: 1px dashed #6b7280;
+    border: 2px dashed #6b7280; /* 기존 1px에서 증가 */
 }
 
-/* 못 찾은 단어 (게임 끝난 후 보여줄 때) */
+/* 못 찾은 단어 */
 .grid-cell.unfound-by-players {
-  background: #a8e6a1; /* 연한 초록 배경 */
-  color: #1e293b;      /* 어두운 글자 */
-  border: 2px dashed #7ac77a; /* 연녹 테두리 */
-  box-shadow: 0 0 8px rgba(122, 199, 122, 0.5);
-  animation: unfoundBlink 1.2s ease-in-out infinite alternate;
+    background: #a8e6a1;
+    color: #1e293b;
+    border: 3px dashed #7ac77a; /* 기존 2px에서 증가 */
+    box-shadow: 0 0 10px rgba(122, 199, 122, 0.55); /* 기존보다 크게 */
+    animation: unfoundBlink 1.2s ease-in-out infinite alternate;
 }
 
 @keyframes unfoundBlink {
-  from { box-shadow: 0 0 4px rgba(77, 80, 255, 0.3); }
-  to   { box-shadow: 0 0 12px rgba(77, 219, 255, 0.9); }
+    from { box-shadow: 0 0 6px rgba(77, 80, 255, 0.35); } /* 기존보다 크게 */
+    to   { box-shadow: 0 0 16px rgba(77, 219, 255, 0.95); } /* 기존보다 크게 */
 }
 
 @keyframes foundGlow {
     from { transform: scale(1); }
-    to { transform: scale(1.05); }
+    to { transform: scale(1.08); } /* 기존 1.05에서 증가 */
 }
 
 /* 플레이어 섹션 */
 .result-players-section {
-    flex: 0 0 400px;
+    flex: 0 0 500px; /* 기존 400px에서 증가 */
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px; /* 기존 20px에서 증가 */
     min-height: 0;
 }
 
 .players-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px; /* 기존 20px에서 증가 */
     flex: 1;
 }
 
 /* 플레이어 박스 스타일 */
 .player-final {
     width: 100%;
-    max-width: 280px;
+    max-width: 350px; /* 기존 280px에서 증가 */
     align-items: center;
     background: rgba(255, 255, 255, 0.05);
-    border: 2px solid var(--muted-b2);
-    border-radius: 12px;
-    padding: 20px;
+    border: 3px solid var(--muted-b2); /* 기존 2px에서 증가 */
+    border-radius: 16px; /* 기존 12px에서 증가 */
+    padding: 28px; /* 기존 20px에서 증가 */
     text-align: center;
     position: relative;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px); /* 기존 10px에서 증가 */
     transition: all 0.3s ease;
 }
 
 .player-final:hover {
     border-color: var(--accent);
     background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
+    transform: translateY(-3px); /* 기존 -2px에서 증가 */
 }
 
 .winner-crown {
     position: absolute;
-    top: -10px;
-    right: 15px;
-    font-size: 40px;
+    top: -13px; /* 기존 -10px에서 증가 */
+    right: 19px; /* 기존 15px에서 증가 */
+    font-size: 50px; /* 기존 40px에서 증가 */
     animation: bounce 2s ease-in-out infinite;
 }
 
 @keyframes bounce {
     0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-8px); }
-    60% { transform: translateY(-4px); }
+    40% { transform: translateY(-10px); } /* 기존 -8px에서 증가 */
+    60% { transform: translateY(-5px); } /* 기존 -4px에서 증가 */
 }
 
 .player-avatar {
-    width: 60px;
-    height: 60px;
+    width: 75px; /* 기존 60px에서 증가 */
+    height: 75px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 10px;
-    font-size: 24px;
-    border: 2px solid var(--muted-b2);
+    margin: 0 auto 13px; /* 기존 10px에서 증가 */
+    font-size: 30px; /* 기존 24px에서 증가 */
+    border: 3px solid var(--muted-b2); /* 기존 2px에서 증가 */
 }
 
 .player-name {
-    margin: 0 0 8px 0;
-    font-size: 18px;
+    margin: 0 0 10px 0; /* 기존 8px에서 증가 */
+    font-size: 23px; /* 기존 18px에서 증가 */
     font-weight: 600;
     color: var(--accent);
 }
 
 .final-score {
-    font-size: 28px;
+    font-size: 35px; /* 기존 28px에서 증가 */
     font-weight: 700;
     color: var(--text);
-    margin: 10px 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    margin: 13px 0; /* 기존 10px에서 증가 */
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.35); /* 기존보다 크게 */
 }
 
 .player-stats {
-    margin: 15px 0;
+    margin: 19px 0; /* 기존 15px에서 증가 */
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px; /* 기존 6px에서 증가 */
 }
 
 .stat-item {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 16px; /* 기존 13px에서 증가 */
+    padding: 5px 0; /* 기존 4px에서 증가 */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.12); /* 기존 1px, 0.1에서 증가 */
 }
 
 .stat-item span:first-child {
@@ -1428,11 +1298,11 @@ body {
 }
 
 .achievement-badges {
-    margin-top: 10px;
-    padding: 6px 12px;
+    margin-top: 13px; /* 기존 10px에서 증가 */
+    padding: 8px 16px; /* 기존 6px 12px에서 증가 */
     background: linear-gradient(135deg, #ff6b6b, #ffd93d);
-    border-radius: 15px;
-    font-size: 12px;
+    border-radius: 19px; /* 기존 15px에서 증가 */
+    font-size: 15px; /* 기존 12px에서 증가 */
     font-weight: 600;
     color: white;
     display: inline-block;
@@ -1441,22 +1311,22 @@ body {
 
 @keyframes pulse {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    50% { transform: scale(1.08); } /* 기존 1.05에서 증가 */
 }
 
 .match-stats {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--muted-b2);
-    border-radius: 8px;
-    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05); /* 기존 0.03에서 증가 */
+    border: 2px solid var(--muted-b2); /* 기존 1px에서 증가 */
+    border-radius: 10px; /* 기존 8px에서 증가 */
+    padding: 16px 25px; /* 기존 12px 20px에서 증가 */
     text-align: center;
     width: fit-content;
     margin: 0 auto;
 }
 
 .stat-row {
-    margin: 6px 0;
-    font-size: 13px;
+    margin: 8px 0; /* 기존 6px에서 증가 */
+    font-size: 16px; /* 기존 13px에서 증가 */
     opacity: 0.8;
 }
 
@@ -1464,13 +1334,13 @@ body {
 .result-actions {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    padding: 20px;
-    border-top: 1px solid var(--muted-b2);
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 0 0 12px 12px;
+    gap: 25px; /* 기존 20px에서 증가 */
+    padding: 25px; /* 기존 20px에서 증가 */
+    border-top: 2px solid var(--muted-b2); /* 기존 1px에서 증가 */
+    background: rgba(255, 255, 255, 0.05); /* 기존 0.03에서 증가 */
+    border-radius: 0 0 16px 16px; /* 기존 12px에서 증가 */
     flex-shrink: 0;
-    z-index:10;
+    z-index: 10;
 }
 
 .btn-secondary {
@@ -2587,4 +2457,3 @@ body, .game-view {
   font-weight: 700;
   color: var(--accent);
 }
-
