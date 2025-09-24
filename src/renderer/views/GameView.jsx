@@ -178,6 +178,11 @@ useEffect(() => {
     const handleSubmit = (e) => {
       e.preventDefault();
 
+      if (!state.turnActive || state.turnTime <= 0) {
+        console.log("⏰ 시간 초과! 입력 무시됨");
+        return;
+      }
+
       const currentPlayer = state.currentTurn;
 
       let isHidden = false;
