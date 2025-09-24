@@ -12,27 +12,27 @@ class SoundManager {
   constructor() {
 
 this.sounds = {
-    clickPop: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickPop.mp3"),
-    clickKeyboard: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickKeyboard.mp3"),
-    kamera: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/kamera.mp3"),
-    tada: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/tada.mp3"),
-    combo4: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo4.mp3"),
-    combo3: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo3.mp3"),
-    combo2: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo2.mp3"),
-    combo1: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo1.mp3"),
-    timeOver: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/timeOver.mp3"),
-    //funnyGasp: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/funnyGasp.mp3"),
-    //funnyScream: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/funnyScream.mp3"),
-    gameBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameBgm.mp3"),
-    startBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/startBgm.mp3"),
-    clickTurn: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickTurn.mp3"),
-    clickGameStart: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickGameStart.mp3"),
-    bonusWord: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/bonusWord.mp3"),
-    gameClock: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameClock.mp3"),
-    gameWrong: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameWrong.mp3"),
-    resultBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/resultBgm.mp3"),
-    rankingBgm: new Audio("file:///home/pi/electron-vocarush-teamproject/src/renderer/assets/soundEffect/rankingBgm.mp3"),
-  };
+  clickPop: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickPop.mp3"),
+  clickKeyboard: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickKeyboard.mp3"),
+  kamera: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/kamera.mp3"),
+  tada: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/tada.mp3"),
+  combo4: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo4.mp3"),
+  combo3: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo3.mp3"),
+  combo2: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo2.mp3"),
+  combo1: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/combo1.mp3"),
+  timeOver: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/timeOver.mp3"),
+  // funnyGasp: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/funnyGasp.mp3"),
+  // funnyScream: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/funnyScream.mp3"),
+  gameBgm: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameBgm.mp3"),
+  startBgm: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/startBgm.mp3"),
+  clickTurn: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickTurn.mp3"),
+  clickGameStart: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/clickGameStart.mp3"),
+  bonusWord: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/bonusWord.mp3"),
+  gameClock: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameClock.mp3"),
+  gameWrong: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/gameWrong.mp3"),
+  resultBgm: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/resultBgm.mp3"),
+  rankingBgm: new Audio("file:///D:/VocaRush-team/electron-vocarush-teamproject/src/renderer/assets/soundEffect/rankingBgm.mp3"),
+};
 
 
   }
