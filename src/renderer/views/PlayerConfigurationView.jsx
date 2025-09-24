@@ -138,18 +138,20 @@ export default function PlayerConfigurationView() {
     }
   };
 
-  const handleStartGame = () => {
-    SoundManager.play("clickGameStart");
-    navigate("/game", {
-      state: {
-        ...state,
-        difficulty:0,
-      },
-      replace: false,
-      key: Date.now()
-     
-    });
-  };
+const handleStartGame = () => {
+  SoundManager.play("clickGameStart");
+  navigate("/game", {
+    state: {
+      // state에서 필요한 값만 전달하고 함수는 제외
+      player1: state.player1,
+      player2: state.player2,
+      difficulty: 0,
+    },
+    replace: false,
+    key: Date.now(),
+  });
+};
+
 
   return (
     <div className="config-view">

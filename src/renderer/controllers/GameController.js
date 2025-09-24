@@ -118,6 +118,8 @@ export class GameController {
   async startInitialGame() {
     console.log("[GC] startInitialGame");
 
+    this.gameStarted = false;   // 게임 상태를 false로 리셋하여 새 게임을 시작할 준비
+
     if (this.gameStarted) return;
     this.gameStarted = true;
 
@@ -135,7 +137,7 @@ export class GameController {
   async restartGame({ difficulty, player1: p1Data, player2: p2Data } = {}) {
     if (difficulty !== undefined) this.currentGameDifficulty = difficulty;
     if (this.currentGameDifficulty > Difficulty.VERYHARD) this.currentGameDifficulty = Difficulty.VERYHARD;
-    console.log("restartGame is called");
+    console.log("[GC] restartGame");
 
     // 기존 플레이어 상태 복원
     if (p1Data) {
