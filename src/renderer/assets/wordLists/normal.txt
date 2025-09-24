@@ -10,7 +10,6 @@ alone
 along
 aloud
 apple
-areas
 aside
 award
 awful
@@ -95,7 +94,6 @@ fancy
 fatal
 fault
 feast
-fewer
 field
 fifth
 fight
@@ -169,7 +167,6 @@ lunch
 magic
 major
 march
-marks
 match
 maybe
 means
@@ -200,7 +197,6 @@ paint
 panel
 panic
 paper
-parts
 party
 peace
 phase
@@ -229,7 +225,6 @@ raise
 reach
 ready
 realm
-reason
 reign
 relax
 reply
@@ -275,7 +270,6 @@ smell
 smile
 smoke
 snake
-snowy
 solar
 solid
 sorry
@@ -296,7 +290,6 @@ start
 state
 steam
 steel
-steps
 stick
 still
 stone

@@ -35,7 +35,7 @@
   --button-font: 22px;             /* 기존 18px에서 증가 */
 
   /* 입력/버튼 공통 사이즈 증가 */
-  --input-base-height: 56px;       /* 기존 44px에서 증가 */
+  --input-base-height: 50px;       /* 기존 44px에서 증가 */
   --input-base-font: 20px;         /* 기존 16px에서 증가 */
   --btn-min-width-base: 140px;     /* 기존 110px에서 증가 */
 
@@ -103,10 +103,10 @@ body {
     font-weight: 700;
     color: #2c3e50;
     text-align: center;
-    padding: 18px 36px; /* 기존 12px 24px에서 증가 */
+    padding: 12px 24px; /* 기존 12px 24px에서 증가 */
     background: rgba(236, 240, 241, 0.9);
     border: 3px solid rgba(255, 255, 255, 0.25);
-    border-radius: 20px; /* 기존 16px에서 증가 */
+    border-radius: 26px; /* 기존 16px에서 증가 */
     min-width: 140px; /* 기존 100px에서 증가 */
     backdrop-filter: blur(25px);
     box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
@@ -129,10 +129,10 @@ body {
 .player-info {
     display: flex;
     flex-direction: column;
-    gap: 32px; /* 기존 24px에서 증가 */
-    width: 100%;
+    gap: 24px; /* 기존 24px에서 증가 */
+    width: 90%;
     align-items: center;
-    margin: 0 15px; /* 기존 10px에서 증가 */
+    margin: 0 10px; /* 기존 10px에서 증가 */
     transform: scale(var(--panel-scale));
     transform-origin: top center;
     transform: translateY(-80px); /* 기존 -100px에서 조정 */
@@ -169,15 +169,28 @@ body {
 }
 
 .player-card {
-    margin-top: 50px; /* 기존 40px에서 증가 */
-    margin-left: 15px;
-    margin-right: 15px;
-    width: 420px; /* 기존 360px에서 증가 */
+    margin-top: 40px; /* 기존 40px에서 증가 */
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 330px; /* 기존 360px에서 증가 */
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--muted-b2);
-    border-radius: 16px; /* 기존 12px에서 증가 */
-    padding: 28px; /* 기존 20px에서 증가 */
+    border-radius: 12px; /* 기존 12px에서 증가 */
+    padding: 20px; /* 기존 20px에서 증가 */
     backdrop-filter: blur(15px);
+}
+
+.player-card {
+    width: 100%;
+    background: var(--glass-bg);
+    border: clamp(2px, 0.2vw, 3px) solid var(--glass-border);
+    border-radius: var(--board-border-radius);
+    padding: var(--board-padding);
+    backdrop-filter: blur(30px);
+    box-shadow: var(--shadow-glass);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .avatar-box {
@@ -269,7 +282,7 @@ body {
 
 /* Enhanced Player Name */
 .player-card h3 {
-    margin: 0 0 28px 0; /* 기존 24px에서 증가 */
+    margin: 0 0 24px 0; /* 기존 24px에서 증가 */
     font-size: 28px; /* 기존 24px에서 증가 */
     font-weight: 800;
     text-align: center;
@@ -282,11 +295,11 @@ body {
 
 /* Enhanced Player Card */
 .player-card {
-    width: 100%;
+    width: 90%;
     background: var(--glass-bg);
-    border: 3px solid var(--glass-border); /* 기존 2px에서 증가 */
-    border-radius: 28px; /* 기존 24px에서 증가 */
-    padding: 36px; /* 기존 28px에서 증가 */
+    border: 2px solid var(--glass-border); /* 기존 2px에서 증가 */
+    border-radius: 24px; /* 기존 24px에서 증가 */
+    padding: 28px; /* 기존 28px에서 증가 */
     backdrop-filter: blur(30px);
     box-shadow: var(--shadow-glass);
     transition: all 0.3s ease;
@@ -385,9 +398,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    transform: scale(1.4); /* 기존 1.2에서 증가 */
+    transform: scale(1.2); /* 기존 1.2에서 증가 */
     transform-origin: top center;
-    transform: translateY(-160px); /* 기존 -200px에서 조정 */
+    transform: translateY(-220px); /* 기존 -200px에서 조정 */
 }
 
 .word-grid {
@@ -448,7 +461,7 @@ body {
 /* 입력 영역 - 크기 대폭 증가 */
 .game-input {
     position: fixed;
-    bottom: 380px; /* 기존 300px에서 증가 */
+    bottom: 300px; /* 기존 300px에서 증가 */
     left: 50%;
     transform: translateX(-50%);
     z-index: 10000;
@@ -467,16 +480,16 @@ body {
 .input-container {
     display: flex;
     align-items: stretch;
-    gap: 20px; /* 기존 15px에서 증가 */
+    gap: 15px; /* 기존 15px에서 증가 */
     background: rgba(255, 255, 255, 0.2); /* 기존 0.15에서 증가 */
-    padding: 10px 20px; /* 기존 6px 15px에서 증가 */
-    border-radius: 16px; /* 기존 12px에서 증가 */
+    padding: 6px 15px; /* 기존 6px 15px에서 증가 */
+    border-radius: 12px; /* 기존 12px에서 증가 */
     border: 2px solid rgba(255, 255, 255, 0.35); /* 기존 1px, 0.25에서 증가 */
     backdrop-filter: blur(25px); /* 기존 20px에서 증가 */
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15); /* 기존보다 크게 */
     flex-wrap: nowrap;
-    width: 100%;
-    max-width: 1200px; /* 기존 1000px에서 증가 */
+    width: 90%;
+    max-width: 800px; /* 기존 1000px에서 증가 */
     margin: 0 auto;
 }
 
@@ -564,7 +577,7 @@ body {
     }
     
     .player-card {
-        padding: 32px; /* 기존 24px에서 증가 */
+        padding: 24px; /* 기존 24px에서 증가 */
     }
 }
 
@@ -591,7 +604,7 @@ body {
     
     .player-info {
         width: 100%;
-        max-width: 450px;
+        max-width: 400px;
         flex-direction: row;
         align-items: flex-start;
         gap: 30px;
@@ -617,27 +630,28 @@ body {
 
 /* 계속해서 기존 스타일들을 포함하되, 크기만 비례적으로 증가 */
 .manual-view {
-    min-height: 100vh;
+    min-height: 90vh;
     background: var(--bg);
     color: var(--text);
     display: flex;
     flex-direction: column; 
     justify-content: space-between;  
-    padding: 30px 60px; /* 기존 20px 40px에서 증가 */
+    padding: 20px 40px; /* 기존 20px 40px에서 증가 */
     --manual-accent: #cde7ff;
     --manual-accent2: #9bbcf4;
+    overflow:hidden;
 }
 
 .manual-title {
-    font-size: 75px; /* 기존 60px에서 증가 */
+    font-size: 60px; /* 기존 60px에서 증가 */
     font-weight: 900;
     text-align: center;
-    margin-top: 2%;
+    margin-top: 1%;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 2px; /* 기존 1.5px에서 증가 */
+    letter-spacing: .15px; /* 기존 1.5px에서 증가 */
 }
 
 .manual-content {
@@ -645,7 +659,8 @@ body {
     justify-content: center;
     align-items: center;
     flex: 1;
-    margin: 50px 0; /* 기존 40px에서 증가 */
+    margin: 40px 0; /* 기존 40px에서 증가 */
+    overflow:hidden;
 }
 
 .description-board {
@@ -701,12 +716,12 @@ body {
 .manual-footer {
     display: flex;
     justify-content: center;
-    padding: 25px 0; /* 기존 20px에서 증가 */
+    padding: 20px 0; /* 기존 20px에서 증가 */
 }
 
 .manual-btn-small {
-    padding: 15px 35px; /* 기존 12px 28px에서 증가 */
-    font-size: 20px; /* 기존 16px에서 증가 */
+    padding: 12px 28px; /* 기존 12px 28px에서 증가 */
+    font-size: 17px; /* 기존 16px에서 증가 */
     border: 3px solid var(--muted-b2); /* 기존 2px에서 증가 */
     background: transparent;
     color: var(--text);
@@ -812,7 +827,7 @@ body {
 
 /* Ranking View Styles */
 .ranking-view {
-    min-height: 100vh;
+    min-height: 90vh;
     background: var(--bg);
     color: var(--text);
     display: flex;
@@ -823,20 +838,20 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
-    margin-top: 2%;
-    padding: 30px 60px; /* 기존 20px 40px에서 증가 */
+    margin-top: 1%;
+    padding: 20px 40px; /* 기존 20px 40px에서 증가 */
     position: relative;
 }
 
 .ranking-title {
-    margin-top: 25px; /* 기존 20px에서 증가 */
-    font-size: 125px; /* 기존 100px에서 증가 */
+    margin-top: 20px; /* 기존 20px에서 증가 */
+    font-size: 100px; /* 기존 100px에서 증가 */
     font-weight: 900;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 2.5px; /* 기존 2px에서 증가 */
+    letter-spacing: 2px; /* 기존 2px에서 증가 */
 }
 
 .ranking-content {
@@ -844,18 +859,18 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    margin-top: 50px auto 0 auto; /* 기존 40px에서 증가 */
-    padding: 50px 50px; /* 기존 40px에서 증가 */
+    margin-top: 40px auto 0 auto; /* 기존 40px에서 증가 */
+    padding: 40px 40px; /* 기존 40px에서 증가 */
 }
 
 .ranking-box {
     width: 90%;
-    max-width: 1125px; /* 기존 900px에서 증가 */
-    height: 875px; /* 기존 700px에서 증가 */
+    max-width: 900px; /* 기존 900px에서 증가 */
+    height: 700px; /* 기존 700px에서 증가 */
     background: rgba(255, 255, 255, 0.05);
     border: 3px solid var(--muted-b2); /* 기존 2px에서 증가 */
     border-radius: 15px; /* 기존 12px에서 증가 */
-    padding: 38px; /* 기존 30px에서 증가 */
+    padding: 33px; /* 기존 30px에서 증가 */
     overflow-y: auto;
     backdrop-filter: blur(15px); /* 기존 10px에서 증가 */
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); /* 기존보다 크게 */
@@ -887,7 +902,7 @@ body {
 
 .ranking-item {
     display: grid;
-    grid-template-columns: 100px 1fr 150px; /* 기존 80px 1fr 120px에서 증가 */
+    grid-template-columns: 80px 1fr 120px; /* 기존 80px 1fr 120px에서 증가 */
     align-items: center;
     padding: 19px 25px; /* 기존 15px 20px에서 증가 */
     margin-bottom: 10px; /* 기존 8px에서 증가 */
@@ -1588,7 +1603,7 @@ body, .game-view {
 .game-board {
   transform: scale(1.2);     /* ← 보드 전체 축소 */
   transform-origin: top center;
-  transform: translateY(-200px);
+  transform: translateY(-220px);
 }
 .game-board .word-grid {
   display: flex;
@@ -1639,8 +1654,8 @@ body, .game-view {
   align-items: stretch;      /* 인풋/버튼 높이 통일 */
   gap: 12px;
   flex-wrap: nowrap;           /* 좁으면 줄바꿈 */
-  width: 100%;
-  max-width:1000px;
+  width: 90%;
+  max-width:800px;
   margin: 0 auto;
 }
 .game-input .input-label{
@@ -2054,7 +2069,7 @@ body, .game-view {
   left: 50%;
   transform:translateX(-50%);
   width: 90%;
-  max-width:800px;
+  max-width:700px;
   z-index: 9999;
 }
 
@@ -2064,7 +2079,7 @@ body, .game-view {
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 800px;
+  max-width: 700px;
   margin-top: 200px;
   z-index: 9999;
 }
@@ -2249,7 +2264,7 @@ body, .game-view {
 
 /* Enhanced Turn Timer & Button - Player Colors */
 .turn-timer {
-    width: 700px;
+    width: 600px;
     height: 16px;
     border-radius: 8px;
     background: rgba(255,255,255,0.3);
@@ -2257,7 +2272,7 @@ body, .game-view {
     overflow: hidden;
     backdrop-filter: blur(10px);
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-    margin: 4px 0;
+    margin: 3px 0;
 }
 
 .turn-timer-fill {
@@ -2322,7 +2337,7 @@ body, .game-view {
     border-color: #1e88e5;
     box-shadow: 0 8px 32px rgba(66, 165, 245, 0.5);
     animation: player1TurnPulse 2s ease-in-out infinite;
-    transform: scale(1.02);
+    transform: scale(1.0);
 }
 
 @keyframes player1TurnPulse {
@@ -2342,7 +2357,7 @@ body, .game-view {
     border-color: #ff8cc8;
     box-shadow: 0 8px 32px rgba(255, 179, 209, 0.5) !important;
     animation: player2TurnPulse 2s ease-in-out infinite;
-    transform: scale(1.02);
+    transform: scale(1.0);
 }
 
 @keyframes player2TurnPulse {
@@ -2357,7 +2372,7 @@ body, .game-view {
 
 /* Enhanced Turn Timer */
 .turn-timer {
-    width: 100%;
+    width: 90%;
     max-width: 800px;
     height: 18px;
     border-radius: 12px;
@@ -2368,12 +2383,13 @@ body, .game-view {
     box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
     margin-bottom: 16px;
     position: relative;
+    margin-left: 40px;
 }
 
 /* fill */
 .turn-timer-fill {
     height: 100%;
-    width:100%;
+    width:90%;
      background: linear-gradient(90deg, #757575, #bdbdbd);  /* 밝은 무채색 */
     box-shadow: 0 0 12px rgba(200, 200, 200, 0.8),
                 0 0 24px rgba(160, 160, 160, 0.6);
@@ -2432,6 +2448,7 @@ body, .game-view {
     .player-card {
         flex: 1;
         padding: 20px;
+        width: 85%;
     }
     
     .turn-btn {
@@ -2457,3 +2474,4 @@ body, .game-view {
   font-weight: 700;
   color: var(--accent);
 }
+

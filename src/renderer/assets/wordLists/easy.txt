@@ -119,10 +119,8 @@ give
 glad
 glow
 goal
-goes
 gone
 good
-gods
 gold
 gone
 gray
@@ -174,8 +172,6 @@ lamp
 land
 last
 late
-laws
-lays
 lead
 leap
 lean
@@ -205,14 +201,12 @@ main
 male
 many
 mark
-mass
 meet
 mere
 mine
 mind
 miss
 mode
-moan
 mock
 mood
 more
@@ -291,7 +285,6 @@ sang
 save
 seat
 seen
-sees
 self
 send
 sent
@@ -307,8 +300,6 @@ side
 sigh
 sign
 sink
-sins
-sits
 size
 slam
 slay
@@ -332,7 +323,6 @@ step
 stop
 such
 suit
-sums
 sure
 swam
 tail
@@ -354,7 +344,6 @@ they
 thin
 this
 thus
-tied
 time
 told
 took
@@ -373,7 +362,6 @@ very
 view
 vile
 vine
-vows
 wait
 wake
 walk
@@ -383,7 +371,6 @@ warm
 wash
 wasp
 wast
-wept
 went
 were
 well
@@ -406,4 +393,4 @@ work
 yawn
 year
 your
-zest
+zoom

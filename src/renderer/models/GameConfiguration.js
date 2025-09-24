@@ -15,9 +15,9 @@ export const BoardSize = { // ROW, COL
 };
 
 export const PlaceWordLength = { // 단어길이
-    [Difficulty.VERYEASY]: 4, 
+    [Difficulty.VERYEASY]: 3, 
     [Difficulty.EASY]: 4,  
-    [Difficulty.NORMAL]: 5,    
+    [Difficulty.NORMAL]: 4,    
     [Difficulty.HARD]: 5,
     [Difficulty.VERYHARD]: 6
 };

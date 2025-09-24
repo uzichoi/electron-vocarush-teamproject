@@ -278,22 +278,24 @@ const triggerEasterEgg = () => {
 
                 {/* 액션 버튼들 */}
                 <section className="result-actions">
-
-                        <button className="btn-secondary" onClick={() => {SoundManager.play("clickPop"); navigate("/ranking");}}>
-
-                        <button className="btn-secondary" onClick={() => navigate("/ranking", {
-                            state: {
-                                lastPlayers: [state.player1.name, state.player2.name]
-                            }
-                            })
-                            }>
-
+                    <button
+                        className="btn-secondary"
+                        onClick={() => {
+                        SoundManager.play("clickPop");
+                        navigate("/ranking");
+                        }}
+                    >
                         View Ranking
-                        </button>
                     </button>
-                    <button className="btn-secondary" onClick={handleRestart}>Restart</button>
-                    <button className="btn-secondary" onClick={handleNextRound}>Next Round</button>
-                </section>
+
+                    <button className="btn-secondary" onClick={handleRestart}>
+                        Restart
+                    </button>
+
+                    <button className="btn-secondary" onClick={handleNextRound}>
+                        Next Round
+                    </button>
+                    </section>
             </main>
 
         </div>

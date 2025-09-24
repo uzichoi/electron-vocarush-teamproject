@@ -176,9 +176,6 @@ useEffect(() => {
 
 
     const handleSubmit = (e) => {
-
-      //SoundManager.play("clickPop");
-
       e.preventDefault();
 
       const currentPlayer = state.currentTurn;

@@ -7,53 +7,49 @@ export default function HiddenWordBonusEffect({ show, onComplete }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (show) {
-      setVisible(true);
-      
-      // 사탕 컨페티 효과
-      const candyConfetti = () => {
-        // 사탕 이모지들을 텍스트로 사용
-        const candies = ['🍬', '🍭', '🍫', '🧁', '🍩', '🎂'];
-        
-        // 여러 번 터뜨리기
-        for (let i = 0; i < 5; i++) {
-          setTimeout(() => {
-            confetti({
-              particleCount: 20,
-              spread: 100,
-              startVelocity: 30,
-              origin: { x: 0.2 + (i * 0.15), y: 0.3 },
-              useWorker: false,
-              shapes: ['circle'],
-              colors: ['#ff6b9d', '#f7931e', '#fff200', '#c69c6d', '#8b4513', '#ff1493']
-            });
-          }, i * 200);
-        }
-        
-        // 추가 중앙 폭발
+  if (show) {
+    setVisible(true);
+
+    const myConfetti = confetti.create(null, { useWorker: false });
+
+    const candyConfetti = () => {
+      const candies = ['🍬', '🍭', '🍫', '🧁', '🍩', '🎂'];
+      for (let i = 0; i < 5; i++) {
         setTimeout(() => {
-          confetti({
-            particleCount: 50,
-            spread: 120,
-            startVelocity: 45,
-            origin: { x: 0.5, y: 0.4 },
-            useWorker: false,
-            colors: ['#ff6b9d', '#f7931e', '#fff200', '#c69c6d']
+          myConfetti({
+            particleCount: 20,
+            spread: 100,
+            startVelocity: 30,
+            origin: { x: 0.2 + (i * 0.15), y: 0.3 },
+            colors: ['#ff6b9d', '#f7931e', '#fff200', '#c69c6d', '#8b4513', '#ff1493'],
           });
-        }, 500);
-      };
+        }, i * 200);
+      }
+      setTimeout(() => {
+        myConfetti({
+          particleCount: 50,
+          spread: 120,
+          startVelocity: 45,
+          origin: { x: 0.5, y: 0.5 },
+          colors: ['#ff6b9d', '#f7931e', '#fff200', '#c69c6d'],
+        });
+      }, 500);
+    };
 
-      candyConfetti();
+    candyConfetti();
 
-      // 3초 후 사라짐
-      const timer = setTimeout(() => {
-        setVisible(false);
-        if (onComplete) onComplete();
-      }, 3000);
+    const timer = setTimeout(() => {
+      setVisible(false);
+      myConfetti.reset(); // 3초 후 정리
+      if (onComplete) onComplete();
+    }, 3000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [show, onComplete]);
+    return () => {
+      clearTimeout(timer);
+      myConfetti.reset(); // 언마운트될 때도 정리
+    };
+  }
+}, [show, onComplete]);
 
   return (
     <AnimatePresence>
