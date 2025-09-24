@@ -1,5 +1,3 @@
-// views/PlayerConfigurationView.jsx
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
@@ -13,13 +11,21 @@ export default function PlayerConfigurationView() {
   // 입력 로컬 미러(입력창은 로컬을 단일 소스로 유지)
   const [nameP1, setNameP1] = useState("");
   const [nameP2, setNameP2] = useState("");
-
-  // 캡처 중복 방지 락 (per player)
+  const [photoP1, setPhotoP1] = useState(null); // Player 1 사진 상태
+  const [photoP2, setPhotoP2] = useState(null); // Player 2 사진 상태
   const [capBusy, setCapBusy] = useState([false, false]);
 
   const navigate = useNavigate();
   const { state, controller } = useGameController();
   const { player1, player2 } = state || {};
+
+  // 새로고침 시 초기화 (컴포넌트가 처음 렌더링될 때마다)
+  useEffect(() => {
+    setNameP1("");
+    setNameP2("");
+    setPhotoP1(null);  // 사진 초기화
+    setPhotoP2(null);  // 사진 초기화
+  }, []); // 빈 배열로 설정하면 최초 렌더링 시에만 호출
 
   // mount/unmount
   useEffect(() => {
@@ -61,7 +67,7 @@ export default function PlayerConfigurationView() {
     }
   };
 
-  // file:// 스킴 보장
+  // file:// 스킴 보장 (toFileURL 함수 정의)
   const toFileURL = (p) => {
     if (!p) return "";
     const hasScheme = /^([a-z]+):\/\//i.test(p);
@@ -113,11 +119,15 @@ export default function PlayerConfigurationView() {
         return;
       }
 
-      try {
-        const fileSrc = toFileURL(fileUrl);
-        controller.setPlayerPhoto?.(idx, fileSrc); // 내부에서 photoPath로 저장되도록
-      } catch (e) {
-        console.error("setPlayerPhoto error:", e);
+      const fileSrc = toFileURL(fileUrl);  // file:// URL로 변환
+
+      // Player 1과 Player 2의 사진 경로 저장
+      if (idx === 0) {
+        setPhotoP1(fileSrc);
+        controller.setPlayerPhoto?.(0, fileSrc); // 내부에서 photoPath로 저장되도록
+      } else {
+        setPhotoP2(fileSrc);
+        controller.setPlayerPhoto?.(1, fileSrc); // 내부에서 photoPath로 저장되도록
       }
     } finally {
       // 락 해제
@@ -155,13 +165,13 @@ export default function PlayerConfigurationView() {
             }}
           />
           <div className="photo-box">
-            {player1?.photoPath ? (
+            {photoP1 ? (
               <img
-                key={player1.photoPath}
-                src={player1.photoPath}
+                key={photoP1}
+                src={photoP1}
                 alt="player1"
                 onError={(e) => {
-                  const [base] = (player1.photoPath || "").split("?");
+                  const [base] = (photoP1 || "").split("?");
                   e.currentTarget.src = `${base}?t=${Date.now()}`;
                   console.warn("Image reload attempted:", e);
                 }}
@@ -200,13 +210,13 @@ export default function PlayerConfigurationView() {
             }}
           />
           <div className="photo-box">
-            {player2?.photoPath ? (
+            {photoP2 ? (
               <img
-                key={player2.photoPath}
-                src={player2.photoPath}
+                key={photoP2}
+                src={photoP2}
                 alt="player2"
                 onError={(e) => {
-                  const [base] = (player2.photoPath || "").split("?");
+                  const [base] = (photoP2 || "").split("?");
                   e.currentTarget.src = `${base}?t=${Date.now()}`;
                   console.warn("Image reload attempted:", e);
                 }}
