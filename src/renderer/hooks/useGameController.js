@@ -1,56 +1,45 @@
-// hooks/useGameController.js
-import { useEffect, useRef, useState } from "react";
-import { GameController}  from "../controllers/GameController";
+// src/renderer/hooks/useGameController.js
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { GameController } from "../controllers/GameController";
 
-export function useGameController(initialController = null) {
-  // // 1) 컨트롤러를 한 번만 생성
-  // const controllerRef = useRef(null);
-  // if (!controllerRef.current) {
-  //   controllerRef.current = new GameController();
-  // }
-  // const controller = controllerRef.current;
+const Ctx = createContext(null);
 
-  // 2) 상태 관리
-  // 1) controller와 state를 상태로 관리
-  //const [controller, setController] = useState(() => new GameController());
-    // GameView 진입 시점에만 새 컨트롤러 생성
-  const controllerRef = useRef(new GameController());
+export function GameControllerProvider({ children }) {
+  // 컨트롤러는 Provider 생애주기 동안 단 1회만 생성
+  const controllerRef = useRef(null);
+  if (!controllerRef.current) {
+    controllerRef.current = new GameController();
+  }
   const controller = controllerRef.current;
-  
+
+  // 컨트롤러의 상태를 React로 브리지
   const [state, setState] = useState(controller.state);
 
-  // 3) 초기화 및 구독
   useEffect(() => {
-    const unsub = controller.subscribe(setState); // state 변경 시 setState 호출
-    controller.mount(); // 전체 타이머 시작
-
+    // 컨트롤러가 전체 state를 emit하도록 가정 (부분패치면 prev merge로 바꿔도 됨)
+    const unsubscribe = controller.subscribe((next) => setState(next));
+    controller.mount?.(); // Provider 마운트 시 1회
     return () => {
-      controller.unmount(); // 타이머 정리
-      unsub(); // 구독 해제
+      controller.unmount?.(); // Provider 언마운트 시 1회
+      unsubscribe?.();
     };
   }, [controller]);
 
-  // 4) submitInput, setInputValue 래핑
-  const submitInput = (word) => controller.submitInput(word);
-  const setInputValue = (value) => controller.setInputValue(value);
-  const startTurn = (playerKey) => controller.startTurn(playerKey);
-  const nextRound = () => controller.restartGame();
+  const value = useMemo(() => ({ controller, state }), [controller, state]);
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+}
 
-  // 4) 새 게임 시작 (Restart 또는 Start 버튼)
-  // const startNewGame = () => {
-  //   const newController = new GameController();
-  //   setController(newController);
-  //   setState(newController.state);
-  //   //return newController;
-  // };
-
-  return {
-    controller,
-    state,
-    submitInput,
-    setInputValue,
-    startTurn,
-    nextRound,
-    startNewGame: () => controller.startInitialGame(),
-  };
+export function useGameController() {
+  const ctx = useContext(Ctx);
+  if (!ctx) {
+    throw new Error("useGameController must be used inside GameControllerProvider");
+  }
+  return ctx; // { controller, state }
 }
