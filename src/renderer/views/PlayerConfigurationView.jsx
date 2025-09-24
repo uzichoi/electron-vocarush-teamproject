@@ -17,7 +17,7 @@ export default function PlayerConfigurationView() {
   const [focusedInput, setFocusedInput] = useState(null);
 
   const navigate = useNavigate();
-  const { controller } = useGameController(); // 🔹 훅에서 최신 컨트롤러 가져오기
+  const { controller } = useGameController(); // 훅에서 최신 컨트롤러 가져오기
 
   useEffect(() => {
     // 마운트 시 특별히 할 일 없으면 생략 가능
