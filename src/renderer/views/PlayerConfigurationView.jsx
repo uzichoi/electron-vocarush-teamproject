@@ -19,6 +19,13 @@ export default function PlayerConfigurationView() {
   const { state, controller } = useGameController();
   const { player1, player2 } = state || {};
 
+  let difficulty = state?.difficulty ?? 0;  // `state.difficulty` 값이 전달되지 않으면 기본값 0을 사용
+
+  useEffect(() => {
+    difficulty = 0;
+    console.log("Received difficulty:", difficulty);
+  }, [difficulty]);
+
   // 새로고침 시 초기화 (컴포넌트가 처음 렌더링될 때마다)
   useEffect(() => {
     setNameP1("");
@@ -133,7 +140,15 @@ export default function PlayerConfigurationView() {
 
   const handleStartGame = () => {
     SoundManager.play("clickGameStart");
-    navigate("/game");
+    navigate("/game", {
+      state: {
+        ...state,
+        difficulty:0,
+      },
+      replace: false,
+      key: Date.now()
+     
+    });
   };
 
   return (

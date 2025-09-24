@@ -95,6 +95,7 @@ const handleNewGame = () => {
 
     navigate("/start", {
         state: {
+            ...state,
             difficulty: 0,
             player1: initialPlayer1,
             player2: initialPlayer2,

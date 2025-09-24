@@ -60,7 +60,8 @@ export class GameController {
       player2: this.players[1].getData(),
       grid: [],
       highlight: [],
-      gameOver: false
+      gameOver: false,
+      difficulty: this.difficulty
     };
 
     this.gameStarted = false;
@@ -120,8 +121,8 @@ export class GameController {
     if (this.gameStarted) return;
     this.gameStarted = true;
 
-    this.currentSize = this.initialSize;
-    this.currentWordLength = this.initialWordLength;
+    this.currentSize = 4;
+    this.currentWordLength = 4;
     this._resetRoundStates();
 
     this.board.resetBoard(this.currentSize, this.currentSize);
@@ -134,6 +135,7 @@ export class GameController {
   async restartGame({ difficulty, player1: p1Data, player2: p2Data } = {}) {
     if (difficulty !== undefined) this.currentGameDifficulty = difficulty;
     if (this.currentGameDifficulty > Difficulty.VERYHARD) this.currentGameDifficulty = Difficulty.VERYHARD;
+    console.log("restartGame is called");
 
     // 기존 플레이어 상태 복원
     if (p1Data) {

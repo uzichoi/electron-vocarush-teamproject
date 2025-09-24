@@ -36,10 +36,32 @@ export function GameControllerProvider({ children }) {
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
+// export function useGameController() {
+//   const ctx = useContext(Ctx);
+//   if (!ctx) {
+//     throw new Error("useGameController must be used inside GameControllerProvider");
+//   }
+//   return {
+//     ctx, // { controller, state }
+//     startNewGame: () => controller.startInitialGame(),
+//   }
+// }
+
 export function useGameController() {
   const ctx = useContext(Ctx);
+  
+  // ctx가 없으면 오류 발생
   if (!ctx) {
     throw new Error("useGameController must be used inside GameControllerProvider");
   }
-  return ctx; // { controller, state }
+  
+  // ctx에서 controller를 직접 사용
+  const { controller, state } = ctx;
+  
+  return {
+    controller,  // controller 접근 가능
+    state,       // state 접근 가능
+    startNewGame: () => controller.startInitialGame(),  // controller 메서드 사용
+  }
 }
+

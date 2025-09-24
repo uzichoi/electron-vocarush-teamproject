@@ -7,6 +7,8 @@ export default function StartView() {
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
+   
+  const { startNewGame } = useGameController();
   
   // const { startNewGame } = useGameController();
     
@@ -18,6 +20,9 @@ export default function StartView() {
   const handleStart = () => {
     //startNewGame();        // 새 GameController 생성
     SoundManager.play("clickPop");   // 효과음 재생
+
+    startNewGame(); // 이 부분에서 새 게임을 시작하는 메서드 호출
+
     navigate("/config", {   // 설정 화면으로 이동
       state: state,  // 받은 state 그대로 전달
       replace: false, 
