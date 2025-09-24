@@ -25,14 +25,21 @@ export default function PlayerConfigurationView() {
     setNameP2("");
     setPhotoP1(null);  // 사진 초기화
     setPhotoP2(null);  // 사진 초기화
-  }, []); // 빈 배열로 설정하면 최초 렌더링 시에만 호출
 
-  // mount/unmount
-  useEffect(() => {
-    return () => {
-      SoundManager.stopBgm();
-    };
-  }, []);
+    if (controller) {
+      try {
+        controller.setPlayerName?.(0, "");
+        controller.setPlayerName?.(1, "");
+        controller.setPlayerPhoto?.(0, null);
+        controller.setPlayerPhoto?.(1, null);
+      } catch (e) {
+        console.error("Controller 초기화 오류:", e);
+      }
+    }
+
+    SoundManager.stopBgm();
+
+  }, [controller]); // 빈 배열로 설정하면 최초 렌더링 시에만 호출
 
   if (!controller) return <div>Error: Controller not found</div>;
 
@@ -42,21 +49,6 @@ export default function PlayerConfigurationView() {
     if (s == null) return "";
     try { return String(s).trim(); } catch { return ""; }
   };
-  const isDefaultName = (s) => {
-    const v = safeTrim(s);
-    return v === "Player 1" || v === "Player 2";
-  };
-
-  // ✅ 초기 1회만 컨트롤러의 이름을 로컬에 반영 (이후엔 로컬만 신뢰)
-  const initRef = useRef(false);
-  useEffect(() => {
-    if (initRef.current) return;
-    const n1 = safeTrim(player1?.name);
-    const n2 = safeTrim(player2?.name);
-    if (!isDefaultName(n1)) setNameP1(n1);
-    if (!isDefaultName(n2)) setNameP2(n2);
-    initRef.current = true;
-  }, [player1?.name, player2?.name]);
 
   // 컨트롤러에 이름 쓰기
   const writeNameToController = (idx, value) => {
