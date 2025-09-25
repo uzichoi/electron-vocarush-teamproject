@@ -10,14 +10,14 @@ export const BoardSize = { // ROW, COL
     [Difficulty.VERYEASY]: 4, 
     [Difficulty.EASY]: 5,  
     [Difficulty.NORMAL]: 5,    
-    [Difficulty.HARD]: 6,
+    [Difficulty.HARD]: 5,
     [Difficulty.VERYHARD]: 6
 };
 
 export const PlaceWordLength = { // 단어길이
-    [Difficulty.VERYEASY]: 4, 
+    [Difficulty.VERYEASY]: 3, 
     [Difficulty.EASY]: 4,  
-    [Difficulty.NORMAL]: 5,    
-    [Difficulty.HARD]: 5,
-    [Difficulty.VERYHARD]: 6
+    [Difficulty.NORMAL]: 4,    
+    [Difficulty.HARD]: 4,
+    [Difficulty.VERYHARD]: 5
 };

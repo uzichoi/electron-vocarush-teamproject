@@ -1,5 +1,5 @@
 // views/GameView.jsx
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 import CustomKeyboard from "../components/CustomKeyboard";
@@ -7,25 +7,68 @@ import ComboEffect from "../components/effects/ComboEffect";
 import BalloonEffect from "../components/effects/BalloonEffect";
 import ComboTextEffect from "../components/effects/ComboTextEffect";
 import SoundManager from "../models/SoundManager";
+import { Difficulty, PlaceWordLength } from "../models/GameConfiguration";
+import HiddenWordBonusEffect from "../components/effects/HiddenWordBonusEffect";
+
+//출력을 위한 난이도 분류
+const DifficultyNames = {
+    [Difficulty.VERYEASY]: "Very Easy",
+    [Difficulty.EASY]: "Easy",
+    [Difficulty.NORMAL]: "Normal",
+    [Difficulty.HARD]: "Hard",
+    [Difficulty.VERYHARD]: "Very Hard"
+};
 
 export default function GameView() {
   const navigate = useNavigate();
   const location = useLocation();
   const inputRef = useRef(null);
 
-  const { controller, state } = useGameController();
+  const { controller, state,submitInput } = useGameController();
   const { player1, player2 } = state || {};
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
-
+  const [showHiddenWordBonus, setShowHiddenWordBonus] = useState(false); // 히든 워드 보너스 효과 상태
+  
   const formatTime = (seconds = 0) => {
     const s = Number.isFinite(seconds) ? seconds : 0;
     const m = Math.floor(s / 60);
     const r = s % 60;
     return `${m}:${String(r).padStart(2, "0")}`;
   };
+
+  const getGameObjectives = () => {
+        if (!controller || controller.currentGameDifficulty === undefined) {
+            return { wordLength: 4, totalWords: "2-5", difficultyName: "Easy" };
+        }
+        
+        const difficulty = controller.currentGameDifficulty;
+        const wordLength = PlaceWordLength[difficulty] || 4;
+        
+        // Get actual placed words count from GameBoard
+        let totalWords = "2-5"; // Default range
+        
+        // Use the new getPlacedWordsCount function from GameBoard
+        if (controller.board && typeof controller.board.getPlacedWordsCount === 'function') {
+            totalWords = controller.board.getPlacedWordsCount().toString();
+        }
+        // Fallback to other possible sources
+        else if (controller.placedWordsCount !== undefined) {
+            totalWords = controller.placedWordsCount.toString();
+        } else if (controller.board?.placedWords?.length) {
+            totalWords = controller.board.placedWords.length.toString();
+        } else if (controller.placedWords?.length) {
+            totalWords = controller.placedWords.length.toString();
+        } else if (state.placedWords?.length) {
+            totalWords = state.placedWords.length.toString();
+        }
+        
+        const difficultyName = DifficultyNames[difficulty] || "Easy";
+        
+        return { wordLength, totalWords, difficultyName };
+    };
 
   // BGM
   useEffect(() => {
@@ -81,10 +124,40 @@ export default function GameView() {
   }, [state?.gameOver, navigate]);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!controller || !state) return;
-    controller.submitInput(state.inputValue);
-  };
+      e.preventDefault();
+
+      if (!state.turnActive || state.turnTime <= 0) {
+        console.log("⏰ 시간 초과! 입력 무시됨");
+        return;
+      }
+
+      const currentPlayer = state.currentTurn;
+
+      let isHidden = false;
+
+      // 히든 워드 체크
+      if (controller.board.isHiddenWord(state.inputValue)) {
+        setShowHiddenWordBonus(true);
+        isHidden = true; // 플래그 세팅
+      }
+
+      // 기본 정답 처리 (콤보 적용)
+      controller.submitInput(state.inputValue);
+
+      // 보너스 점수는 별도로 +1000
+      if (isHidden) {
+        const prevScore = controller[currentPlayer].getScore();
+        controller[currentPlayer].setScore(prevScore + 1000);
+        controller.setState({
+          ...controller.state,
+          [currentPlayer]: controller[currentPlayer].getData(),
+        });
+      }
+};
+    // 히든 워드 보너스 효과 완료 시 호출되는 함수
+    const handleHiddenWordBonusComplete = useCallback(() => {
+        setShowHiddenWordBonus(false);
+    }, []);
 
   const handleQuitToResult = () => {
     SoundManager.play("clickPop");
@@ -123,21 +196,38 @@ export default function GameView() {
       "👤"
   );
 
+  const objectives = getGameObjectives();
+
   return (
     <div className="game-view">
       <header className="game-header">
-        <div className="header-left">
-          <div className="game-title">VOCARUSH</div>
-        </div>
-        <div className="header-center">
-          <div className="game-timer">{formatTime(state?.timeIncreased)}</div>
-        </div>
-        <div className="header-right">
-          <button className="btn-small" onClick={handleQuitToResult}>
-            Quit
-          </button>
-        </div>
-      </header>
+                <div className="header-left">
+                    <div className="game-title">VOCARUSH</div>
+                </div>
+                <div className="header-center">
+                  <div className="game-timer">
+                    <div className="timer-text">
+                      {formatTime(state.timeIncreased)}
+                    </div>
+                    <div className="game-objectives">
+                      <div className="objective-item">
+                        Words: <span className="objective-value">{objectives.totalWords}</span>
+                      </div>
+                      <div className="objective-item">
+                        Length: <span className="objective-value">{objectives.wordLength}</span>
+                      </div>
+                      <div className="objective-item">
+                        Level: <span className="objective-value">{objectives.difficultyName}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="header-right">
+                    <button className="btn-small" onClick={handleQuitToResult}>
+                    Quit
+                    </button>
+                </div>
+            </header>
 
       <main className="game-main">
         {/* Player 1 */}
@@ -291,6 +381,12 @@ export default function GameView() {
       {/* 콤보 텍스트 */}
       <ComboTextEffect combo={player1?.combo ?? 0} player="player1" />
       <ComboTextEffect combo={player2?.combo ?? 0} player="player2" />
+
+      {/* 히든 워드 보너스 효과 */}
+      <HiddenWordBonusEffect 
+        show={showHiddenWordBonus} 
+        onComplete={handleHiddenWordBonusComplete} 
+      />
 
       {/* Quit 확인 모달 */}
       {showConfirm && (

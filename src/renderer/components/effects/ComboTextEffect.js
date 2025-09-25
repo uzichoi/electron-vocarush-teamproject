@@ -43,7 +43,7 @@ export default function ComboTextEffect({ combo, player }) {
           exit={{ opacity: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
           style={{
-            position: "absolute", // 🔹 부모 기준 (game-main)에서 위치
+            position: "absolute", // 부모 기준 (game-main)에서 위치
             ...positions[player],
             fontSize: "4rem",
             fontWeight: "900",
