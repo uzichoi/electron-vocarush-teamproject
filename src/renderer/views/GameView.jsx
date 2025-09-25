@@ -7,13 +7,24 @@ import ComboEffect from "../components/effects/ComboEffect";
 import BalloonEffect from "../components/effects/BalloonEffect";
 import ComboTextEffect from "../components/effects/ComboTextEffect";
 import SoundManager from "../models/SoundManager";
+import { Difficulty, PlaceWordLength } from "../models/GameConfiguration";
+
+//출력을 위한 난이도 분류
+const DifficultyNames = {
+    [Difficulty.VERYEASY]: "Very Easy",
+    [Difficulty.EASY]: "Easy",
+    [Difficulty.NORMAL]: "Normal",
+    [Difficulty.HARD]: "Hard",
+    [Difficulty.VERYHARD]: "Very Hard"
+};
+
 
 export default function GameView() {
   const navigate = useNavigate();
   const location = useLocation();
   const inputRef = useRef(null);
 
-  const { controller, state } = useGameController();
+  const { controller, state,usbmitInput } = useGameController();
   const { player1, player2 } = state || {};
 
   const [showConfirm, setShowConfirm] = useState(false);
@@ -26,6 +37,37 @@ export default function GameView() {
     const r = s % 60;
     return `${m}:${String(r).padStart(2, "0")}`;
   };
+
+  const getGameObjectives = () => {
+        if (!controller || controller.currentGameDifficulty === undefined) {
+            return { wordLength: 4, totalWords: "2-5", difficultyName: "Easy" };
+        }
+        
+        const difficulty = controller.currentGameDifficulty;
+        const wordLength = PlaceWordLength[difficulty] || 4;
+        
+        // Get actual placed words count from GameBoard
+        let totalWords = "2-5"; // Default range
+        
+        // Use the new getPlacedWordsCount function from GameBoard
+        if (controller.board && typeof controller.board.getPlacedWordsCount === 'function') {
+            totalWords = controller.board.getPlacedWordsCount().toString();
+        }
+        // Fallback to other possible sources
+        else if (controller.placedWordsCount !== undefined) {
+            totalWords = controller.placedWordsCount.toString();
+        } else if (controller.board?.placedWords?.length) {
+            totalWords = controller.board.placedWords.length.toString();
+        } else if (controller.placedWords?.length) {
+            totalWords = controller.placedWords.length.toString();
+        } else if (state.placedWords?.length) {
+            totalWords = state.placedWords.length.toString();
+        }
+        
+        const difficultyName = DifficultyNames[difficulty] || "Easy";
+        
+        return { wordLength, totalWords, difficultyName };
+    };
 
   // BGM
   useEffect(() => {
@@ -101,6 +143,7 @@ export default function GameView() {
     });
   };
 
+  
   const handleQuit = () => {
     controller?.unmount?.();
     navigate("/start", { replace: true });
@@ -126,18 +169,31 @@ export default function GameView() {
   return (
     <div className="game-view">
       <header className="game-header">
-        <div className="header-left">
-          <div className="game-title">VOCARUSH</div>
-        </div>
-        <div className="header-center">
-          <div className="game-timer">{formatTime(state?.timeIncreased)}</div>
-        </div>
-        <div className="header-right">
-          <button className="btn-small" onClick={handleQuitToResult}>
-            Quit
-          </button>
-        </div>
-      </header>
+                <div className="header-left">
+                    <div className="game-title">VOCARUSH</div>
+                </div>
+                <div className="header-center" style={{ transform: 'translateY(-10px)' }}>
+                    <div className="game-timer">
+                      {formatTime(state.timeIncreased)}
+                      <div className = "game-objectives" style={{ fontSize: '18px', fontWeight: '600' }}>
+                        <div className = "objective-item">
+                          Words: <span className="objective-value">{objectives.totalWords}</span>
+                        </div>
+                        <div className="objective-item">
+                            Length: <span className="objective-value">{objectives.wordLength}</span>
+                        </div>
+                        <div className="objective-item">
+                            Level: <span className="objective-value">{objectives.difficultyName}</span>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div className="header-right">
+                    <button className="btn-small" onClick={handleQuitToResult}>
+                    Quit
+                    </button>
+                </div>
+            </header>
 
       <main className="game-main">
         {/* Player 1 */}
