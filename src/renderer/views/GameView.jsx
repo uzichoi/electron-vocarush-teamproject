@@ -125,6 +125,7 @@ useEffect(() => {
   SoundManager.playBgm("gameBgm"); // 마운트 시 BGM 재생
 
   return () => {
+    SoundManager.stop("gameClock");
     SoundManager.stopBgm(); // 언마운트 시 정지
   };
 }, []);
