@@ -149,6 +149,7 @@ export default function GameView() {
     navigate("/start", { replace: true });
   };
 
+  const objectives = getGameObjectives();
   // 안전 아바타: photoPath가 있으면 image, 아니면 "👤"
   const Avatar = ({ photoPath, alt, className }) =>
     photoPath ? (
