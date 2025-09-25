@@ -296,8 +296,10 @@ async fileRead() {
 
     // 파일을 성공적으로 읽었다면, 단어 리스트를 처리. 이때 wordData 객체의 'words' 속성에 접근하여 처리한다.
     if (wordData.ok && typeof wordData.words === "string") {
-      const lines = wordData.words.split(/\r?\n/);  // wordData.words에 실제 단어 데이터가 담겨있음
-      
+      //const lines = wordData.words.split(/\r?\n/);  // wordData.words에 실제 단어 데이터가 담겨있음
+      const lines = wordData.words.split(/\r?\n/).map(line => line.trim()).filter(line => line !== "");
+
+
       for (let line of lines) {
         if (line.trim() !== "") {
           this.words.add(line.trim());  // 빈 줄을 제외하고 단어를 추가

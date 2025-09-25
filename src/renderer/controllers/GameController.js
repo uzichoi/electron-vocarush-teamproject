@@ -221,24 +221,23 @@ export class GameController {
   }
 }
 
-  async newGame({ rows, cols, words }) {
-    console.log("[GC] newGame rows, cols, words=", rows, cols, words);
-    
-    this.board.resetBoard(rows, cols);
-    this.words = this.board.placeWordsRandomly(words, Object.values(Direction), Object.values(Order), 1000);
-    this.board.fillEmptyWithRandomLetters();
-    
-      await this.board.fileRead(); // words.txt
-    
-    //console.log("fileRead 완료, 단어 수:", this.board.words.size);
+async newGame({ rows, cols, words }) {
+  console.log("[GC] newGame rows, cols, words=", rows, cols, words);
+  
+  this.board.resetBoard(rows, cols);
+  this.words = this.board.placeWordsRandomly(words, Object.values(Direction), Object.values(Order), 1000);
+  this.board.fillEmptyWithRandomLetters();
+  
+  await this.board.fileRead(); // words.txt
+  
+  //console.log("fileRead 완료, 단어 수:", this.board.words.size);
 
-
-    let isChanged = true;
-    while (isChanged) {
-    isChanged = this.board.unintendedWordDelete(this.currentWordLength);
-  }
-    
-    this.updateGridState();
+  let isChanged = true;
+  while (isChanged) {
+  isChanged = this.board.unintendedWordDelete(this.currentWordLength);
+}
+  
+  this.updateGridState();
 }
   updateGridState() {
     const snapGrid = this.board.getGridSnapshot ? this.board.getGridSnapshot() : this.board.grid;
