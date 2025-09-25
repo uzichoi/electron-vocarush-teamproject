@@ -16,5 +16,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   },
 
   readWordList: (name) => ipcRenderer.invoke("words:read", name),
-  readRanking: () => ipcRenderer.invoke("ranking:read")
+  readWordsFile: (fileName) => ipcRenderer.invoke("words:read", fileName),
+  readRanking: () => ipcRenderer.invoke("ranking:read"),
 });

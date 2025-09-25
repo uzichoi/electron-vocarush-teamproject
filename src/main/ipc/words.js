@@ -25,7 +25,7 @@ ipcMain.handle("words:read", async (_evt, difficultyOrFileName) => {
   try {
     const raw = await fs.readFile(filePath, 'utf8');
     const words = raw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-    return { ok: true, words, path: filePath };
+    return { ok: true, words: raw, path: filePath };
   } catch (err) {
     return { ok: false, error: { message: err.message, code: err.code, pathTried: filePath } };
   }

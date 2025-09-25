@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-
 import { useNavigate, useLocation } from "react-router-dom";
 import { gameController } from "../controllers/GameController"; // ✅ 인스턴스 import
 import { useGameController } from "../hooks/useGameController";
 import SoundManager from "../models/SoundManager";
+
 export default function ResultView() {
     const navigate = useNavigate();
     const { state, startNewGame } = useGameController(); // state 정의

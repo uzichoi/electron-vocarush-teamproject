@@ -1,3 +1,5 @@
+// moddls/GameBoard.js
+
 import { Word } from "./Word";
 import { DX, DY, Order } from "./Direction";
 import { Difficulty } from "./GameConfiguration";
@@ -159,9 +161,9 @@ placeWordsRandomly(words, directions,orders, maxTries) {
       console.log("Hidden word selected:", this.hiddenWord.getText());
     }
     return placedWords;
-}
+  }
 
-fillEmptyWithRandomLetters() {
+  fillEmptyWithRandomLetters() {
     const letters = "abcdefghijklmnopqrstuvwxyz";
     for (let r = 0; r < this.grid.length; r++) {
         for (let c = 0; c < this.grid[r].length; c++) {
@@ -170,9 +172,9 @@ fillEmptyWithRandomLetters() {
             }
         }
     }
-}
+  }
 
- unintendedWordDelete(PlaceWordLength) {
+  unintendedWordDelete(PlaceWordLength) {
     const dirRow = [0, 0, 1, -1, 1, -1, -1, 1];
     const dirCol = [1, -1, 0, 0, 1, -1, 1, -1];
     //  { ->, <-, 아래, 위, 오른쪽 아래 대각선, 왼쪽 위 대각선, 오른쪽 위 대각선, 왼쪽 아래 대각선 }
@@ -240,31 +242,78 @@ fillEmptyWithRandomLetters() {
 
     return changed;
   }
+
+  /*
+  async fileRead() {
+    try {
+      const filePath = path.resolve('src/renderer/assets/wordLists/words.txt');
+      const data = await fs.readFile(filePath, 'utf-8');
+      const lines = data.split(/\r?\n/);
+      
+      for (let line of lines) {
+        const clean = line.trim().toLowerCase();
+        if (clean) {
+          this.words.add(clean);
+          // 디버그용
+          // console.log("단어 추가됨:", JSON.stringify(clean));
+        }
+      }
+
+      //console.log("사전 단어 개수:", this.words.size);
+    } catch (err) {
+      console.error("file open fail", err);
+    }
+  }
+  */
+/*
+ async fileRead() {
+    try {
+      const wordListPath = await window.electronAPI.getWordListPath("words");
+      const wordData = await window.electronAPI.readWordsFile("words");
+
+      // const filePath = path.join(process.cwd(), "words.txt"); // 프로젝트 루트 기준
+      // const data = await fs.readFile(filePath, "utf-8");
+
+      const lines = wordData.split(/\r?\n/);
+      for (let line of lines) {
+        if (line.trim() !== "") {
+          this.words.add(line.trim());
+        }
+      }
+    } catch (err) {
+      console.error("file open fail", err);
+    }
+  }*/
+
 async fileRead() {
   try {
-    const filePath = path.resolve('src/renderer/assets/wordLists/words.txt');
-    const data = await fs.readFile(filePath, 'utf-8');
-    const lines = data.split(/\r?\n/);
-    
-    for (let line of lines) {
-      const clean = line.trim().toLowerCase();
-      if (clean) {
-        this.words.add(clean);
-        // 디버그용
-        // console.log("단어 추가됨:", JSON.stringify(clean));
-      }
-    }
+    // wordListPath를 읽는 부분은 이미 처리했으므로, 파일을 읽는 부분은 wordData로 처리
+    const wordData = await window.electronAPI.readWordsFile("words");
 
-    //console.log("사전 단어 개수:", this.words.size);
+    // wordData가 반환된 객체인지 확인
+    // console.log("wordData:", wordData);
+    // 객체로 반환되는 것 확인
+
+    // 파일을 성공적으로 읽었다면, 단어 리스트를 처리. 이때 wordData 객체의 'words' 속성에 접근하여 처리한다.
+    if (wordData.ok && typeof wordData.words === "string") {
+      const lines = wordData.words.split(/\r?\n/);  // wordData.words에 실제 단어 데이터가 담겨있음
+      
+      for (let line of lines) {
+        if (line.trim() !== "") {
+          this.words.add(line.trim());  // 빈 줄을 제외하고 단어를 추가
+        }
+      }
+      console.log("단어 개수:", this.words.size);  // 단어가 제대로 추가되었는지 확인
+    } else {
+      console.error("Error reading file:", wordData.error);
+    }
   } catch (err) {
-    console.error("file open fail", err);
+    console.error("File open failed", err);
   }
 }
-
-
 
 setBoardSize(rows, cols) {
     this.setSize(rows, cols);
     this.clear();
-}
+  }
 }
