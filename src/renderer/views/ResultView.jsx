@@ -132,7 +132,7 @@ const handleNextRound = () => {
         setGameResult({
           gameTime: state.timeIncreased,
           player1: {
-            name: state.player1.getName(),
+            name: state.player1.name,
             score: state.player1.getScore(),
             maxCombo: state.player1.getMaxCombo(),
             isWinner: state.player1.getScore() > state.player2.getScore(),
@@ -216,13 +216,13 @@ const handleNextRound = () => {
                             </div>
                             <div className="player-stats">
                                 <div className="stat-item">
-                                    <span>단어:</span> {gameResult.player1.wordsFound}개
+                                    <span>Words:</span> {gameResult.player1.wordsFound}
                                 </div>
                                 <div className="stat-item">
-                                    <span>콤보:</span> {gameResult.player1.maxCombo}
+                                    <span>Combo:</span> {gameResult.player1.maxCombo}
                                 </div>
                                 <div className="stat-item">
-                                    <span>정확도:</span> {gameResult.player1.accuracy}%
+                                    <span>Accuracy:</span> {gameResult.player1.accuracy}%
                                 </div>
                             </div>
                             {gameResult.player1.maxCombo >= 5 && (
