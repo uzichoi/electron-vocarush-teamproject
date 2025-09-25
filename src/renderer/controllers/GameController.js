@@ -208,12 +208,18 @@ export class GameController {
 
   try {
     const res = await window.electronAPI.readWordList(fileName); // ← 객체 반환
+
+    console.log(res.words);
+
     if (!res?.ok) {
       console.error("readWordList 실패:", res?.error);
       return []; // 안전 탈출
     }
     const lines = res.words;                      // ← 배열만 추출
     const shuffled = [...lines].sort(() => Math.random() - 0.5);
+
+    console.log(res.words)
+
     return shuffled.slice(0, 5);
   } catch (e) {
     console.error("readWordList 예외:", e);
