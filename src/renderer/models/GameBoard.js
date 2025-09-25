@@ -97,7 +97,6 @@ export class GameBoard {
       const wordY = y + DY[direction] * i;
       this.grid[wordY][wordX] = text[i];
       this.placedWordCheck[wordY][wordX] = true; // 단어가 배치된 위치 체크
-      
       coords.push([wordY, wordX]);
     }
     this.placedWords.push({ text, coords, direction, order });
@@ -248,18 +247,20 @@ fillEmptyWithRandomLetters() {
     }
   }*/
 
-  async fileRead(fileName = "words.txt") {
-  try {
-    const lines = await window.electronAPI.readWordList(fileName);
-    for (let line of lines) {
-      this.words.add(line);
+  async fileRead() {
+    try {
+      const filePath = path.join(process.cwd(), "words.txt"); // 프로젝트 루트 기준
+      const data = await fs.readFile(filePath, "utf-8");
+      const lines = data.split(/\r?\n/);
+      for (let line of lines) {
+        if (line.trim() !== "") {
+          this.words.add(line.trim());
+        }
+      }
+    } catch (err) {
+      console.error("file open fail", err);
     }
-  } catch (err) {
-    console.error("file open fail", err);
   }
-}
-
-
 
 setBoardSize(rows, cols) {
     this.setSize(rows, cols);

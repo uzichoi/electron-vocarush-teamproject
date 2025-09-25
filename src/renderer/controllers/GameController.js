@@ -197,6 +197,7 @@ export class GameController {
 
   async _pickWordsForSize() {
     let fileName;
+
     switch (this.currentGameDifficulty) {
       case Difficulty.VERYEASY:
       case Difficulty.EASY:    fileName = "easy.txt"; break;

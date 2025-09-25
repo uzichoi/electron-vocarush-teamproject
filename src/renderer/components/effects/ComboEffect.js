@@ -40,3 +40,4 @@ export default function ComboEffect({ combo }) {
 
   return null;
 }
+

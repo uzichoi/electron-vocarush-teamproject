@@ -19,5 +19,5 @@ export const PlaceWordLength = { // 단어길이
     [Difficulty.EASY]: 4,  
     [Difficulty.NORMAL]: 4,    
     [Difficulty.HARD]: 4,
-    [Difficulty.VERYHARD]: 6
+    [Difficulty.VERYHARD]: 5
 };

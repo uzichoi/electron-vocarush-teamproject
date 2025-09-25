@@ -1,10 +1,7 @@
 able
 acid
-aims
 akin
 also
-amid
-amuse
 army
 arms
 away
@@ -12,7 +9,6 @@ aura
 back
 band
 bank
-bars
 bear
 beat
 been
@@ -26,7 +22,6 @@ body
 book
 born
 both
-boys
 brew
 brow
 bury
@@ -242,7 +237,6 @@ pity
 play
 pole
 poor
-pops
 pour
 pray
 prey
@@ -288,7 +282,6 @@ seen
 self
 send
 sent
-sets
 shed
 ship
 shoe

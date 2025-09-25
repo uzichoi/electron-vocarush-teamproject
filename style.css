@@ -114,7 +114,31 @@ body {
     transition: all 0.3s ease;
 }
 
-/* main game area - 크기 증가 */
+.header-center {
+  transform: translateY(-10px);
+}
+
+.game-timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-text {
+  font-size: 1.3em;   /* ← 시계만 1.5배 */
+  font-weight: 700;
+}
+
+.game-objectives {
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* main game area - 수직 중앙 정렬 개선 */
 .game-main {
     display: grid;
     grid-template-columns: 450px 1fr 450px; /* 기존 350px에서 증가 */
@@ -399,7 +423,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    transform: scale(1); /* 기존 1.2에서 증가 */
+    transform: scale(1.3); /* 기존 1.2에서 증가 */
     transform-origin: top center;
     transform: translateY(-190px); /* 기존 -200px에서 조정 */
 }
@@ -481,16 +505,16 @@ body {
 .input-container {
     display: flex;
     align-items: stretch;
-    gap: 15px; /* 기존 15px에서 증가 */
-    background: rgba(255, 255, 255, 0.2); /* 기존 0.15에서 증가 */
-    padding: 6px 15px; /* 기존 6px 15px에서 증가 */
-    border-radius: 12px; /* 기존 12px에서 증가 */
-    border: 2px solid rgba(255, 255, 255, 0.35); /* 기존 1px, 0.25에서 증가 */
-    backdrop-filter: blur(25px); /* 기존 20px에서 증가 */
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15); /* 기존보다 크게 */
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.15); /* 기존: rgba(255, 255, 255, 0.05) */
+    padding: 6px 15px; /* 기존: 15px 20px */
+    border-radius: 12px; /* 기존: 12px */
+    border: 1px solid rgba(255, 255, 255, 0.25); /* 기존: var(--muted-b2) */
+    backdrop-filter: blur(20px); /* 새로 추가 */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* 새로 추가 */
     flex-wrap: nowrap;
-    width: 90%;
-    max-width: 800px; /* 기존 1000px에서 증가 */
+    transform: scale(1.3); /* 전체 확대 (기존 크기의 1.3배) */
+    max-width: 900px; /* 기존 1000px에서 증가 */
     margin: 0 auto;
 }
 
@@ -514,7 +538,7 @@ body {
     background: rgba(255, 255, 255, 0.15); /* 기존 0.1에서 증가 */
     border: 3px solid rgba(255, 255, 255, 0.25); /* 기존 2px, 0.2에서 증가 */
     color: var(--text);
-    font-weight: 600; /* 기존 500에서 증가 */
+    font-weight: 400; /* 기존 500에서 증가 */
     outline: none;
     text-transform: none;
     letter-spacing: 1.5px; /* 기존 1px에서 증가 */
@@ -1553,7 +1577,7 @@ body {
   /* 보드 셀: (기준 px) × (배율) */
   --cell-base: 48;                 /* 기준 48px */
   --cell-scale: 1.1;               /* 1.7배 → 48*1.7 ≈ 81.6px */
-  --cell-size: calc(var(--cell-base) * var(--cell-scale) * 1px);
+  --cell-size: calc(var(--cell-base) * var(--cell-scale) * 1.6px);
 
   --grid-gap: 8px;
 
@@ -1766,7 +1790,7 @@ body, .game-view {
   align-items: center;
   gap: 80px;
   margin-bottom: 40px;
-  margin-top: 30px;
+  margin-top: 130px;
 }
 
 /* 플레이어 카드 공통 스타일 */
@@ -1777,7 +1801,7 @@ body, .game-view {
   gap: 5px;
   padding: 15px 15px;
   border-radius: 24px;
-  top: 50px;
+  top: 150px;
   background: var(--glass-bg);
   backdrop-filter: blur(25px);
   min-width: 280px;
@@ -2082,8 +2106,8 @@ body, .game-view {
   top: 100%;     /* input-container 바로 아래 */
   left: 50%;
   transform: translateX(-50%);
+  max-width: 900px;
   width: 100%;
-  max-width: 700px;
   margin-top: 200px;
   z-index: 9999;
 }
@@ -2110,9 +2134,8 @@ body, .game-view {
 
 .keyboard-wrapper {
   position: absolute;   /* 버튼 기준 위치 */
-              /* 부모의 아래쪽에 붙음 */
   left: 0;
-  width: 600px;         /* 원하는 가로 크기 */
+  width: 900px;         /* 원하는 가로 크기 */
   margin-top: 10px;     /* 버튼과 간격 */
   z-index: 9999;
 }
