@@ -176,7 +176,7 @@ fillEmptyWithRandomLetters() {
     const dirRow = [0, 0, 1, -1, 1, -1, -1, 1];
     const dirCol = [1, -1, 0, 0, 1, -1, 1, -1];
     //  { ->, <-, 아래, 위, 오른쪽 아래 대각선, 왼쪽 위 대각선, 오른쪽 위 대각선, 왼쪽 아래 대각선 }
-
+    //console.log("call u-i-w-d");
     const Grid = this.grid;                 // 2차원 배열 (문자)
     const placedWordBoard = this.placedWordCheck; // 의도된 단어 위치 (true/false)
 
@@ -185,7 +185,7 @@ fillEmptyWithRandomLetters() {
     //const PlaceWordLength = this.placeWordLength;
 
     let changed = false;
-    console.log("row:", Row, "col:", Col, "PlaceWordLength:", PlaceWordLength);
+    //console.log("row:", Row, "col:", Col, "PlaceWordLength:", PlaceWordLength);
     for (let row = 0; row < Row; row++) {
       for (let col = 0; col < Col; col++) {
         for (let dir = 0; dir < 8; dir++) {
@@ -196,6 +196,7 @@ fillEmptyWithRandomLetters() {
           let pos = [];
 
           for (let wordLen = 0; wordLen < PlaceWordLength; wordLen++) {
+            
             if (stC < 0 || stC >= Col || stR < 0 || stR >= Row) break;
             word += Grid[stR][stC];
             pos.push([stR, stC]);
@@ -203,8 +204,15 @@ fillEmptyWithRandomLetters() {
             stC += dirCol[dir];
           }
 
-          if (word.length === PlaceWordLength && this.words.has(word)) {
+          // console.log(
+          //   "단어:", word,
+          //   "| hasExact:", this.words.has(word),
+          //   "| hasLower:", this.words.has(word.toLowerCase())
+          // );
+
+          if (word.length === PlaceWordLength && this.words.has(word.toLowerCase())) {
             // 단어가 전부 의도된 칸인지 확인
+            //console.log("단어 존재", word);
             let isIntended = true;
             for (let [r, c] of pos) {
               if (!placedWordBoard[r][c]) { // false = 의도 안됨
@@ -232,28 +240,22 @@ fillEmptyWithRandomLetters() {
 
     return changed;
   }
-
-   /* async fileRead() {
-    try {
-      const filePath = path.join(process.cwd(), "words.txt"); // 프로젝트 루트 기준
-      const data = await fs.readFile(filePath, "utf-8");
-      const lines = data.split(/\r?\n/);
-      for (let line of lines) {
-        if (line.trim() !== "") {
-          this.words.add(line.trim());
-        }
-      }
-    } catch (err) {
-      console.error("file open fail", err);
-    }
-  }*/
-
-  async fileRead(fileName = "words.txt") {
+async fileRead() {
   try {
-    const lines = await window.electronAPI.readWordList(fileName);
+    const filePath = path.resolve('src/renderer/assets/wordLists/words.txt');
+    const data = await fs.readFile(filePath, 'utf-8');
+    const lines = data.split(/\r?\n/);
+    
     for (let line of lines) {
-      this.words.add(line);
+      const clean = line.trim().toLowerCase();
+      if (clean) {
+        this.words.add(clean);
+        // 디버그용
+        // console.log("단어 추가됨:", JSON.stringify(clean));
+      }
     }
+
+    //console.log("사전 단어 개수:", this.words.size);
   } catch (err) {
     console.error("file open fail", err);
   }

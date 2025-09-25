@@ -42,7 +42,10 @@ export default function GameView() {
   // BGM
   useEffect(() => {
     SoundManager.playBgm("gameBgm");
-    return () => SoundManager.stopBgm();
+  return () => {
+    SoundManager.stop("gameClock");
+    SoundManager.stopBgm(); // 언마운트 시 정지
+  };
   }, []);
 
   // 🔹 보드만 초기화 (플레이어 객체/사진은 유지!)

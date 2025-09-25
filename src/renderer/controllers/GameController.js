@@ -228,6 +228,11 @@ export class GameController {
     this.words = this.board.placeWordsRandomly(words, Object.values(Direction), Object.values(Order), 1000);
     this.board.fillEmptyWithRandomLetters();
     
+      await this.board.fileRead(); // words.txt
+    
+    //console.log("fileRead 완료, 단어 수:", this.board.words.size);
+
+
     let isChanged = true;
     while (isChanged) {
     isChanged = this.board.unintendedWordDelete(this.currentWordLength);
