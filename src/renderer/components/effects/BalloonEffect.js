@@ -10,7 +10,7 @@ export default function BalloonEffect({ combo }) {
     left: "50%",
     transform: "translate(-50%, 50%)",
     pointerEvents: "none",
-    zIndex: 3000,
+    zIndex: 99999,
   };
 
   const balloonStyle = {

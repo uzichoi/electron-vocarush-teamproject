@@ -5,18 +5,20 @@ import { Difficulty } from "./GameConfiguration";
 export class GameBoard {
   constructor() {
 
-    this.row = 10;
-    this.col = 10;
+    this.row = 4;
+    this.col = 4;
     this.grid = []; // 단어보드
     this.placedWordCheck = []; // 배치된 단어들 체크용
     this.highlight = []; // 정답단어 체크용 
     this.placeWordLength = 5; // 현재 난이도 배치 단어 길이
     this.words = new Set(); // 사전 단어들 (의도하지않은 단어 제거용)
-    this.setSize(10, 10);
+    this.placedWords = []; //실제 배치된 단어들
+    this.hiddenWord = null; //히든 워드 저장
+    this.setSize(4, 4); 
   }
 
   setSize(row, col) {
-    // 최소 5, 최대 7 보장
+    // 최소 4, 최대 6 보장
     if (row < 4) row = 4;
     if (row > 6) row = 6;
     if (col < 4) col = 4;
@@ -35,6 +37,22 @@ export class GameBoard {
   getCharAt(y, x) { return this.grid[y][x]; }
   isHighlighted(y, x) { return this.highlight[y][x]; }
 
+  getPlacedWordsCount() {
+    return this.placedWords ? this.placedWords.length : 0;
+  }
+
+  getPlacedWords(){
+    return this.placedWords;
+  }
+
+  getHiddenWord() {
+    return this.hiddenWord;
+  }
+
+  isHiddenWord(word) {
+    return this.hiddenWord && this.hiddenWord.getText().toLowerCase() === word.toLowerCase();
+  }
+
   clear() {
     if (!this.grid.length || !this.highlight.length) return;
     for (let y = 0; y < this.row; y++) {
@@ -44,6 +62,8 @@ export class GameBoard {
         this.placedWordCheck[y][x] = false;
       }
     }
+    this.placedWords = [];
+    this.hiddenWord = null;
   }
 
   canPlaceWord(word) {
@@ -69,12 +89,18 @@ export class GameBoard {
   placeWord(text, x, y, direction, order) {
     if (/^[A-Z]/.test(text[0])) text = text[0].toLowerCase() + text.slice(1); // if 첫글자 대문자면 -> 소문자
     if (order === Order.BACKWARD) text = Word.reverseWord(text); // 단어 역방향 배치시
+    
+    const coords = [];
+
     for (let i = 0; i < text.length; i++) {
       const wordX = x + DX[direction] * i;
       const wordY = y + DY[direction] * i;
       this.grid[wordY][wordX] = text[i];
       this.placedWordCheck[wordY][wordX] = true; // 단어가 배치된 위치 체크
+      
+      coords.push([wordY, wordX]);
     }
+    this.placedWords.push({ text, coords, direction, order });
   }
 
   highlightWord(word, playerIndex) {
@@ -89,7 +115,7 @@ export class GameBoard {
   for (let i = 0; i < text.length; i++) {
     const wordX = x + DX[dir] * i;
     const wordY = y + DY[dir] * i;
-    this.grid[wordY][wordX] = text[i].toUpperCase();
+    this.grid[wordY][wordX] = text[i];
     this.highlight[wordY][wordX] = playerIndex;
   }
   }
@@ -122,6 +148,15 @@ placeWordsRandomly(words, directions,orders, maxTries) {
           placed = true;
         }
       }
+    }
+
+    this.placedWords = placedWords;
+
+    // 히든 워드 선택 (배치된 단어 중 랜덤으로 1개)
+    if (placedWords.length > 0) {
+      const randomIndex = Math.floor(Math.random() * placedWords.length);
+      this.hiddenWord = placedWords[randomIndex];
+      console.log("Hidden word selected:", this.hiddenWord.getText());
     }
     return placedWords;
 }

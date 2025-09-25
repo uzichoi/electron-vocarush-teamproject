@@ -7,7 +7,6 @@ import Player from "../models/Player";
 import Ranking from "../models/Ranking";
 
 import SoundManager from "../models/SoundManager";
-// =====================
 
 // 이벤트 emitter
 class Emitter {
@@ -198,13 +197,13 @@ export class GameController {
 
   async _pickWordsForSize() {
     let fileName;
-  switch (this.currentGameDifficulty) {
-    case Difficulty.VERYEASY:
-    case Difficulty.EASY:    fileName = "easy.txt"; break;
-    case Difficulty.NORMAL:  fileName = "normal.txt"; break;
-    case Difficulty.HARD:
-    case Difficulty.VERYHARD:fileName = "hard.txt"; break;
-    default:                 fileName = "easy.txt";
+    switch (this.currentGameDifficulty) {
+      case Difficulty.VERYEASY:
+      case Difficulty.EASY:    fileName = "easy.txt"; break;
+      case Difficulty.NORMAL:  fileName = "normal.txt"; break;
+      case Difficulty.HARD:
+      case Difficulty.VERYHARD:fileName = "hard.txt"; break;
+      default:                 fileName = "easy.txt";
   }
 
   try {
@@ -404,6 +403,8 @@ export class GameController {
   }
 
   setInputValue(value) {
-    this.setState({ ...this.state, inputValue: value.toUpperCase() });
+    this.setState({ ...this.state, inputValue: value.toLowerCase() });
   }
+
+  
 }

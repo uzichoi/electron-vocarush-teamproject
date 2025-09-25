@@ -36,7 +36,7 @@ const CustomKeyboard = ({
       else if (key === "{dot}") setPlayer2((prev) => prev + ".");
       else if (key === "{enterText}") {
         if (onEnter) onEnter();
-      } else setPlayer2((prev) => prev + key); // ✅
+      } else setPlayer2((prev) => prev + key); // 
     }
 
     else if (focusedInput === "game") {
@@ -45,7 +45,7 @@ const CustomKeyboard = ({
       else if (key === "{dot}") setGameText(gameValue + ".");
       else if (key === "{enterText}") {
         if (onEnter) onEnter();
-      } else setGameText(gameValue + key); // ✅
+      } else setGameText(gameValue + key); // 
     }
   };
 

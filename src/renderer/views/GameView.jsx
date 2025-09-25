@@ -1,4 +1,5 @@
 // views/GameView.jsx
+
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
@@ -7,6 +8,17 @@ import ComboEffect from "../components/effects/ComboEffect";
 import BalloonEffect from "../components/effects/BalloonEffect";
 import ComboTextEffect from "../components/effects/ComboTextEffect";
 import SoundManager from "../models/SoundManager";
+import { Difficulty, PlaceWordLength } from "../models/GameConfiguration";
+import HiddenWordBonusEffect from "../components/effects/HiddenWordBonusEffect";
+
+//출력을 위한 난이도 분류
+const DifficultyNames = {
+    [Difficulty.VERYEASY]: "Very Easy",
+    [Difficulty.EASY]: "Easy",
+    [Difficulty.NORMAL]: "Normal",
+    [Difficulty.HARD]: "Hard",
+    [Difficulty.VERYHARD]: "Very Hard"
+};
 
 export default function GameView() {
   const navigate = useNavigate();
@@ -64,9 +76,11 @@ export default function GameView() {
     if (state?.turnActive && inputRef.current) inputRef.current.focus();
   }, [state?.turnActive]);
 
+
   // 게임 종료 → 결과 화면
   useEffect(() => {
     if (!state?.gameOver) return;
+
     navigate("/result", {
       state: {
         player1: state.player1,

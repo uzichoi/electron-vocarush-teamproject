@@ -67,7 +67,7 @@ useEffect(() => {
 }, [gameResult]);
 
 const { grid, highlight, placedWordCheck } = gameResult;
-
+const [highlightState, setHighlightState] = useState(highlight);
 
 // New Game 클릭 시 호출할 함수
 const handleNewGame = () => {
@@ -127,6 +127,20 @@ const handleNextRound = () => {
     }, 0);
 };
 
+const triggerEasterEgg = () => {
+    const newHighlight = grid.map((row, i) =>
+      row.map((cell, j) =>
+        placedWordCheck?.[i]?.[j] ? "easterEgg" : highlight?.[i]?.[j]
+      )
+    );
+
+    setHighlightState(newHighlight);
+
+    setTimeout(() => {
+      setHighlightState(highlight);
+    }, 100);
+  };
+
   useEffect(() => {
     if (state.gameOver) {
         setGameResult({
@@ -155,6 +169,8 @@ const handleNextRound = () => {
   if (!gameResult) {
     return <div>결과를 불러오는 중...</div>;
   }
+
+  
 
   // mm:ss 포맷 함수
   const formatTime = (seconds) => {
@@ -185,8 +201,15 @@ const handleNextRound = () => {
                 {/* <div className="header-left">
                     <button className="btn-small" onClick={() => {navigate('/game')}}>← BACK</button>
                 </div> */}
-                <div className="header-center">
+                <div className="header-center" style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+                >
                     <h1 className="result-title">GAME RESULT</h1>
+
                     {/*  게임 시간 표시 */}
                     <div className="final-time" style={{
                         display: "flex",
@@ -301,21 +324,19 @@ const handleNextRound = () => {
                         </div>
                     </section>
                 </div>
-
-                {/* 액션 버튼들 */}
-                <section className="result-actions">
-                    <button className="btn-secondary" onClick={() => {SoundManager.play("clickPop"); navigate("/ranking");}}>
-                        View Ranking
-                    </button>
-                    <button className="btn-secondary" onClick={handleNewGame}>
-                        New Game
-                    </button>
-                    <button className="btn-secondary" onClick={handleNextRound}>
-                        Next Round
-                    </button>
-                </section>
             </main>
-
+            {/* 액션 버튼들 */}
+            <section className="result-actions">
+                <button className="btn-secondary" onClick={() => {SoundManager.play("clickPop"); navigate("/ranking");}}>
+                    View Ranking
+                </button>
+                <button className="btn-secondary" onClick={handleNewGame}>
+                    New Game
+                </button>
+                <button className="btn-secondary" onClick={handleNextRound}>
+                    Next Round
+                </button>
+            </section>
         </div>
     )
 }
