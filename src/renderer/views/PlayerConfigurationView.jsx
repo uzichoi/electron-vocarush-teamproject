@@ -1,37 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
+// PlayerConfigurationView.jsx
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameController } from "../hooks/useGameController";
 import CustomKeyboard from "../components/CustomKeyboard";
 import SoundManager from "../models/SoundManager";
 
 export default function PlayerConfigurationView() {
-  // UI-only states (countdown 제거)
+  // UI-only states
   const [focusedInput, setFocusedInput] = useState(null); // "p1" | "p2" | null
-
-  // 입력 로컬 미러(입력창은 로컬을 단일 소스로 유지)
   const [nameP1, setNameP1] = useState("");
   const [nameP2, setNameP2] = useState("");
-  const [photoP1, setPhotoP1] = useState(null); // Player 1 사진 상태
-  const [photoP2, setPhotoP2] = useState(null); // Player 2 사진 상태
+  const [photoP1, setPhotoP1] = useState(null);
+  const [photoP2, setPhotoP2] = useState(null);
   const [capBusy, setCapBusy] = useState([false, false]);
 
   const navigate = useNavigate();
   const { state, controller } = useGameController();
-  const { player1, player2 } = state || {};
-
-  let difficulty = state?.difficulty ?? 0;  // `state.difficulty` 값이 전달되지 않으면 기본값 0을 사용
 
   useEffect(() => {
-    difficulty = 0;
-    console.log("Received difficulty:", difficulty);
-  }, [difficulty]);
-
-  // 새로고침 시 초기화 (컴포넌트가 처음 렌더링될 때마다)
-  useEffect(() => {
+    // 초기화
     setNameP1("");
     setNameP2("");
-    setPhotoP1(null);  // 사진 초기화
-    setPhotoP2(null);  // 사진 초기화
+    setPhotoP1(null);
+    setPhotoP2(null);
 
     if (controller) {
       try {
@@ -45,19 +36,20 @@ export default function PlayerConfigurationView() {
     }
 
     SoundManager.stopBgm();
-
-  }, [controller]); // 빈 배열로 설정하면 최초 렌더링 시에만 호출
+  }, [controller]);
 
   if (!controller) return <div>Error: Controller not found</div>;
 
-  // 안전 문자열/기본명 판별
   const safeTrim = (s) => {
     if (typeof s === "string") return s.trim();
     if (s == null) return "";
-    try { return String(s).trim(); } catch { return ""; }
+    try {
+      return String(s).trim();
+    } catch {
+      return "";
+    }
   };
 
-  // 컨트롤러에 이름 쓰기
   const writeNameToController = (idx, value) => {
     try {
       controller.setPlayerName?.(idx, value ?? "");
@@ -66,7 +58,6 @@ export default function PlayerConfigurationView() {
     }
   };
 
-  // file:// 스킴 보장 (toFileURL 함수 정의)
   const toFileURL = (p) => {
     if (!p) return "";
     const hasScheme = /^([a-z]+):\/\//i.test(p);
@@ -75,18 +66,16 @@ export default function PlayerConfigurationView() {
     return `file:///${normalized.replace(/^\/+/, "")}`;
   };
 
-  // 사진 촬영 + 저장 (중복 방지 락 + 로컬 이름 사용)
   const handleCapture = async (idx) => {
-    if (capBusy[idx]) return; // 이미 캡처 중이면 무시
+    if (capBusy[idx]) return;
 
-    const localName = idx === 0 ? nameP1 : nameP2; // 👈 로컬 이름 신뢰
+    const localName = idx === 0 ? nameP1 : nameP2;
     const name = safeTrim(localName);
     if (!name) {
       alert("먼저 플레이어 이름을 입력해주세요.");
       return;
     }
 
-    // 락 획득
     setCapBusy((prev) => {
       const next = [...prev];
       next[idx] = true;
@@ -94,11 +83,10 @@ export default function PlayerConfigurationView() {
     });
 
     try {
-      // 카운트다운 제거 → 바로 카메라 사운드
       SoundManager.play("kamera");
 
       if (!window?.electronAPI?.captureFace) {
-        console.error("electronAPI.captureFace not available (check preload expose)");
+        console.error("electronAPI.captureFace not available");
         return;
       }
 
@@ -118,18 +106,16 @@ export default function PlayerConfigurationView() {
         return;
       }
 
-      const fileSrc = toFileURL(fileUrl);  // file:// URL로 변환
+      const fileSrc = toFileURL(fileUrl);
 
-      // Player 1과 Player 2의 사진 경로 저장
       if (idx === 0) {
         setPhotoP1(fileSrc);
-        controller.setPlayerPhoto?.(0, fileSrc); // 내부에서 photoPath로 저장되도록
+        controller.setPlayerPhoto?.(0, fileSrc);
       } else {
         setPhotoP2(fileSrc);
-        controller.setPlayerPhoto?.(1, fileSrc); // 내부에서 photoPath로 저장되도록
+        controller.setPlayerPhoto?.(1, fileSrc);
       }
     } finally {
-      // 락 해제
       setCapBusy((prev) => {
         const next = [...prev];
         next[idx] = false;
@@ -138,24 +124,34 @@ export default function PlayerConfigurationView() {
     }
   };
 
-const handleStartGame = () => {
-  SoundManager.play("clickGameStart");
+  const handleStartGame = () => {
+    SoundManager.play("clickGameStart");
 
-  console.log("player1", state.player1);
-  console.log("player2", state.player2);
+    // navigate에는 JSON 직렬화 가능한 값만 전달
+    const p1 = {
+      name: safeTrim(nameP1),
+      photo: photoP1,
+      score: 0,
+      combo: 0,
+      hp: 5,
+    };
+    const p2 = {
+      name: safeTrim(nameP2),
+      photo: photoP2,
+      score: 0,
+      combo: 0,
+      hp: 5,
+    };
 
-  navigate("/game", {
-    state: {
-      // state에서 필요한 값만 전달하고 함수는 제외
-      player1: state.player1,
-      player2: state.player2,
-      difficulty: 0,
-    },
-    replace: false,
-    key: Date.now(),
-  });
-};
-
+    navigate("/game", {
+      state: {
+        player1: p1,
+        player2: p2,
+        difficulty: 0,
+      },
+      replace: false,
+    });
+  };
 
   return (
     <div className="config-view">
@@ -173,8 +169,8 @@ const handleStartGame = () => {
             }}
             onChange={(e) => {
               const v = e.target.value;
-              setNameP1(v);                // 로컬 즉시 반응
-              writeNameToController(0, v); // 컨트롤러에도 반영
+              setNameP1(v);
+              writeNameToController(0, v);
             }}
           />
           <div className="photo-box">
@@ -186,7 +182,6 @@ const handleStartGame = () => {
                 onError={(e) => {
                   const [base] = (photoP1 || "").split("?");
                   e.currentTarget.src = `${base}?t=${Date.now()}`;
-                  console.warn("Image reload attempted:", e);
                 }}
               />
             ) : (
@@ -196,7 +191,7 @@ const handleStartGame = () => {
           <button
             className="btn-capture"
             onClick={() => handleCapture(0)}
-            disabled={capBusy[0]} // 캡처 중에는 비활성화
+            disabled={capBusy[0]}
           >
             Capture
           </button>
@@ -231,7 +226,6 @@ const handleStartGame = () => {
                 onError={(e) => {
                   const [base] = (photoP2 || "").split("?");
                   e.currentTarget.src = `${base}?t=${Date.now()}`;
-                  console.warn("Image reload attempted:", e);
                 }}
               />
             ) : (
@@ -241,7 +235,7 @@ const handleStartGame = () => {
           <button
             className="btn-capture"
             onClick={() => handleCapture(1)}
-            disabled={capBusy[1]} // 캡처 중에는 비활성화
+            disabled={capBusy[1]}
           >
             Capture
           </button>
@@ -258,18 +252,18 @@ const handleStartGame = () => {
           Game Start
         </button>
 
-        {/* 가상 키보드 → 로컬/컨트롤러 동시 반영 (포커스 가드로 반대편 동시 수정 방지) */}
+        {/* 가상 키보드 */}
         <CustomKeyboard
           viewType="config"
           focusedInput={focusedInput}
           setPlayer1={(txt) => {
-            if (focusedInput !== "p1") return; // 포커스된 쪽만 반응
+            if (focusedInput !== "p1") return;
             const v = txt ?? "";
             setNameP1(v);
             writeNameToController(0, v);
           }}
           setPlayer2={(txt) => {
-            if (focusedInput !== "p2") return; // 포커스된 쪽만 반응
+            if (focusedInput !== "p2") return;
             const v = txt ?? "";
             setNameP2(v);
             writeNameToController(1, v);

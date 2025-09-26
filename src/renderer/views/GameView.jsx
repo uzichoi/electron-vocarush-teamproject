@@ -223,7 +223,7 @@ export default function GameView() {
                   </div>
                 </div>
                 <div className="header-right">
-                    <button className="btn-small" onClick={handleQuitToResult}>
+                    <button type="button" className="btn-small" onClick={handleQuitToResult}>
                     Quit
                     </button>
                 </div>

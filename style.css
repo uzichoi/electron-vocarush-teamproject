@@ -1738,6 +1738,7 @@ body, .game-view {
   font-size: var(--button-font);
   padding: 0.6em 1.0em;
   border-radius: 10px;
+  z-index : 99999;
 }
 
 /* ===== 보드 영역 ===== */
