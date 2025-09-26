@@ -34,29 +34,29 @@ export default function ComboTextEffect({ combo, player }) {
   };
 
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          key={combo}
-          initial={{ opacity: 0, scale: 0.5, y: 0 }}
-          animate={{ opacity: 0.85, scale: 2.2, y: -60 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          style={{
-            position: "absolute", // 부모 기준 (game-main)에서 위치
-            ...positions[player],
-            fontSize: "4rem",
-            fontWeight: "900",
-            color: colors[player] || "#fff",
-            pointerEvents: "none",
-            textShadow: "0 0 12px rgba(255,255,255,0.9)",
-            zIndex: 3000,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {combo} COMBO!
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+  <AnimatePresence>
+    {combo >= 2 && show && (
+      <motion.div
+        key={combo}
+        initial={{ opacity: 0, scale: 0.5, y: 0 }}
+        animate={{ opacity: 0.85, scale: 2.2, y: -60 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          ...positions[player],
+          fontSize: "4rem",
+          fontWeight: "900",
+          color: colors[player] || "#fff",
+          pointerEvents: "none",
+          textShadow: "0 0 12px rgba(255,255,255,0.9)",
+          zIndex: 3000,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {combo} COMBO!
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
 }

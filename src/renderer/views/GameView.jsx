@@ -102,6 +102,23 @@ export default function GameView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [controller, location.key]);
 
+  // GameView.jsx
+useEffect(() => {
+  if (controller && location.state) {
+    const { player1, player2 } = location.state;
+
+    if (player1?.name) {
+      controller.setPlayerName?.(0, player1.name);
+      if (player1.photo) controller.setPlayerPhoto?.(0, player1.photo);
+    }
+    if (player2?.name) {
+      controller.setPlayerName?.(1, player2.name);
+      if (player2.photo) controller.setPlayerPhoto?.(1, player2.photo);
+    }
+  }
+}, [controller, location.state]);
+
+
   // 턴 시작 시 입력 포커스
   useEffect(() => {
     if (state?.turnActive && inputRef.current) inputRef.current.focus();
