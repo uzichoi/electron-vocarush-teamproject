@@ -124,6 +124,7 @@ export class GameController {
 
     this.currentSize = 4;
     this.currentWordLength = 4;
+    this.currentGameDifficulty = 0;
     this._resetRoundStates();
 
     this.board.resetBoard(this.currentSize, this.currentSize);
@@ -198,7 +199,7 @@ export class GameController {
   async _pickWordsForSize() {
     let fileName;
     switch (this.currentGameDifficulty) {
-      case Difficulty.VERYEASY:
+      case Difficulty.VERYEASY: fileName = "veryeasy.txt"; break;
       case Difficulty.EASY:    fileName = "easy.txt"; break;
       case Difficulty.NORMAL:  fileName = "normal.txt"; break;
       case Difficulty.HARD:
@@ -231,7 +232,11 @@ export class GameController {
     console.log("[GC] newGame rows, cols, words=", rows, cols, words);
     
     this.board.resetBoard(rows, cols);
-    this.words = this.board.placeWordsRandomly(words, Object.values(Direction), Object.values(Order), 1000);
+
+    this._pickWordsForSize(); // 배열에 저장해서 
+
+    // 밑에 함수에 넘겨주면??
+    this.board.placeWordsRandomly(words, Object.values(Direction), Object.values(Order), 1000);
     this.board.fillEmptyWithRandomLetters();
     
     let isChanged = true;
