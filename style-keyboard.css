@@ -40,6 +40,7 @@
   width: calc(100% - 40px);
   max-width: 900px;
   z-index: 9999;
+  
 }
 
 .keyboard-wrapper.keyboard-game {
@@ -50,8 +51,20 @@
   width: 100%;
   max-width: 900px;
   margin-top: 10px;
-  z-index: 9999;
+  z-index: 999;
+ 
 }
+
+.keyboard-wrapper.keyboard-config,
+.keyboard-wrapper.keyboard-game {
+  z-index:1000;  /* 기본적으로 wrapper는 클릭 막음 */
+}
+
+.keyboard-wrapper.keyboard-config .simple-keyboard,
+.keyboard-wrapper.keyboard-game .simple-keyboard {
+  pointer-events: auto;  /* 키보드 버튼은 클릭 허용 */
+}
+
 
 /* 각 행 */
 .simple-keyboard .hg-row {

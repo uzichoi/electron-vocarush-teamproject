@@ -162,16 +162,20 @@ export default function GameView() {
   const handleQuitToResult = () => {
     SoundManager.play("clickPop");
     navigate("/result", {
-      state: {
-        player1: state?.player1,
-        player2: state?.player2,
-        gameTime: state?.timeIncreased,
-        grid: state?.grid,
-        highlight: controller?.board?.highlight,
-        placedWordCheck: controller?.board?.placedWordCheck,
-        difficulty: controller?.currentGameDifficulty,
-      },
-    });
+  state: {
+    player1: JSON.parse(JSON.stringify(state?.player1 ?? {})),
+    player2: JSON.parse(JSON.stringify(state?.player2 ?? {})),
+    gameTime: state?.timeIncreased,
+    grid: state?.grid,
+    highlight: controller?.board?.highlight
+      ? JSON.parse(JSON.stringify(controller.board.highlight))
+      : null,
+    placedWordCheck: controller?.board?.placedWordCheck
+      ? JSON.parse(JSON.stringify(controller.board.placedWordCheck))
+      : null,
+    difficulty: controller?.currentGameDifficulty,
+  },
+});
   };
 
   const handleQuit = () => {

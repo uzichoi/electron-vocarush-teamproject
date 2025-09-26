@@ -47,6 +47,7 @@ body {
     align-items: center;
     padding: 20px 40px;
     position: relative;
+    z-index: 1000000;
 }
 
 .header-left {
