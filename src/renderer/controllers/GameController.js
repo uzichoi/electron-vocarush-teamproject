@@ -125,6 +125,7 @@ export class GameController {
 
     this.currentSize = 4;
     this.currentWordLength = 4;
+    this.currentGameDifficulty =0;
     this._resetRoundStates();
 
     this.board.resetBoard(this.currentSize, this.currentSize);
